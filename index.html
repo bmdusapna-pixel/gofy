@@ -1,0 +1,1396 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome to Gofy- Home</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+  <!-- Owl Carousel CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css" />
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css" />
+  <link href="assets/style.css" rel="stylesheet">
+  <!-- Font Awesome CDN -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+  <!-- Top Announcement Bar (Bootstrap 5 Compatible) -->
+  <div class="bg-danger text-white d-flex flex-wrap justify-content-between align-items-center px-3 py-2">
+
+    <!-- Left Message -->
+    <div class="small text-nowrap me-3">
+      Free shipping worldwide for all orders over ₹599/-
+      <a href="#" class="text-white text-decoration-underline ms-1">Shop Now</a>
+    </div>
+
+    <!-- Scrolling Message (Custom CSS instead of <marquee>) -->
+    <div class="scrolling-text-container d-none d-md-block flex-grow-1 mx-3">
+      <div class="scrolling-text">
+        Hello, Welcome to Gofy! Enjoy exclusive deals & free delivery across India.
+      </div>
+    </div>
+
+    <!-- Right Info Links -->
+    <div class="d-flex align-items-center gap-3 small">
+      <span><i class="bi bi-geo-alt-fill"></i> Delhi, India</span>
+      <a href="#" class="text-white text-decoration-none d-none d-md-inline">Blog</a>
+      <a href="#" class="text-white text-decoration-none d-none d-md-inline">FAQ's</a>
+    </div>
+
+  </div>
+
+
+  <!-- Main Header -->
+  <header class="pt-0 pb-2 border-bottom">
+    <div class="container-fluid">
+      <div class="d-flex align-items-center justify-content-between">
+
+        <!-- Logo -->
+        <a href="#" class="me-3 d-block" style="width:130px;">
+          <img src="image/logo.webp" class="img-fluid" alt="Kids Mall logo">
+        </a>
+
+        <!-- Search Bar -->
+        <form class="flex-grow-1 px-0 mx-0 d-none d-lg-block">
+          <div class="input-group w-100">
+            <div class="dropdown">
+              <button class="btn border dropdown-toggle bg-light" id="dropdownMenuButton" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false">
+                All Categories
+              </button>
+              <ul class="dropdown-menu small" aria-labelledby="dropdownMenuButton">
+                <li><a class="dropdown-item" href="#">Toys</a></li>
+                <li><a class="dropdown-item" href="#">Clothing</a></li>
+                <li><a class="dropdown-item" href="#">Books</a></li>
+              </ul>
+            </div>
+            <input type="search" class="form-control border-start-0 bg-light px-0" placeholder="Search products…"
+              aria-label="Search">
+            <button class="btn border bg-light" type="submit" id="btn-search">
+              <i class="bi bi-search"></i>
+            </button>
+          </div>
+        </form>
+
+        <!-- Support Box -->
+        <div class="pt-4 pb-2 text-white d-none d-md-block" style="background:#02b9ae; min-width:170px;">
+          <div class="ms-3 px-4 py-2 text-white rounded-pill shadow-sm"
+            style="border: 1px solid #ccdee6; min-width:170px;">
+            <div class="d-flex align-items-center small">
+              <i class="bi bi-telephone fs-5 me-2"></i>
+              <div class="lh-1">
+                <div class="text-lowercase" style="font-size:10px;">24/7 support:</div>
+                <strong>+91 234 786 8907</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mobile Search Toggle -->
+        <button class="btn border bg-light d-lg-none ms-auto me-2" type="button" data-bs-toggle="collapse"
+          data-bs-target="#mobileSearch">
+          <i class="bi bi-search"></i>
+        </button>
+
+        <!-- Mobile Menu Toggle -->
+        <button class="navbar-toggler d-lg-none border-0" type="button" data-bs-toggle="offcanvas"
+          data-bs-target="#mobileMenu">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Icons: wishlist / cart / account -->
+        <ul class="list-unstyled d-flex align-items-center ms-4 mb-0 gap-4">
+
+          <!-- Wishlist -->
+          <li class="position-relative">
+            <a href="#" class="text-dark fs-5"><i class="bi bi-heart fa-10px"></i></a>
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+              0
+            </span>
+          </li>
+
+          <!-- Cart -->
+          <li class="position-relative">
+            <a href="#" class="text-dark fs-5"><i class="bi bi-bag fa-10px"></i></a>
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+              0
+            </span>
+          </li>
+
+          <!-- Account -->
+          <li class="position-relative d-flex flex-column align-items-center">
+            <a href="#" class="text-dark fs-5"><i class="bi bi-person fs-3"></i></a>
+          </li>
+          <li>
+            <a href="#" class="d-flex flex-column align-items-center text-muted text-decoration-none d-none d-md-flex">
+              <small>Sign In<br><strong>Account</strong></small>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Search Collapse -->
+  <div class="collapse container-fluid d-lg-none" id="mobileSearch">
+    <form class="py-2">
+      <div class="input-group">
+        <input type="search" class="form-control" placeholder="Search products…">
+        <button class="btn btn-danger" type="submit">Search</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Navigation Strip -->
+  <div class="container-fluid mt-0 p-0 d-flex justify-content-between align-items-center">
+
+    <!-- LEFT: menu (Home → Offers) -->
+    <div class="nav-outline-shadow d-none d-lg-block w-100"
+      style="box-shadow: 0 4px 8px -2px rgba(0,0,0,.12); border-right: none !important;">
+      <ul class="nav mb-0 gap-3">
+        <li class="nav-item">
+          <a class="nav-link text-black fw-semibold me-2" href="#">Home</a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link text-black dropdown-toggle me-2" href="#" data-bs-toggle="dropdown">Shop By Age</a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#">0-2 Years</a></li>
+            <li><a class="dropdown-item" href="#">3-5 Years</a></li>
+          </ul>
+        </li>
+        <li class="nav-item dropdown d-flex align-items-center">
+          <a class="nav-link text-black dropdown-toggle me-2" href="#" data-bs-toggle="dropdown">Shop By Collection
+            <span class="badge bg-success ms-1 small">SALE</span></a>
+
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#">Toys</a></li>
+            <li><a class="dropdown-item" href="#">Books</a></li>
+          </ul>
+        </li>
+        <li class="nav-item dropdown d-flex align-items-center">
+          <a class="nav-link text-black dropdown-toggle me-2" href="#" data-bs-toggle="dropdown">New Arrivals <span
+              class="badge bg-danger ms-1 small">HOT</span></a>
+
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#">Latest Toys</a></li>
+          </ul>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link text-black dropdown-toggle me-2" href="#" data-bs-toggle="dropdown">Trending</a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#">Popular Now</a></li>
+          </ul>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link text-black dropdown-toggle me-2" href="#" data-bs-toggle="dropdown">Offers</a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#">Deals of the Day</a></li>
+          </ul>
+        </li>
+        <a href="#"
+          class="btn bg-danger bg-opacity-10 border text-danger fw-semibold d-flex align-items-center rounded-pill px-3">
+          <i class="bi bi-fire me-1"></i> Super Deals Product
+        </a>
+      </ul>
+    </div>
+
+
+
+    <!-- Mobile Menu Button -->
+    <button class="btn btn-outline-secondary d-lg-none ms-auto me-3" type="button" data-bs-toggle="offcanvas"
+      data-bs-target="#mobileMenu">
+      <i class="bi bi-list"></i> Menu
+    </button>
+  </div>
+
+  <!-- Mobile Menu Offcanvas -->
+  <div class="offcanvas offcanvas-start" tabindex="-1" id="mobileMenu" aria-labelledby="mobileMenuLabel">
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title" id="mobileMenuLabel">Menu</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+      <ul class="nav flex-column">
+        <li class="nav-item">
+          <a class="nav-link text-black fw-semibold" href="#">Home</a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link text-black dropdown-toggle" href="#" data-bs-toggle="dropdown">Shop By Age</a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#">0-2 Years</a></li>
+            <li><a class="dropdown-item" href="#">3-5 Years</a></li>
+          </ul>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link text-black dropdown-toggle" href="#" data-bs-toggle="dropdown">Shop By Collection <span
+              class="badge bg-success ms-1 small">SALE</span></a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#">Toys</a></li>
+            <li><a class="dropdown-item" href="#">Books</a></li>
+          </ul>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link text-black dropdown-toggle" href="#" data-bs-toggle="dropdown">New Arrivals <span
+              class="badge bg-danger ms-1 small">HOT</span></a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#">Latest Toys</a></li>
+          </ul>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link text-black dropdown-toggle" href="#" data-bs-toggle="dropdown">Trending</a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#">Popular Now</a></li>
+          </ul>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link text-black dropdown-toggle" href="#" data-bs-toggle="dropdown">Offers</a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#">Deals of the Day</a></li>
+          </ul>
+        </li>
+        <li class="nav-item mt-3">
+          <a href="#"
+            class="btn bg-danger bg-opacity-10 border text-danger fw-semibold d-flex align-items-center rounded-pill px-3">
+            <i class="bi bi-fire me-1"></i> Super Deals Product
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div id="bannerCarousel" class="carousel slide" data-bs-ride="carousel">
+    <div class="carousel-inner">
+
+      <!-- Slide 1 -->
+      <div class="carousel-item active">
+        <div class="container-fluid">
+          <div class="row align-items-center">
+            <div class="col-lg-6 text-center text-lg-start mb-4 mb-lg-0">
+              <img src="image/h4banner_1.png" alt="Banner 1" class="banner-img">
+            </div>
+            <div class="col-lg-6 text-center text-lg-start banner-text">
+              <p class="text-danger fw-bold">THE CREATIVE WORLD</p>
+              <h1>Girls Party Dresses<br>White Lace Dress<br>Bohemian Dress</h1>
+              <a href="#" class="btn shop-btn mt-3 px-4 py-2">SHOP NOW</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 2 -->
+      <div class="carousel-item">
+        <div class="container-fluid">
+          <div class="row align-items-center">
+            <div class="col-lg-6 text-center text-lg-start mb-4 mb-lg-0">
+              <img src="image/h2banner_1.png" alt="Banner 2" class="banner-img">
+            </div>
+            <div class="col-lg-6 text-center text-lg-start banner-text">
+              <p class="text-danger fw-bold">NEW COLLECTION</p>
+              <h1>Stylish Kids Wear<br>For Every Occasion</h1>
+              <a href="#" class="btn shop-btn mt-3 px-4 py-2">SHOP NOW</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 3 -->
+      <div class="carousel-item">
+        <div class="container-fluid">
+          <div class="row align-items-center">
+            <div class="col-lg-6 text-center text-lg-start mb-4 mb-lg-0">
+              <img src="image/h4banner_1.png" alt="Banner 3" class="banner-img">
+            </div>
+            <div class="col-lg-6 text-center text-lg-start banner-text">
+              <p class="text-danger fw-bold">SUMMER SALE</p>
+              <h1>Flat 30% Off<br>On All Dresses</h1>
+              <a href="#" class="btn shop-btn mt-3 px-4 py-2">SHOP NOW</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Controls -->
+    <button class="carousel-control-prev" type="button" data-bs-target="#bannerCarousel" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#bannerCarousel" data-bs-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    </button>
+  </div>
+
+  <!-- Section wrapper -->
+  <div class="category-section1 mt-5">
+    <div class="container text-center mb-4">
+      <h2 class="fw-bold">Shop By Categories</h2>
+      <p class="text-muted">Lorem ipsum dolor sit amet consectetur. Id fames there are many vulputate eget dolor.</p>
+    </div>
+
+    <div class="container category-section">
+      <div class="row justify-content-center g-4">
+
+        <!-- Category 1 -->
+        <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+          <div class="category-item">
+            <img src="image/cat2_02.png" alt="Stylish Frok" class="category-img">
+            <div class="category-title">Stylish Frok</div>
+          </div>
+        </div>
+
+        <!-- Category 2 -->
+        <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+          <div class="category-item">
+            <img src="image/cat2_03.png" alt="Kids Books" class="category-img">
+            <div class="category-title">Kids Books</div>
+          </div>
+        </div>
+
+        <!-- Category 3 -->
+        <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+          <div class="category-item">
+            <img src="image/cat2_04.png" alt="Stylish Hoodie" class="category-img">
+            <div class="category-title">Stylish Hoodie</div>
+          </div>
+        </div>
+
+        <!-- Category 4 -->
+        <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+          <div class="category-item">
+            <img src="image/cat2_05.png" alt="Dolls" class="category-img">
+            <div class="category-title">Dolls</div>
+          </div>
+        </div>
+
+        <!-- Category 5 -->
+        <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+          <div class="category-item">
+            <img src="image/cat2_02.png" alt="Educational Toy" class="category-img">
+            <div class="category-title">Educational Toy</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
+  <div class="container my-5">
+    <h2 class="text-center fw-bold mb-4">New Arrivals</h2>
+
+    <div class="owl-carousel owl-theme">
+      <!-- Product Card 1 -->
+      <div class="item">
+        <div class="card border-0 shadow-sm text-center">
+          <span class="badge bg-pink text-white position-absolute" style="top:10px; left:10px;">-5%</span>
+          <img src="image/02-15-460x460.jpg" class="card-img-top" alt="Product 1">
+          <div class="card-body">
+            <p class="countdown">498d : 13h : 56m : 00s</p>
+            <h6 class="card-title">Batman Lace Running Shoes</h6>
+            <div class="text-warning">★★★★☆</div>
+            <p><del>$40</del> <span class="fw-bold text-danger">$38</span></p>
+            <button class="btn btn-outline-dark btn-sm">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product Card 2 -->
+      <div class="item">
+        <div class="card border-0 shadow-sm text-center">
+          <span class="badge bg-pink text-white position-absolute" style="top:10px; left:10px;">-10%</span>
+          <img src="image/cat-01.jpg" class="card-img-top" alt="Product 2">
+          <div class="card-body">
+            <p class="countdown">234d : 08h : 26m : 00s</p>
+            <h6 class="card-title">Cuddles - Super Pants Diaper</h6>
+            <div class="text-warning">★★★★☆</div>
+            <p><del>$20</del> <span class="fw-bold text-danger">$18</span></p>
+            <button class="btn btn-outline-dark btn-sm">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product Card 3 -->
+      <div class="item">
+        <div class="card border-0 shadow-sm text-center">
+          <img src="image/cat-02.jpg" class="card-img-top" alt="Product 3">
+          <div class="card-body">
+            <p class="countdown">143d : 10h : 12m : 00s</p>
+            <h6 class="card-title">Stuffed Elephant Toy</h6>
+            <div class="text-warning">★★★★☆</div>
+            <p class="text-danger fw-bold">$15</p>
+            <button class="btn btn-outline-dark btn-sm">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product Card 4 -->
+      <div class="item">
+        <div class="card border-0 shadow-sm text-center">
+          <span class="badge bg-pink text-white position-absolute" style="top:10px; left:10px;">-8%</span>
+          <img src="image/cat-04.jpg" class="card-img-top" alt="Product 4">
+          <div class="card-body">
+            <p class="countdown">522d : 13h : 56m : 00s</p>
+            <h6 class="card-title">Dance & Groove Rockit</h6>
+            <div class="text-warning">★★★★☆</div>
+            <p><del>$24</del> <span class="fw-bold text-danger">$22</span></p>
+            <button class="btn btn-outline-dark btn-sm">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="text-center mt-4">
+      <a href="#" class="btn btn-warning btn-sm fw-bold">VIEW ALL</a>
+    </div>
+  </div>
+
+  <!-- next section -->
+  <div class="container my-5">
+    <div
+      class="bg-primary text-white rounded-4 d-flex flex-column flex-md-row justify-content-between align-items-center"
+      style="background: #002CC7 !important;">
+
+      <!-- Left Text Section -->
+      <div class="mb-4 mb-md-0 p-4">
+        <h2 class="fw-bold mb-3">Get 25% discount in all kind of</h2>
+        <h3 class="fw-semibold">super hero theme</h3>
+        <a href="#" class="btn btn-warning text-white fw-bold mt-4 px-4 py-2 rounded-pill">
+          See Collection →
+        </a>
+      </div>
+
+      <!-- Right Image Section -->
+      <div class="d-flex align-items-center gap-4 flex-wrap justify-content-center">
+
+        <img src="image/cta_03.png" class="img-fluid" style="max-height: 250px;" alt="Toys">
+      </div>
+
+    </div>
+  </div>
+
+  <!-- next section new one -->
+  <div class="container my-5">
+    <h2 class="text-center fw-bold mb-4">Browsing Our Trending Items</h2>
+
+    <div class="hero-carousel owl-carousel owl-theme">
+      <!-- Product 1 -->
+      <div class="item">
+        <div class="card border-0 shadow-sm text-center">
+          <span class="badge bg-danger text-white position-absolute" style="top:10px; left:10px;">-5%</span>
+          <img src="image/02-15-460x460.jpg" class="card-img-top" alt="Product 1">
+          <div class="card-body">
+            <h6 class="card-title">Marvel Hero Sneakers</h6>
+            <div class="text-warning">★★★★☆</div>
+            <p><del>$40</del> <span class="fw-bold text-danger">$38</span></p>
+            <button class="btn btn-outline-dark btn-sm">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product 2 -->
+      <div class="item">
+        <div class="card border-0 shadow-sm text-center">
+          <span class="badge bg-danger text-white position-absolute" style="top:10px; left:10px;">-10%</span>
+          <img src="image/cat-01.jpg" class="card-img-top" alt="Product 2">
+          <div class="card-body">
+            <h6 class="card-title">Cuddles Baby Diapers</h6>
+            <div class="text-warning">★★★★☆</div>
+            <p><del>$20</del> <span class="fw-bold text-danger">$18</span></p>
+            <button class="btn btn-outline-dark btn-sm">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product 3 -->
+      <div class="item">
+        <div class="card border-0 shadow-sm text-center">
+          <img src="image/cat-02.jpg" class="card-img-top" alt="Product 3">
+          <div class="card-body">
+            <h6 class="card-title">Elephant Plush Toy</h6>
+            <div class="text-warning">★★★★☆</div>
+            <p class="text-danger fw-bold">$15</p>
+            <button class="btn btn-outline-dark btn-sm">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product 4 -->
+      <div class="item">
+        <div class="card border-0 shadow-sm text-center">
+          <span class="badge bg-danger text-white position-absolute" style="top:10px; left:10px;">-8%</span>
+          <img src="image/cat-04.jpg" class="card-img-top" alt="Product 4">
+          <div class="card-body">
+            <h6 class="card-title">Groove & Dance Bot</h6>
+            <div class="text-warning">★★★★☆</div>
+            <p><del>$24</del> <span class="fw-bold text-danger">$22</span></p>
+            <button class="btn btn-outline-dark btn-sm">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+  </div>
+
+  <!-- shop by age  -->
+  <section class="pb-5 text-center">
+    <div class="container">
+      <h2 class="fw-bold">Shop by Age</h2>
+      <p class="text-muted mb-5">
+        Lorem ipsum dolor sit amet consectetur. Id fames there <br class="d-none d-md-block">
+        are many vulputate eget dolor.
+      </p>
+
+      <div class="row justify-content-center g-4">
+        <!-- Age Group Blocks -->
+        <!-- Repeat this block for each age group -->
+        <div class="col-6 col-sm-4 col-md-2">
+          <div class="mx-auto rounded-circle d-flex align-items-center justify-content-center bg-info bg-opacity-25"
+            style="width: 140px; height: 140px;">
+            <img src="image/child_01.png" class="rounded-circle img-fluid"
+              style="width: 100px; height: 100px; object-fit: cover;" alt="0-3 years">
+          </div>
+          <p class="fw-bold mt-2">0–3 years</p>
+        </div>
+
+        <div class="col-6 col-sm-4 col-md-2">
+          <div class="mx-auto rounded-circle d-flex align-items-center justify-content-center bg-pink bg-opacity-25"
+            style="width: 140px; height: 140px;">
+            <img src="image/child_02.png" class="rounded-circle img-fluid"
+              style="width: 100px; height: 100px; object-fit: cover;" alt="4-5 years">
+          </div>
+          <p class="fw-bold mt-2">4–5 years</p>
+        </div>
+
+        <div class="col-6 col-sm-4 col-md-2">
+          <div class="mx-auto rounded-circle d-flex align-items-center justify-content-center bg-success bg-opacity-25"
+            style="width: 140px; height: 140px;">
+            <img src="image/child_04.png" class="rounded-circle img-fluid"
+              style="width: 100px; height: 100px; object-fit: cover;" alt="6-7 years">
+          </div>
+          <p class="fw-bold mt-2">6–7 years</p>
+        </div>
+
+        <div class="col-6 col-sm-4 col-md-2">
+          <div class="mx-auto rounded-circle d-flex align-items-center justify-content-center bg-danger bg-opacity-25"
+            style="width: 140px; height: 140px;">
+            <img src="image/child_05.png" class="rounded-circle img-fluid"
+              style="width: 100px; height: 100px; object-fit: cover;" alt="8-9 years">
+          </div>
+          <p class="fw-bold mt-2">8–9 years</p>
+        </div>
+
+        <div class="col-6 col-sm-4 col-md-2">
+          <div class="mx-auto rounded-circle d-flex align-items-center justify-content-center bg-primary bg-opacity-25"
+            style="width: 140px; height: 140px;">
+            <img src="image/child_06.png" class="rounded-circle img-fluid"
+              style="width: 100px; height: 100px; object-fit: cover;" alt="10-11 years">
+          </div>
+          <p class="fw-bold mt-2">10–11 years</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- next section  -->
+  <div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2 class="fw-bold">Deal of The Day</h2>
+      <a href="#" class="btn btn-success">Explore all →</a>
+    </div>
+
+    <div class="row g-4">
+      <!-- Horizontal Card 1 -->
+      <div class="col-6">
+        <div class="deal-card d-flex flex-column flex-md-row position-relative p-3">
+          <span class="discount-badge">-24%</span>
+          <div class="flex-shrink-0 me-md-4 text-center img-card">
+            <img src="image/product_13.png" alt="Product Image" class="product-img img-fluid">
+            <div class="timer-box mt-3">220 : 05 : 03 : 15</div>
+          </div>
+          <div class="flex-grow-1 mt-3 mt-md-0">
+            <p class="text-muted small mb-1">Vehicles Toys</p>
+            <h5 class="fw-bold">Culinary Creations: Where Mini Chefs Cook Up Dreams!</h5>
+
+            <div class="d-flex align-items-center mb-2">
+              <span class="text-warning me-2">★★★★★</span>
+              <small class="text-muted">(5.00)</small>
+            </div>
+            <div class="mb-3">
+              <span class="text-success fw-bold fs-5 me-2">$32.00</span>
+              <span class="text-decoration-line-through text-muted">$42.00</span>
+            </div>
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+              <button class="btn btn-success">
+                <i class="bi bi-cart me-1"></i> Add To Cart
+              </button>
+              <button class="btn btn-outline-danger icon-btn d-flex align-items-center justify-content-center"><i
+                  class="bi bi-heart"></i></button>
+              <button class="btn btn-outline-warning icon-btn d-flex align-items-center justify-content-center"><i
+                  class="bi bi-arrow-repeat"></i></button>
+              <button class="btn btn-outline-success icon-btn d-flex align-items-center justify-content-center"><i
+                  class="bi bi-eye"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Horizontal Card 2 -->
+      <div class="col-6">
+        <div class="deal-card d-flex flex-column flex-md-row position-relative p-3">
+          <span class="discount-badge">-23%</span>
+          <div class="flex-shrink-0 me-md-4 text-center img-card">
+            <img src="image/product_12.png" alt="Product Image" class="product-img img-fluid">
+            <div class="timer-box mt-3">220 : 05 : 03 : 15</div>
+          </div>
+          <div class="flex-grow-1 mt-3 mt-md-0">
+            <p class="text-muted small mb-1">Outdoor Toy</p>
+            <h5 class="fw-bold">Harbor: Where Young Musicians Find Melody!</h5>
+
+            <div class="d-flex align-items-center mb-2">
+              <span class="text-warning me-2">★★★★★</span>
+              <small class="text-muted">(5.00)</small>
+            </div>
+            <div class="mb-3">
+              <span class="text-success fw-bold fs-6 me-2">$33.00</span>
+              <span class="text-decoration-line-through text-muted small">$43.00</span>
+            </div>
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+              <button class="btn btn-success">
+                <i class="bi bi-cart me-1"></i> Add To Cart
+              </button>
+              <button class="btn btn-outline-danger icon-btn d-flex align-items-center justify-content-center"><i
+                  class="bi bi-heart"></i></button>
+              <button class="btn btn-outline-warning icon-btn d-flex align-items-center justify-content-center"><i
+                  class="bi bi-arrow-repeat"></i></button>
+              <button class="btn btn-outline-success icon-btn d-flex align-items-center justify-content-center"><i
+                  class="bi bi-eye"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <!-- next section  -->
+  <div class="container">
+    <div class="row py-5 trending g-4">
+      <div class="col-lg-9">
+        <!-- Nav tabs -->
+        <div class="d-flex justify-content-between">
+          <h2 class="fw-bold">Trending Toy</h2>
+          <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button"
+                role="tab" aria-controls="home" aria-selected="true">
+                All Items (4)
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button"
+                role="tab" aria-controls="profile" aria-selected="false">
+                Indoor Play (6)
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="messages-tab" data-bs-toggle="tab" data-bs-target="#messages" type="button"
+                role="tab" aria-controls="messages" aria-selected="false">
+                Kids books (8)
+              </button>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Tab panes -->
+        <div class="tab-content" id="leftContent">
+          <div class="tab-pane active" id="home" role="tabpanel" aria-labelledby="home-tab">
+            <div class="row g-4">
+              <!-- Horizontal Card 1 -->
+              <div class="col-6">
+                <div class="deal-card d-flex flex-column flex-lg-row p-3">
+                  <div class="flex-shrink-0 me-lg-4 text-center img-card position-relative">
+                    <img src="image/product_13.png" alt="Product Image" class="product-img img-fluid">
+                    <span class="heart-badge">
+                      <i class="fa-regular fa-heart"></i>
+                    </span>
+                  </div>
+                  <div class="flex-grow-1 mt-3 mt-md-0">
+                    <div class="d-flex align-items-center mb-2">
+                      <span class="text-warning me-2">★★★★★</span>
+                      <small class="text-muted">(5.00)</small>
+                    </div>
+                    <h6 class="fw-bold">Culinary Creations: Where Mini Chefs Cook Up Dreams!
+                    </h6>
+                    <div class="d-flex justify-content-between mt-4 flex-wrap">
+                      <div class="mb-3">
+                        <span class="text-success fw-bold fs-6 me-2">$33.00</span>
+                        <span class="text-decoration-line-through text-muted small">$43.00</span>
+                      </div>
+                      <div class="d-flex align-items-center gap-2 flex-wrap">
+                        <button class="btn btn-success">
+                          <i class="bi bi-cart me-1"></i> Add To Cart
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Horizontal Card 2 -->
+              <div class="col-6">
+                <div class="deal-card d-flex flex-column flex-lg-row p-3">
+                  <div class="flex-shrink-0 me-lg-4 text-center img-card position-relative">
+                    <img src="image/product_12.png" alt="Product Image" class="product-img img-fluid">
+                    <span class="heart-badge">
+                      <i class="fa-regular fa-heart"></i>
+                    </span>
+                  </div>
+                  <div class="flex-grow-1 mt-3 mt-md-0">
+                    <div class="d-flex align-items-center mb-2">
+                      <span class="text-warning me-2">★★★★★</span>
+                      <small class="text-muted">(5.00)</small>
+                    </div>
+                    <h6 class="fw-bold">Harbor: Where Young Musicians Find Melody!</h6>
+                    <div class="d-flex justify-content-between mt-4 flex-wrap">
+                      <div class="mb-3">
+                        <span class="text-success fw-bold fs-6 me-2">$33.00</span>
+                        <span class="text-decoration-line-through text-muted small">$43.00</span>
+                      </div>
+                      <div class="d-flex align-items-center gap-2 flex-wrap">
+                        <button class="btn btn-success">
+                          <i class="bi bi-cart me-1"></i> Add To Cart
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- Horizontal Card 3 -->
+              <div class="col-6">
+                <div class="deal-card d-flex flex-column flex-lg-row p-3">
+                  <div class="flex-shrink-0 me-lg-4 text-center img-card position-relative">
+                    <img src="image/product_13.png" alt="Product Image" class="product-img img-fluid">
+                    <span class="heart-badge">
+                      <i class="fa-regular fa-heart"></i>
+                    </span>
+                  </div>
+                  <div class="flex-grow-1 mt-3 mt-md-0">
+                    <div class="d-flex align-items-center mb-2">
+                      <span class="text-warning me-2">★★★★★</span>
+                      <small class="text-muted">(5.00)</small>
+                    </div>
+                    <h6 class="fw-bold">Culinary Creations: Where Mini Chefs Cook Up Dreams!
+                    </h6>
+                    <div class="d-flex justify-content-between mt-4 flex-wrap">
+                      <div class="mb-3">
+                        <span class="text-success fw-bold fs-6 me-2">$33.00</span>
+                        <span class="text-decoration-line-through text-muted small">$43.00</span>
+                      </div>
+                      <div class="d-flex align-items-center gap-2 flex-wrap">
+                        <button class="btn btn-success">
+                          <i class="bi bi-cart me-1"></i> Add To Cart
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Horizontal Card 4 -->
+              <div class="col-6">
+                <div class="deal-card d-flex flex-column flex-lg-row p-3">
+                  <div class="flex-shrink-0 me-lg-4 text-center img-card position-relative">
+                    <img src="image/product_12.png" alt="Product Image" class="product-img img-fluid">
+                    <span class="heart-badge">
+                      <i class="fa-regular fa-heart"></i>
+                    </span>
+                  </div>
+                  <div class="flex-grow-1 mt-3 mt-md-0">
+                    <div class="d-flex align-items-center mb-2">
+                      <span class="text-warning me-2">★★★★★</span>
+                      <small class="text-muted">(5.00)</small>
+                    </div>
+                    <h6 class="fw-bold">Harbor: Where Young Musicians Find Melody!</h6>
+                    <div class="d-flex justify-content-between mt-4 flex-wrap">
+                      <div class="mb-3">
+                        <span class="text-success fw-bold fs-6 me-2">$33.00</span>
+                        <span class="text-decoration-line-through text-muted small">$43.00</span>
+                      </div>
+                      <div class="d-flex align-items-center gap-2 flex-wrap">
+                        <button class="btn btn-success">
+                          <i class="bi bi-cart me-1"></i> Add To Cart
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+          <div class="tab-pane" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+            <div class="row g-4">
+              <!-- Horizontal Card 1 -->
+              <div class="col-6">
+                <div class="deal-card d-flex flex-column flex-lg-row p-3">
+                  <div class="flex-shrink-0 me-lg-4 text-center img-card position-relative">
+                    <img src="image/product_12.png" alt="Product Image" class="product-img img-fluid">
+                    <span class="heart-badge">
+                      <i class="fa-regular fa-heart"></i>
+                    </span>
+                  </div>
+                  <div class="flex-grow-1 mt-3 mt-md-0">
+                    <div class="d-flex align-items-center mb-2">
+                      <span class="text-warning me-2">★★★★★</span>
+                      <small class="text-muted">(5.00)</small>
+                    </div>
+                    <h6 class="fw-bold">Culinary Creations: Where Mini Chefs Cook Up Dreams!
+                    </h6>
+                    <div class="d-flex justify-content-between mt-4 flex-wrap">
+                      <div class="mb-3">
+                        <span class="text-success fw-bold fs-6 me-2">$33.00</span>
+                        <span class="text-decoration-line-through text-muted small">$43.00</span>
+                      </div>
+                      <div class="d-flex align-items-center gap-2 flex-wrap">
+                        <button class="btn btn-success">
+                          <i class="bi bi-cart me-1"></i> Add To Cart
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Horizontal Card 2 -->
+              <div class="col-6">
+                <div class="deal-card d-flex flex-column flex-lg-row p-3">
+                  <div class="flex-shrink-0 me-lg-4 text-center img-card position-relative">
+                    <img src="image/product_13.png" alt="Product Image" class="product-img img-fluid">
+                    <span class="heart-badge">
+                      <i class="fa-regular fa-heart"></i>
+                    </span>
+                  </div>
+                  <div class="flex-grow-1 mt-3 mt-md-0">
+                    <div class="d-flex align-items-center mb-2">
+                      <span class="text-warning me-2">★★★★★</span>
+                      <small class="text-muted">(5.00)</small>
+                    </div>
+                    <h6 class="fw-bold">Harbor: Where Young Musicians Find Melody!</h6>
+                    <div class="d-flex justify-content-between mt-4 flex-wrap">
+                      <div class="mb-3">
+                        <span class="text-success fw-bold fs-6 me-2">$33.00</span>
+                        <span class="text-decoration-line-through text-muted small">$43.00</span>
+                      </div>
+                      <div class="d-flex align-items-center gap-2 flex-wrap">
+                        <button class="btn btn-success">
+                          <i class="bi bi-cart me-1"></i> Add To Cart
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- Horizontal Card 3 -->
+              <div class="col-6">
+                <div class="deal-card d-flex flex-column flex-lg-row p-3">
+                  <div class="flex-shrink-0 me-lg-4 text-center img-card position-relative">
+                    <img src="image/product_12.png" alt="Product Image" class="product-img img-fluid">
+                    <span class="heart-badge">
+                      <i class="fa-regular fa-heart"></i>
+                    </span>
+                  </div>
+                  <div class="flex-grow-1 mt-3 mt-md-0">
+                    <div class="d-flex align-items-center mb-2">
+                      <span class="text-warning me-2">★★★★★</span>
+                      <small class="text-muted">(5.00)</small>
+                    </div>
+                    <h6 class="fw-bold">Culinary Creations: Where Mini Chefs Cook Up Dreams!
+                    </h6>
+                    <div class="d-flex justify-content-between mt-4 flex-wrap">
+                      <div class="mb-3">
+                        <span class="text-success fw-bold fs-6 me-2">$33.00</span>
+                        <span class="text-decoration-line-through text-muted small">$43.00</span>
+                      </div>
+                      <div class="d-flex align-items-center gap-2 flex-wrap">
+                        <button class="btn btn-success">
+                          <i class="bi bi-cart me-1"></i> Add To Cart
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Horizontal Card 4 -->
+              <div class="col-6">
+                <div class="deal-card d-flex flex-column flex-lg-row p-3">
+                  <div class="flex-shrink-0 me-lg-4 text-center img-card position-relative">
+                    <img src="image/product_13.png" alt="Product Image" class="product-img img-fluid">
+                    <span class="heart-badge">
+                      <i class="fa-regular fa-heart"></i>
+                    </span>
+                  </div>
+                  <div class="flex-grow-1 mt-3 mt-md-0">
+                    <div class="d-flex align-items-center mb-2">
+                      <span class="text-warning me-2">★★★★★</span>
+                      <small class="text-muted">(5.00)</small>
+                    </div>
+                    <h6 class="fw-bold">Harbor: Where Young Musicians Find Melody!</h6>
+                    <div class="d-flex justify-content-between mt-4 flex-wrap">
+                      <div class="mb-3">
+                        <span class="text-success fw-bold fs-6 me-2">$33.00</span>
+                        <span class="text-decoration-line-through text-muted small">$43.00</span>
+                      </div>
+                      <div class="d-flex align-items-center gap-2 flex-wrap">
+                        <button class="btn btn-success">
+                          <i class="bi bi-cart me-1"></i> Add To Cart
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+          <div class="tab-pane" id="messages" role="tabpanel" aria-labelledby="messages-tab">
+            <div class="row g-4">
+              <!-- Horizontal Card 1 -->
+              <div class="col-6">
+                <div class="deal-card d-flex flex-column flex-lg-row p-3">
+                  <div class="flex-shrink-0 me-lg-4 text-center img-card position-relative">
+                    <img src="image/product_13.png" alt="Product Image" class="product-img img-fluid">
+                    <span class="heart-badge">
+                      <i class="fa-regular fa-heart"></i>
+                    </span>
+                  </div>
+                  <div class="flex-grow-1 mt-3 mt-md-0">
+                    <div class="d-flex align-items-center mb-2">
+                      <span class="text-warning me-2">★★★★★</span>
+                      <small class="text-muted">(5.00)</small>
+                    </div>
+                    <h6 class="fw-bold">Culinary Creations: Where Mini Chefs Cook Up Dreams!
+                    </h6>
+                    <div class="d-flex justify-content-between mt-4 flex-wrap">
+                      <div class="mb-3">
+                        <span class="text-success fw-bold fs-6 me-2">$33.00</span>
+                        <span class="text-decoration-line-through text-muted small">$43.00</span>
+                      </div>
+                      <div class="d-flex align-items-center gap-2 flex-wrap">
+                        <button class="btn btn-success">
+                          <i class="bi bi-cart me-1"></i> Add To Cart
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Horizontal Card 2 -->
+              <div class="col-6">
+                <div class="deal-card d-flex flex-column flex-lg-row p-3">
+                  <div class="flex-shrink-0 me-lg-4 text-center img-card position-relative">
+                    <img src="image/product_12.png" alt="Product Image" class="product-img img-fluid">
+                    <span class="heart-badge">
+                      <i class="fa-regular fa-heart"></i>
+                    </span>
+                  </div>
+                  <div class="flex-grow-1 mt-3 mt-md-0">
+                    <div class="d-flex align-items-center mb-2">
+                      <span class="text-warning me-2">★★★★★</span>
+                      <small class="text-muted">(5.00)</small>
+                    </div>
+                    <h6 class="fw-bold">Harbor: Where Young Musicians Find Melody!</h6>
+                    <div class="d-flex justify-content-between mt-4 flex-wrap">
+                      <div class="mb-3">
+                        <span class="text-success fw-bold fs-6 me-2">$33.00</span>
+                        <span class="text-decoration-line-through text-muted small">$43.00</span>
+                      </div>
+                      <div class="d-flex align-items-center gap-2 flex-wrap">
+                        <button class="btn btn-success">
+                          <i class="bi bi-cart me-1"></i> Add To Cart
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- Horizontal Card 3 -->
+              <div class="col-6">
+                <div class="deal-card d-flex flex-column flex-lg-row p-3">
+                  <div class="flex-shrink-0 me-lg-4 text-center img-card position-relative">
+                    <img src="image/product_12.png" alt="Product Image" class="product-img img-fluid">
+                    <span class="heart-badge">
+                      <i class="fa-regular fa-heart"></i>
+                    </span>
+                  </div>
+                  <div class="flex-grow-1 mt-3 mt-md-0">
+                    <div class="d-flex align-items-center mb-2">
+                      <span class="text-warning me-2">★★★★★</span>
+                      <small class="text-muted">(5.00)</small>
+                    </div>
+                    <h6 class="fw-bold">Culinary Creations: Where Mini Chefs Cook Up Dreams!
+                    </h6>
+                    <div class="d-flex justify-content-between mt-4 flex-wrap">
+                      <div class="mb-3">
+                        <span class="text-success fw-bold fs-6 me-2">$33.00</span>
+                        <span class="text-decoration-line-through text-muted small">$43.00</span>
+                      </div>
+                      <div class="d-flex align-items-center gap-2 flex-wrap">
+                        <button class="btn btn-success">
+                          <i class="bi bi-cart me-1"></i> Add To Cart
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Horizontal Card 4 -->
+              <div class="col-6">
+                <div class="deal-card d-flex flex-column flex-lg-row p-3">
+                  <div class="flex-shrink-0 me-lg-4 text-center img-card position-relative">
+                    <img src="image/product_10-484x373.png" alt="Product Image" class="product-img img-fluid">
+                    <span class="heart-badge">
+                      <i class="fa-regular fa-heart"></i>
+                    </span>
+                  </div>
+                  <div class="flex-grow-1 mt-3 mt-md-0">
+                    <div class="d-flex align-items-center mb-2">
+                      <span class="text-warning me-2">★★★★★</span>
+                      <small class="text-muted">(5.00)</small>
+                    </div>
+                    <h6 class="fw-bold">Harbor: Where Young Musicians Find Melody!</h6>
+                    <div class="d-flex justify-content-between mt-4 flex-wrap">
+                      <div class="mb-3">
+                        <span class="text-success fw-bold fs-6 me-2">$33.00</span>
+                        <span class="text-decoration-line-through text-muted small">$43.00</span>
+                      </div>
+                      <div class="d-flex align-items-center gap-2 flex-wrap">
+                        <button class="btn btn-success">
+                          <i class="bi bi-cart me-1"></i> Add To Cart
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="col-lg-3">
+        <div class="d-flex flex-column gap-3 overflow-auto banner-side" id="rightContent">
+          <div class="toy-card border-0 p-4">
+            <div class="content">
+              <div>
+                <h2>Unique & Awesome Toy Collection</h2>
+                <p class="offer-text">15% Off on Kids' Toys and Gifts!</p>
+              </div>
+
+              <div>
+                <a href="#" class="cta-button">
+                  See Collection
+                  <span>→</span>
+                </a>
+              </div>
+              <img class="card-img" src="image/product_08-300x300.png" alt="product">
+            </div>
+          </div>
+
+          <div class="toy-card border-0 p-4">
+            <div class="content">
+              <div>
+                <h2>Unique & Awesome Toy Collection</h2>
+                <p class="offer-text">15% Off on Kids' Toys and Gifts!</p>
+              </div>
+
+              <div>
+                <a href="#" class="cta-button">
+                  See Collection
+                  <span>→</span>
+                </a>
+              </div>
+              <img class="card-img" src="image/product_08-300x300.png" alt="product">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- next section accodian  -->
+  <div class="container pb-5">
+    <div class="row g-4">
+
+      <div class="col-md-6 col-lg-3">
+        <div class="feature-card bg-light-orange">
+          <div class="icon-badge bg-orange">
+            <i class="fas fa-undo-alt"></i>
+          </div>
+          <div>
+            <h5 class="fw-bold mb-1">Money Return</h5>
+            <p class="mb-0 text-muted">Back guarantee under 7 days.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-lg-3">
+        <div class="feature-card bg-light-blue">
+          <div class="icon-badge bg-blue">
+            <i class="fas fa-percent"></i>
+          </div>
+          <div>
+            <h5 class="fw-bold mb-1">Member Discount</h5>
+            <p class="mb-0 text-muted">On every order over $2000</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-lg-3">
+        <div class="feature-card bg-light-teal">
+          <div class="icon-badge bg-teal">
+            <i class="fas fa-truck"></i>
+          </div>
+          <div>
+            <h5 class="fw-bold mb-1">Home Delivery</h5>
+            <p class="mb-0 text-muted">Free delivery to your home</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-lg-3">
+        <div class="feature-card bg-light-red">
+          <div class="icon-badge bg-red">
+            <i class="fas fa-headset"></i>
+          </div>
+          <div>
+            <h5 class="fw-bold mb-1">24/7 Support</h5>
+            <p class="mb-0 text-muted">Dedicated support in 24hrs</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- next section  -->
+  <div class="container py-4">
+    <!--Top Bottom Row-->
+    <div class="row g-4">
+      <!-- Card 1 -->
+      <div class="col-md-4">
+        <div class="bg-primary text-white p-4 rounded-5 h-100 d-flex position-relative overflow-hidden">
+          <!-- Text and Button Section -->
+          <div class="d-flex flex-column justify-content-between pe-3" style="width: 60%; z-index: 2">
+            <div>
+              <h4 class="fw-bold mb-1">Learning Toys</h4>
+              <h4 class="fw-bold">For kids</h4>
+              <p class="mt-2">Discover Amazing Offers!</p>
+            </div>
+            <a href="#" class="btn btn-light rounded-pill fw-semibold align-self-start">
+              See Collection <i class="bi bi-arrow-right ms-1"></i>
+            </a>
+          </div>
+
+          <!-- Image Section -->
+          <div class="position-absolute" style="
+                right: 0;
+                top: 30px;
+                bottom: 30px;
+                width: 45%;
+                z-index: 1;
+                margin-right: -66px;
+              ">
+            <img src="./image/post-banner-1.png" alt="Learning Toy" class="h-100"
+              style="object-fit: contain; object-position: right center" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="col-md-4">
+        <div class="bg-info text-white p-4 rounded-5 h-100 d-flex position-relative overflow-hidden">
+          <!-- Text and Button Section -->
+          <div class="d-flex flex-column justify-content-between pe-3" style="width: 60%; z-index: 2">
+            <div>
+              <h4 class="fw-bold mb-1">Superhero</h4>
+              <h4 class="fw-bold">Collection 2023</h4>
+              <p class="mt-2">15% OFF on Kids' Toys and Gifts!</p>
+            </div>
+            <a href="#" class="btn btn-light rounded-pill fw-semibold align-self-start">
+              See Collection <i class="bi bi-arrow-right ms-1"></i>
+            </a>
+          </div>
+
+          <!-- Image Section -->
+          <div class="position-absolute" style="
+                right: 0;
+                top: 30px;
+                bottom: 30px;
+                width: 45%;
+                z-index: 1;
+                margin-right: -65px;
+              ">
+            <img src="./image/post-banner-2.png" alt="Superhero Toy" class="h-100"
+              style="object-fit: contain; object-position: right center" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="col-md-4">
+        <div class="bg-danger text-white p-4 rounded-4 h-100 d-flex position-relative overflow-hidden">
+          <!-- Text and Button Section -->
+          <div class="d-flex flex-column justify-content-between pe-3" style="width: 60%; z-index: 2">
+            <div>
+              <h4 class="fw-bold mb-1">Children Day</h4>
+              <h4 class="fw-bold">Collection 2023</h4>
+              <p class="mt-2">15% OFF on Kids' Toys and Gifts!</p>
+            </div>
+            <a href="#" class="btn btn-light rounded-pill fw-semibold align-self-start">
+              See Collection <i class="bi bi-arrow-right ms-1"></i>
+            </a>
+          </div>
+
+          <!-- Image Section -->
+          <div class="position-absolute" style="
+                right: 0;
+                top: 30px;
+                bottom: 30px;
+                width: 45%;
+                z-index: 1;
+                margin-right: -61px;
+              ">
+            <img src="./image/post-banner-3.png" alt="Children Day Toy" class="h-100"
+              style="object-fit: contain; object-position: right center" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- next section  -->
+  <footer class="bg-light pt-5">
+    <div class="container-fluid p-0">
+      <div class="container">
+        <div class="row text-start">
+          <!-- Column 1: Logo and Description -->
+          <div class="col-md-4 mb-4">
+            <img src="image/logo.webp" alt="Logo" class="mb-3" style="height: 60px" />
+            <p class="text-muted fw-medium">
+              Lorem ipsum dolor sit amet consectetur. Id fames there are many
+              vulputate eget dolor.
+            </p>
+            <p>
+              <i class="bi bi-geo-alt-fill me-2 text-success"></i>Delhi, India
+            </p>
+          </div>
+
+          <!-- Column 2: Shop Now -->
+          <div class="col-md-2 mb-4">
+            <h6 class="widgettitle fw-bold">Shop Now</h6>
+            <div class="border-start border-3 border-warning ps-2 mb-2"></div>
+            <ul class="list-unstyled text-muted fw-medium" style="line-height: 35px">
+              <li>Clotehs Collections</li>
+              <li>Toys Collections</li>
+              <li>New Arrivals</li>
+              <li>Best Collections</li>
+            </ul>
+          </div>
+
+          <!-- Column 3: Customer Support -->
+          <div class="col-md-3 mb-4">
+            <h6 class="widgettitle fw-bold">Customer Support</h6>
+            <div class="border-start border-3 border-warning ps-2 mb-2"></div>
+            <ul class="list-unstyled text-muted fw-medium" style="line-height: 35px">
+              <li>Contact Us</li>
+              <li>Store List</li>
+              <li>Returns & Exchanges</li>
+              <li>Refund and Returns</li>
+            </ul>
+          </div>
+
+          <!-- Column 4: Newsletter -->
+          <div class="col-md-3 mb-4">
+            <h6 class="widgettitle fw-bold">Subscribe Our NewsLetter</h6>
+            <div class="border-start border-3 border-warning ps-2 mb-4"></div>
+            <p class="text-muted">
+              With our newsletter, you'll never miss an important update.
+            </p>
+            <div class="input-group">
+              <span class="input-group-text bg-white border-end-0 rounded-start-pill">
+                <i class="bi bi-envelope"></i>
+              </span>
+              <input type="email" class="form-control border-start-0 border-end-0" placeholder="Email Address" />
+              <span class="input-group-text bg-white border-start-0 rounded-end-pill">
+                <button class="btn btn-warning text-white rounded-circle d-flex" type="button"
+                  style="height: 40px; width: 40px">
+                  <i class="bi bi-arrow-up-right"></i>
+                </button>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="position-relative" style="margin-top: 100px">
+        <img class="position-absolute z-2" src="./image/footer-doll-left.svg" alt="" style="left: 8%; bottom: -150px" />
+        <img class="position-absolute z-2" src="./image/footer-doll-right.svg" alt=""
+          style="right: 8%; bottom: -150px" />
+        <img class="position-absolute img-fluid top-0" src="./image/footer-bottom-shape-1.svg" alt="" />
+      </div>
+    </div>
+  </footer>
+
+  <!-- Bootstrap JavaScript -->
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"></script>
+  <!-- jQuery -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+
+  <!-- Owl Carousel JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+
+  <!-- Owl Init Script -->
+  <script>
+    $(document).ready(function () {
+      $(".owl-carousel").owlCarousel({
+        loop: true,
+        margin: 20,
+        nav: true,
+        dots: false,
+        autoplay: true,
+        autoplayTimeout: 5000,
+        responsive: {
+          0: { items: 1 },
+          576: { items: 2 },
+          768: { items: 3 },
+          992: { items: 4 }
+        }
+      });
+    });
+    function syncHeights() {
+      const left = document.getElementById('leftContent');
+      const right = document.getElementById('rightContent');
+      right.style.height = left.offsetHeight + 'px';
+    }
+
+    // Run on load
+    window.addEventListener('load', syncHeights);
+
+    // Optional: Run on window resize
+    window.addEventListener('resize', syncHeights);
+  </script>
+</body>
+
+</html>
