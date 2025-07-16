@@ -62,9 +62,10 @@
         <form class="flex-grow-1 px-0 mx-0 d-none d-lg-block">
           <div class="input-group w-100">
             <div class="dropdown">
-              <button class="btn border border-end-0 rounded-end-0 dropdown-toggle bg-light" id="dropdownMenuButton"
-                type="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <button class="btn border border-end-0 rounded-end-0 dropdown-toggle bg-light position-relative"
+                id="dropdownMenuButton" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                 All Categories
+                <span class="position-absolute vr"></span>
               </button>
               <ul class="dropdown-menu small" aria-labelledby="dropdownMenuButton">
                 <li><a class="dropdown-item" href="#">Toys</a></li>
@@ -72,7 +73,7 @@
                 <li><a class="dropdown-item" href="#">Books</a></li>
               </ul>
             </div>
-            <input type="search" class="form-control bg-light ps-2 ms-0 border-start" placeholder="Search products…"
+            <input type="search" class="form-control bg-light ps-2 ms-0 border-start-0" placeholder="Search products…"
               aria-label="Search">
             <button class="btn border bg-light" type="submit" id="btn-search">
               <i class="bi bi-search"></i>
@@ -112,7 +113,7 @@
           <!-- Wishlist -->
           <li class="position-relative">
             <a href="#" class="text-dark fs-5"><i class="bi bi-heart fa-10px"></i></a>
-            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-circle bg-danger">
               0
             </span>
           </li>
@@ -120,7 +121,7 @@
           <!-- Cart -->
           <li class="position-relative">
             <a href="#" class="text-dark fs-5"><i class="bi bi-bag fa-10px"></i></a>
-            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-circle bg-danger">
               0
             </span>
           </li>
@@ -155,7 +156,7 @@
     <!-- LEFT: menu (Home → Offers) -->
     <div class="nav-outline-shadow d-none d-lg-block w-100"
       style="box-shadow: 0 4px 8px -2px rgba(0,0,0,.12); border-right: none !important;">
-      <ul class="nav mb-0 gap-3">
+      <ul class="nav mb-0 gap-3 justify-content-center">
         <li class="nav-item">
           <a class="nav-link text-black fw-semibold me-2" href="#">Home</a>
         </li>

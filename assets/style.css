@@ -122,7 +122,7 @@
 
 .badge {
   font-size: 0.7rem;
-  padding: 5px 10px;
+  padding: 5px 7px;
 }
 
 .card-title {
@@ -480,4 +480,12 @@ button.btn.btn-success {
 
 .carousel-indicators [data-bs-target].active {
   background-color: #dc3545;
+}
+
+.vr {
+  width: 1px;
+  height: 60%;
+  background-color: #585858;
+  right: 0;
+  top: 20%;
 }
