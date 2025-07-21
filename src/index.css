@@ -1,0 +1,43 @@
+@import url("https://fonts.googleapis.com/css2?family=Baloo+2&display=swap");
+@import "tailwindcss";
+
+body {
+  font-family: "Baloo 2", sans-serif;
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+.marquee {
+  display: inline-block;
+  white-space: nowrap;
+  animation: marquee 15s linear infinite;
+}
+
+.marquee:hover {
+  animation-play-state: paused;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.hide-scrollbar {
+  -ms-overflow-style: none; 
+  scrollbar-width: none;  
+}
+
+.swiper-slide:not(.swiper-slide-active){
+  border-left: 4px solid white;
+}
+@media (min-width: 1024px) and (max-width: 1114px) {
+  #items {
+    display: none;
+  }
+}

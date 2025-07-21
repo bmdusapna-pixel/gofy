@@ -1,0 +1,211 @@
+import React, { useContext, useState } from "react";
+import { ArrowRight, Eye, Heart, RefreshCcw, ShoppingBasket, Star } from "lucide-react";
+import product_list from "../assets/product-list";
+import product_slide_1 from "../assets/product_slide_1.png";
+import product_slide_2 from "../assets/product_slide_2.png";
+import { Countdown } from "./AnimatedDropdown";
+import { CartContext } from "../Context/CartContext";
+import { Link } from "react-router-dom";
+
+const trending_deals = [
+  {
+    _id: 1,
+    image: "https://www.radiustheme.com/demo/wordpress/themes/toyup/wp-content/uploads/2024/01/product_17.png",
+    rating: 4.5,
+    review: 120,
+    name: "Culinary Creations: Where Mini Chefs Cook Up Dreams!",
+    price: 499,
+  },
+  {
+    _id: 2,
+    image: "https://www.radiustheme.com/demo/wordpress/themes/toyup/wp-content/uploads/2023/12/product_07-300x300.png",
+    rating: 4.2,
+    review: 110,
+    name: "Harbor: Where Young Musicians Find Melody!",
+    price: 599,
+  },
+  {
+    _id: 3,
+    image: "https://www.radiustheme.com/demo/wordpress/themes/toyup/wp-content/uploads/2023/12/product_02-300x300.png",
+    rating: 4.7,
+    review: 134,
+    name: "Culinary Creations: Where Mini Chefs Cook Up Dreams!",
+    price: 549,
+  },
+  {
+    _id: 4,
+    image: "https://www.radiustheme.com/demo/wordpress/themes/toyup/wp-content/uploads/2024/01/product_20.png",
+    rating: 4.3,
+    review: 95,
+    name: "Harbor: Where Young Musicians Find Melody!",
+    price: 479,
+  }
+];
+
+const sliding_section = [
+    {
+        _id: 1,
+        title: "Unique & Awesome Toy Collection",
+        sub_title: "5% Off on Kids' Toys and Gifts!",
+        image_url: product_slide_1,
+        bg: "#689f38",
+    },
+    {
+        _id: 2,
+        title: "Unique & Awesome Toy Collection",
+        sub_title: "5% Off on Kids' Toys and Gifts!",
+        image_url: product_slide_2,
+        bg: "#7DB543",
+    },
+];
+
+const Deals = () => {
+  const [currentTrending, setCurrentTrending] = useState("all-items");
+  const [buttonHovered, setButtonHovered] = useState(false);
+  const [slidingSectionHovered, setSlidingSectionHovered] = useState(null);
+  const { addToCart } = useContext(CartContext);
+
+  const addDealToCart = (product, event) => {
+    event.stopPropagation();
+    event.preventDefault();
+    addToCart(product);
+  };
+
+  return (
+    <div className="mb-5">
+      <div className="flex flex-col gap-10 w-full">
+        {/* deal of the day */}
+        <div className="lg:px-12 px-5 w-full mx-auto flex flex-col gap-10">
+            <div className="flex md:flex-row flex-col justify-between w-full items-center">
+                <p className="text-[32px] md:text-[38px] leading-[48px] md:leading-[57px] text-[#212529] font-bold">Deal of the Day</p>
+                <button onMouseEnter={() => setButtonHovered(true)} onMouseLeave={() => setButtonHovered(false)} className="text-[#212529] hover:text-white relative overflow-hidden flex items-center gap-5 group border border-gray-200 rounded-full px-4 py-2 cursor-pointer transition-colors duration-500">
+                    <span className="absolute top-0 left-0 w-0 h-full bg-[#00bbae] z-[-1] transition-all duration-500 group-hover:w-full" />
+                    <p className="leading-[24px] text-[16px] font-semibold z-10">Explore all</p>
+                    <ArrowRight className={`w-5 h-5 z-10 transition-transform duration-300 ${ buttonHovered ? "translate-x-1" : "translate-x-0" }`}/>
+                </button>
+            </div>
+            <div className="flex md:flex-row flex-col gap-10 w-full">
+                {
+                    product_list.slice(0, 2).map((product) => (
+                        <Link to={`/product-details/${product.url}`} key={product._id} className="lg:w-1/2 w-full border flex lg:flex-row flex-col gap-5 border-gray-200 rounded-md p-2">
+                            <div className="w-full h-60 lg:w-2/5 bg-[#FFC0CB] rounded-md flex items-center justify-center relative">
+                                <img src={product.images[0]} alt="" className="max-h-full max-w-full object-contain" />
+                                <p className="absolute top-0 left-0 bg-[#dc3545] rounded-tl-md rounded-br-md text-white text-[14px] leading-[20px] px-3 py-0.5">-23%</p>
+                                <div style={{ boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)" }} className="absolute z-10 border border-[#FFC0CB] bg-white rounded-full flex items-center justify-center bottom-10 px-3 py-2">
+                                    <Countdown />
+                                </div>
+                            </div>
+                            <div className="flex flex-col gap-1 py-5 w-full lg:w-3/5 lg:px-0 px-5">
+                                <p className="text-[#212529] text-[16px] leading-[24px] opacity-75">{product.product_type}</p>
+                                <p className="text-[20px] leading-[30px] text-[#212529] font-bold">{product.name}</p>
+                                <div className="flex w-full items-center">
+                                    {
+                                        Array.from({ length: Math.floor(product.rating) }).map((_, index) => (
+                                            <Star key={index} className="w-5 h-5 text-[white]" fill="#f88e0f" />
+                                        ))
+                                    }
+                                    <p className="text-gray-500 text-base leading-[16px]">({product.review} Customer Reviews)</p>
+                                </div>
+                                <p className="text-black text-[20px] leading-[30px] font-semibold">₹ {product.price}</p>
+                                <div className="flex flex-col lg:flex-row gap-5 items-center">
+                                    <div onClick={(event)=>addDealToCart(product, event)} className="rounded-full transition-colors duration-300 hover:bg-[#f88e0f] cursor-pointer px-4 py-2 bg-[#00bbae] flex gap-3 items-center justify-center">
+                                      <ShoppingBasket className="w-5 h-5 text-white" />
+                                      <p className="text-[16px] leading-[18px] font-semibold text-white">Add to cart</p>
+                                    </div>
+                                    <div className="flex gap-5">
+                                      <div className="cursor-pointer w-10 border border-gray-200 h-10 flex items-center justify-center rounded-full bg-white transition-colors hover:bg-[#00bbae] text-gray-500 hover:text-white">
+                                        <Heart className="w-5 h-5" />
+                                      </div>
+                                      <div className="cursor-pointer w-10 border border-gray-200 h-10 flex items-center justify-center rounded-full bg-white transition-colors hover:bg-[#00bbae] text-gray-500 hover:text-white">
+                                        <RefreshCcw className="w-5 h-5" />
+                                      </div>
+                                      <div className="cursor-pointer w-10 border border-gray-200 h-10 flex items-center justify-center rounded-full bg-white transition-colors hover:bg-[#00bbae] text-gray-500 hover:text-white">
+                                        <Eye className="w-5 h-5" />
+                                      </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </Link>
+                    ))
+                }
+            </div>
+        </div>
+
+        {/* trending deals */}
+        <div className="w-full bg-[#e9f9fc] py-10">
+            <div className="w-full mx-auto lg:px-12 px-5">
+                <div className="flex lg:flex-row flex-col gap-5 w-full">
+                    <div className="w-full lg:w-3/4 flex flex-col gap-10">
+                        <div className="flex md:flex-row flex-col lg:gap-0 gap-5 justify-between w-full items-center">
+                            <p className="text-[32px] md:text-[38px] leading-[48px] md:leading-[57px] text-[#212529] font-bold">Trending Deals</p>
+                            <div className="flex gap-5 items-center">
+                                <p onClick={()=>setCurrentTrending("all-items")} className={`text-[16px] sm:text-[18px] leading-[24px] sm:leading-[27px] ${currentTrending === "all-items" ? "text-[#06a096] font-semibold" : "text-[#000000] font-medium" } cursor-pointer `}>All Items (4)</p>
+                                <p onClick={()=>setCurrentTrending("indoor-play")} className={`text-[16px] sm:text-[18px] leading-[24px] sm:leading-[27px] ${currentTrending === "indoor-play" ? "text-[#06a096] font-semibold" : "text-[#000000] font-medium" } cursor-pointer `}>Indoor Play (6)</p>
+                                <p onClick={()=>setCurrentTrending("kids-book")} className={`text-[16px] sm:text-[18px] leading-[24px] sm:leading-[27px] ${currentTrending === "kids-book" ? "text-[#06a096] font-semibold" : "text-[#000000] font-medium" } cursor-pointer `}>Kids books (8)</p>
+                            </div>
+                        </div>
+                        <div className="grid grid-cols-1 w-full md:grid-cols-2 gap-5">
+                            {
+                                product_list.slice(0, 4).map((trending) => (
+                                    <Link to={`/product-details/${trending.url}`} className="w-full flex lg:flex-row flex-col gap-5 border border-gray-200 rounded-md p-3 bg-white" key={trending._id}>
+                                        <div className="w-full lg:w-1/3 bg-gray-200 flex items-center rounded-md justify-center relative">
+                                            <img src={trending.images[0]} alt="" className="object-cover" />
+                                            <div className="absolute top-2 right-2 w-10 h-10 border-[2px] text-gray-500 transition-colors duration-300 hover:text-white hover:bg-[#00bbae] cursor-pointer bg-white flex items-center justify-center border-gray-300 rounded-full">
+                                                <Heart className="w-4 h-4" />
+                                            </div>
+                                        </div>
+                                        <div className="lg:w-2/3 w-full flex flex-col gap-3 lg:px-0 px-5">
+                                            <div className="flex w-full items-center">
+                                                {
+                                                  Array.from({ length: Math.floor(trending.rating) }).map((_, index) => (
+                                                    <Star key={index} className="w-6 h-6 text-white" fill="#f88e0f" />
+                                                  ))
+                                                }
+                                                <p className="text-gray-500 text-base leading-[16px]">({trending.rating})</p>
+                                            </div>
+                                            <p className="text-[20px] leading-[30px] text-[#212529] font-bold">{trending.name}</p>
+                                            <div className="flex justify-between items-center w-full">
+                                                <div className="flex gap-2 items-center">
+                                                    <p className="text-[#198754] text-[20px] leading-[30px] font-semibold">₹ {trending.price}</p>
+                                                    <p className="text-gray-400 text-[18px] leading-[27px] font-normal line-through">₹ 80</p>
+                                                </div>
+                                                <div onClick={(event)=>addDealToCart(trending, event)} className="rounded-full transition-colors duration-300 hover:bg-[#f88e0f] cursor-pointer px-3 py-2 bg-[#00bbae] flex gap-3 items-center justify-center">
+                                                    <ShoppingBasket className="w-5 h-5 text-white" />
+                                                    <p className="text-[16px] leading-[24px] font-semibold text-white">Add to cart</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </Link>
+                                ))
+                            }
+                        </div>
+                    </div>
+                    
+                    <div className="w-full lg:w-1/4 flex flex-col gap-5 overflow-y-scroll h-full sm:h-[70vh] hide-scrollbar">
+                        {
+                            sliding_section.map((item) => (
+                                <div className="w-full rounded-2xl flex flex-col gap-5 px-8 py-10" style={{ backgroundColor: item.bg }} key={item._id}>
+                                    <p className="text-[27px] leading-[40px] font-semibold text-white">{item.title}</p>
+                                    <p className="text-[16px] leading-[24px] font-semibold text-gray-200">{item.title}</p>
+                                    <div className="flex sm:flex-row flex-col justify-center sm:justify-between w-full items-center">
+                                        <button onMouseEnter={() => setSlidingSectionHovered(item._id)} onMouseLeave={() => setSlidingSectionHovered(null)} className="flex gap-1 items-center justify-center rounded-full px-5 py-2 bg-white">
+                                            <p className="text-[#689f38] text-[16px] leading-[22px] font-semibold cursor-pointer">See Collection</p>
+                                            <ArrowRight className={`w-5 h-5 text-[#689f38] transition-transform duration-300 ${ slidingSectionHovered === item._id ? "translate-x-1" : "translate-x-0" }`} />
+                                        </button>
+                                        <div className="flex justify-end items-end w-28">
+                                            <img src={item.image_url} alt="" className="w-full" />
+                                        </div>
+                                    </div>
+                                </div>
+                            ))
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Deals;
