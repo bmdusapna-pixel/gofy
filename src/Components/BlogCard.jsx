@@ -1,11 +1,12 @@
 import React from "react";
 import { Calendar } from "lucide-react";
 import { CircleUserRound } from "lucide-react";
+import { Link } from "react-router-dom";
 
 
 const BlogCard = ({ Image, Tag }) => {
   return (
-    <div className="w-[300px] p-1 h-auto border-[#E8E6E6] rounded-lg overflow-hidden bg-[#FFFF] shadow">
+    <Link to="/blog-details" className="w-[300px] p-1 h-auto border-[#E8E6E6] rounded-lg overflow-hidden bg-[#FFFF] shadow">
       <div className="relative p-3 rounded-lg">
         <img
           className="w-full h-60  rounded-lg object-cover"
@@ -36,7 +37,7 @@ const BlogCard = ({ Image, Tag }) => {
           </span>
         </div>
       </div>
-    </div>
+    </Link>
   );
 };
 

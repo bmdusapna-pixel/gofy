@@ -8,10 +8,17 @@ const CartContextProvider = ({ children }) => {
   const [itemDescriptions, setItemDescriptions] = useState([]);
   const [isQuickBuyClicked, setIsQuickBuyClicked] = useState(null);
   const [formSubmit, setFormSubmit] = useState(false);
+
+  const [totalFavouriteItems, setTotalFavouriteItems] = useState(() => {
+    const stored = localStorage.getItem("totalFavouriteItems");
+    return stored ? Number(JSON.parse(stored)) : 0;
+  });
+
   const [favouriteItems, setFavouriteItems] = useState(() => {
     const stored = localStorage.getItem("favouriteItems");
     return stored ? JSON.parse(stored) : [];
-  })
+  });
+
   const [cartItems, setCartItems] = useState(() => {
     const stored = localStorage.getItem("cartItems");
     return stored ? JSON.parse(stored) : [];
@@ -19,12 +26,12 @@ const CartContextProvider = ({ children }) => {
 
   const [totalItems, setTotalItems] = useState(() => {
     const stored = localStorage.getItem("totalItems");
-    return stored ? JSON.parse(stored) : 0;
+    return stored ? Number(JSON.parse(stored)) : 0;
   });
 
   const [totalPrice, setTotalPrice] = useState(() => {
     const stored = localStorage.getItem("totalPrice");
-    return stored ? JSON.parse(stored) : 0;
+    return stored ? Number(JSON.parse(stored)) : 0;
   });
 
   // adding product to the cart
@@ -167,16 +174,38 @@ const CartContextProvider = ({ children }) => {
   };
 
   // add favour items to the cart
-  const addFavouriteItems = () => {
-    
+  const addFavouriteItems = (product) => {
+    // Check if product already exists in favourites
+    const alreadyExists = favouriteItems.some(
+      (item) => item._id === product._id
+    );
+    if (alreadyExists) return;
+
+    // Create new favourite item object
+    const newFavourite = {
+      _id: product._id,
+      name: product.name,
+      price: product.price,
+      product_type: product.product_type,
+      images: product.images,
+    };
+
+    // Update state and localStorage
+    const updatedFavourites = [...favouriteItems, newFavourite];
+    setFavouriteItems(updatedFavourites);
+    setTotalFavouriteItems(updatedFavourites.length);
   };
 
   useEffect(() => {
     localStorage.setItem("cartItems", JSON.stringify(cartItems));
     localStorage.setItem("totalItems", JSON.stringify(totalItems));
     localStorage.setItem("totalPrice", JSON.stringify(totalPrice));
-    localStorage.setItem("totalPrice", JSON.stringify(favouriteItems));
-  }, [cartItems, totalItems, totalPrice, favouriteItems]);
+    localStorage.setItem("favouriteItems", JSON.stringify(favouriteItems));
+    localStorage.setItem(
+      "totalFavouriteItems",
+      JSON.stringify(totalFavouriteItems)
+    );
+  }, [cartItems, totalItems, totalPrice, favouriteItems, totalFavouriteItems]);
 
   const contextValues = {
     isMobileMenuOpen,
@@ -202,6 +231,8 @@ const CartContextProvider = ({ children }) => {
     decreaseQuantityFromCart,
     emptyCart,
     addFavouriteItems,
+    totalFavouriteItems,
+    favouriteItems,
   };
 
   return (

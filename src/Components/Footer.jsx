@@ -14,7 +14,6 @@ const IconComponents = {
   Youtube,
 };
 
-
 const footer_links = [
   {
     _id: 1,

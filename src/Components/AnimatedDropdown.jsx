@@ -20,13 +20,13 @@ const AnimatedDropdown = ({ items}) => {
         {
           items.map((item, index) => (
             <div key={index} className="flex gap-5 flex-col w-full cursor-pointer items-start justify-center p-8">
-              <p className="text-[18px] px-4 leading-[22px] text-[#001430] transition-colors duration-300 hover:text-[#06a096] font-bold">{item.name}</p>
+              <p className="text-[20px] px-4 leading-[30px] text-[#DC3545] transition-colors duration-300 hover:text-[#06a096] font-bold">{item.name}</p>
               <div className="flex flex-col gap-0.5 w-full items-center justify-center">
                 {
                   item.toys.map((toy) => (
                     <div className="relative overflow-hidden group w-full px-4 py-2 rounded-md text-[#001430] hover:text-white transition-colors duration-500 items-start justify-center" key={toy._id}>
                       <span className="absolute top-0 left-0 w-full h-0 bg-[#00bbae] z-[-1] transition-all duration-500 group-hover:h-full" />
-                      <p className="text-[16px] leading-[20px] font-semibold">{toy.name}</p>
+                      <p className="text-[16px] leading-[24px] font-semibold">{toy.name}</p>
                     </div>
                   ))
                 }

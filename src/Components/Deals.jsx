@@ -63,12 +63,18 @@ const Deals = () => {
   const [currentTrending, setCurrentTrending] = useState("all-items");
   const [buttonHovered, setButtonHovered] = useState(false);
   const [slidingSectionHovered, setSlidingSectionHovered] = useState(null);
-  const { addToCart } = useContext(CartContext);
+  const { addToCart, addFavouriteItems } = useContext(CartContext);
 
   const addDealToCart = (product, event) => {
     event.stopPropagation();
     event.preventDefault();
     addToCart(product);
+  };
+
+  const addFavouriteItemsWishList = (product, event) => { 
+    event.stopPropagation();
+    event.preventDefault();
+    addFavouriteItems(product);
   };
 
   return (
@@ -87,7 +93,7 @@ const Deals = () => {
             <div className="flex md:flex-row flex-col gap-10 w-full">
                 {
                     product_list.slice(0, 2).map((product) => (
-                        <Link to={`/product-details/${product.url}`} key={product._id} className="lg:w-1/2 w-full border flex lg:flex-row flex-col gap-5 border-gray-200 rounded-md p-2">
+                        <Link to={`/product-details/${product.url}`} key={product._id} className="lg:w-1/2 w-full border flex sm:flex-row flex-col gap-5 border-gray-200 rounded-md p-2">
                             <div className="w-full h-60 lg:w-2/5 bg-[#FFC0CB] rounded-md flex items-center justify-center relative">
                                 <img src={product.images[0]} alt="" className="max-h-full max-w-full object-contain" />
                                 <p className="absolute top-0 left-0 bg-[#dc3545] rounded-tl-md rounded-br-md text-white text-[14px] leading-[20px] px-3 py-0.5">-23%</p>
@@ -113,14 +119,8 @@ const Deals = () => {
                                       <p className="text-[16px] leading-[18px] font-semibold text-white">Add to cart</p>
                                     </div>
                                     <div className="flex gap-5">
-                                      <div className="cursor-pointer w-10 border border-gray-200 h-10 flex items-center justify-center rounded-full bg-white transition-colors hover:bg-[#00bbae] text-gray-500 hover:text-white">
+                                      <div onClick={(event)=>addFavouriteItemsWishList(product, event)} className="cursor-pointer w-10 border border-gray-200 h-10 flex items-center justify-center rounded-full bg-white transition-colors hover:bg-[#00bbae] text-gray-500 hover:text-white">
                                         <Heart className="w-5 h-5" />
-                                      </div>
-                                      <div className="cursor-pointer w-10 border border-gray-200 h-10 flex items-center justify-center rounded-full bg-white transition-colors hover:bg-[#00bbae] text-gray-500 hover:text-white">
-                                        <RefreshCcw className="w-5 h-5" />
-                                      </div>
-                                      <div className="cursor-pointer w-10 border border-gray-200 h-10 flex items-center justify-center rounded-full bg-white transition-colors hover:bg-[#00bbae] text-gray-500 hover:text-white">
-                                        <Eye className="w-5 h-5" />
                                       </div>
                                     </div>
                                 </div>
@@ -150,7 +150,7 @@ const Deals = () => {
                                     <Link to={`/product-details/${trending.url}`} className="w-full flex lg:flex-row flex-col gap-5 border border-gray-200 rounded-md p-3 bg-white" key={trending._id}>
                                         <div className="w-full lg:w-1/3 bg-gray-200 flex items-center rounded-md justify-center relative">
                                             <img src={trending.images[0]} alt="" className="object-cover" />
-                                            <div className="absolute top-2 right-2 w-10 h-10 border-[2px] text-gray-500 transition-colors duration-300 hover:text-white hover:bg-[#00bbae] cursor-pointer bg-white flex items-center justify-center border-gray-300 rounded-full">
+                                            <div onClick={(event)=>addFavouriteItemsWishList(trending, event)} className="absolute top-2 right-2 w-10 h-10 border-[2px] text-gray-500 transition-colors duration-300 hover:text-white hover:bg-[#00bbae] cursor-pointer bg-white flex items-center justify-center border-gray-300 rounded-full">
                                                 <Heart className="w-4 h-4" />
                                             </div>
                                         </div>

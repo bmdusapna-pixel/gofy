@@ -13,6 +13,7 @@ import hero_2 from "../assets/hero_2.png";
 import hero_3 from "../assets/hero_3.png";
 import hero_4 from "../assets/hero_4.png";
 import hero_5 from "../assets/hero_5.png";
+import { Link } from "react-router-dom";
 
 const hero_slider_array = [
   {
@@ -115,7 +116,7 @@ const HeroSection = () => {
                     <div className="w-full lg:w-1/2 flex flex-col items-center lg:items-start justify-center gap-6">
                       <p className="text-[#dc3545] text-[18px] leading-[27px] font-semibold">{item.sub_heading}</p>
                       <p className="text-[#212529] text-[32px] md:text-[38px] lg:text-[54px] leading-[48px] sm:text-left text-center lg:leading-[57px] font-bold">{item.heading}</p>
-                      <button className="transition-all duration-300 hover:bg-pink-600 hover:scale-105 cursor-pointer bg-[#ec407a] text-white text-[18px] leading-[27px] py-2 px-5 rounded-md">SHOP NOW</button>
+                      <Link to="/products" className="transition-all duration-300 hover:bg-pink-600 hover:scale-105 cursor-pointer bg-[#ec407a] text-white text-[18px] leading-[27px] py-2 px-5 rounded-md">SHOP NOW</Link>
                     </div>
                   </div>
                 </div>

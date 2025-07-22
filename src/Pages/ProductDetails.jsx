@@ -1,5 +1,5 @@
 import React, { useContext, useRef, useState } from "react";
-import { Facebook, Heart, Linkedin, Loader, Minus, Plus, RefreshCcw, ShoppingBasket, Star, Twitter, User2Icon } from "lucide-react";
+import { Facebook, Heart, Linkedin, Loader, Minus, Plus, ShoppingBasket, Star, Twitter, User2Icon } from "lucide-react";
 import { Countdown } from "../Components/AnimatedDropdown";
 import { CartContext } from "../Context/CartContext";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -36,7 +36,7 @@ const product_reviews = [
 const ProductDetails = () => {
   const swiperRef = useRef(null);
   const { url } = useParams();
-  const { isMobileMenuOpen, setIsMobileMenuOpen, cartItems, openCart, setOpenCart, totalItems, formSubmit, addingProductToCart } = useContext(CartContext);
+  const { isMobileMenuOpen, setIsMobileMenuOpen, cartItems, openCart, setOpenCart, totalItems, formSubmit, addingProductToCart, addFavouriteItems } = useContext(CartContext);
   const [currentMenu, setCurrentMenu] = useState("reviews");
   const [quantity, setQuantity] = useState(1);
   const [reviewData, setReviewData] = useState({
@@ -164,11 +164,8 @@ const ProductDetails = () => {
                 <ShoppingBasket className="w-6 h-6 text-white" />
                 <p className="text-[18px] leading-[27px] md:text-[20px] md:leading-[30px] font-semibold text-white">Add to cart</p>
               </div>
-              <div className="cursor-pointer w-14 sm:w-16 h-14 sm:h-16 flex items-center justify-center rounded-2xl bg-white transition-colors hover:bg-[#00bbae] text-black hover:text-white">
+              <div onClick={()=>addFavouriteItems(product)} className="cursor-pointer w-14 sm:w-16 h-14 sm:h-16 flex items-center justify-center rounded-2xl bg-white transition-colors hover:bg-[#00bbae] text-black hover:text-white">
                 <Heart className="w-4 sm:w-6 h-4 sm:h-6" />
-              </div>
-              <div className="cursor-pointer w-16 h-16 flex items-center justify-center rounded-2xl bg-white transition-colors hover:bg-[#00bbae] text-black hover:text-white">
-                <RefreshCcw className="w-4 sm:w-6 h-4 sm:h-6" />
               </div>
             </div>
               <div className="w-full flex rounded-2xl bg-white px-2 py-6">

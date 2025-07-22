@@ -1,5 +1,6 @@
 import React, { useContext, useState } from "react";
 import { ChevronRight, Info, Loader, Minus, Plus, X } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
 import { CartContext } from "../Context/CartContext";
 import { Link } from "react-router-dom";
 
@@ -23,7 +24,7 @@ const CartDetails = () => {
   return (
     <div className="w-full h-full py-10 bg-[#f8f9fa]">
       <div className="w-full lg:px-12 px-5 mx-auto flex lg:flex-row flex-col gap-5">
-        <div className="w-full lg:w-4/6 overflow-x-auto flex flex-col gap-5 bg-white rounded-2xl p-5 md:p-10 h-full">
+        <div className="w-full lg:w-4/6 flex flex-col gap-5 bg-white rounded-2xl p-5 md:p-10 h-full">
           {
             cartItems.length > 0 ? 
             (
@@ -33,8 +34,8 @@ const CartDetails = () => {
                   <p className="text-[16px] leading-[24px] text-[#001430] font-semibold text-center hidden md:block w-[100px]">Thumbnail</p>
                   <p className="text-[16px] leading-[24px] text-[#001430] font-semibold text-center w-[180px]">Product Title</p>
                   <p className="text-[16px] leading-[24px] text-[#001430] font-semibold text-center w-[80px]">Price</p>
-                  <p className="text-[16px] leading-[24px] text-[#001430] font-semibold text-center hidden md:block w-[120px]">Quantity</p>
-                  <p className="text-[16px] leading-[24px] text-[#001430] font-semibold text-center hidden md:block w-[80px]">Total</p>
+                  <p className="text-[16px] leading-[24px] text-[#001430] font-semibold text-center hidden sm:block w-[120px]">Quantity</p>
+                  <p className="text-[16px] leading-[24px] text-[#001430] font-semibold text-center hidden sm:block w-[80px]">Total</p>
                 </div>
               {
                 cartItems.map((item, index) => (
@@ -49,7 +50,7 @@ const CartDetails = () => {
                     </div>
                     <p className="text-[16px] leading-[24px] text-[#001430] font-semibold w-[180px] text-center truncate">{item.name}</p>
                     <p className="text-[16px] leading-[24px] text-[#001430] font-medium w-[80px] text-center">₹ {item.price}</p>
-                    <div className="hidden md:flex items-center justify-center gap-1 px-2 border border-gray-200 rounded-md w-[120px]">
+                    <div className="hidden sm:flex items-center justify-center gap-1 px-2 border border-gray-200 rounded-md w-[120px]">
                       <div onClick={() => decreaseQuantityFromCart(item)} className="w-6 h-6 flex items-center justify-center cursor-pointer">
                         <Minus className="w-4 h-4 text-[#00bbae]" />
                       </div>
@@ -58,8 +59,34 @@ const CartDetails = () => {
                         <Plus className="w-4 h-4 text-[#00bbae]" />
                       </div>
                     </div>
-                    <p className="hidden md:block text-[16px] leading-[24px] text-[#001430] font-semibold w-[80px] text-center">₹ {item.price * item.quantity}</p>
-                    <ChevronRight className={`absolute right-2 w-5 h-5 text-black ${itemOpenInMobile}`} onClick={()=>openItem(item)} />
+                    <p className="hidden sm:block text-[16px] leading-[24px] text-[#001430] font-semibold w-[80px] text-center">₹ {item.price * item.quantity}</p>
+                    <ChevronRight className={`absolute sm:hidden block right-2 w-5 h-5 cursor-pointer text-black transform transition-transform duration-300 ${itemOpenInMobile === item._id ? "rotate-90" : ""}`} onClick={() => openItem(item)} />
+                    <AnimatePresence>
+                      {
+                        itemOpenInMobile === item._id && (
+                          <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.4, ease: "easeInOut" }} className="sm:hidden absolute top-full left-0 bg-[white] w-full z-40 shadow-md px-8 py-3">
+                            <div className="flex flex-col gap-3 w-full">
+                              <div className="flex justify-between items-center">
+                                <p className="text-[16px] leading-[24px] text-[#001430] font-semibold">Total</p>
+                                <p className="text-[16px] leading-[24px] text-[#001430] font-semibold">₹ {item.price * item.quantity}</p>
+                              </div>
+                              <div className="flex justify-between items-center">
+                                <p className="text-[16px] leading-[24px] text-[#001430] font-semibold">Quantity</p>
+                                <div className="flex items-center gap-1 px-2 border border-gray-200 rounded-md w-[120px]">
+                                  <div onClick={() => decreaseQuantityFromCart(item)} className="w-6 h-6 flex items-center justify-center cursor-pointer">
+                                    <Minus className="w-4 h-4 text-[#00bbae]" />
+                                  </div>
+                                  <p className="text-[16px] leading-[24px] font-semibold text-[#001430] w-full text-center">{item.quantity}</p>
+                                  <div onClick={() => increaseQuantityFromCart(item)} className="w-6 h-6 flex items-center justify-center cursor-pointer">
+                                    <Plus className="w-4 h-4 text-[#00bbae]" />
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </motion.div>
+                        )
+                      }
+                    </AnimatePresence>
                   </div>
                 ))
               }

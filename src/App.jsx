@@ -22,6 +22,8 @@ import Blog from "./Pages/Blog";
 import SignUp from "./Pages/SignUp";
 import SignIn from "./Pages/SignIn";
 import WishList from "./Pages/WishList";
+import Account from "./Pages/Account";
+import BlogDetails from "./Pages/BlogDetails";
 
 const product = {
   name: "Outdoor Swing Set",
@@ -108,8 +110,10 @@ const App = () => {
           <Route path="/sign-up" element={<SignUp />} />
           <Route path="/sign-in" element={<SignIn />} />
           <Route path="/checkout" element={<Checkout />} />
-          <Route path="/blog" element={<Blog />} />
+          <Route path="/blog" element={<Blog />} />UserDashboard
           <Route path="/wishList" element={<WishList />} />
+          <Route path="/account" element={<Account />} />
+          <Route path="/blog-details" element={<BlogDetails />} />
         </Routes>
       </div>
       <div className="w-72 transition-transform duration-500 ease-in-out rounded-md h-32 fixed left-10 z-40 bottom-5 bg-white" style={{ boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)", transform: flashCardOpen ? "translateX(0)" : "translateX(calc(-100% - 2.5rem))" }}>

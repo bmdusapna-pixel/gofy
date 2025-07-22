@@ -5,19 +5,25 @@ import "swiper/css";
 import "swiper/css/autoplay";
 import "swiper/css/navigation";
 import product_list from "../assets/product-list.js";
-import { ChevronLeft, ChevronRight, Eye, Heart, RefreshCcw, ShoppingBag, Star } from "lucide-react";
+import { ChevronLeft, ChevronRight, Heart, ShoppingBag, Star } from "lucide-react";
 import { Link } from "react-router-dom";
 import { CartContext } from "../Context/CartContext.jsx";
 import { Countdown } from "./AnimatedDropdown.jsx";
 
 const ProductsCollection = ({ color }) => {
   const [hoveredId, setHoveredId] = useState(null);
-  const { addToCart } = useContext(CartContext);
+  const { addToCart, addFavouriteItems } = useContext(CartContext);
 
   const addProductToCart = (product, event) => {
     event.stopPropagation();
     event.preventDefault();
     addToCart(product);
+  };
+
+  const addFavouriteItemsWishList = (product, event) => { 
+    event.stopPropagation();
+    event.preventDefault();
+    addFavouriteItems(product);
   };
 
   return (
@@ -26,13 +32,13 @@ const ProductsCollection = ({ color }) => {
         <p className="text-[18px] leading-[27px] font-semibold underline text-center mb-5" style={{ color }}>Best Selling Products</p>
         <p className="text-[32px] md:text-[38px] leading-[48px] md:leading-[57px] font-bold text-center text-[#212529] mb-10">Browsing Our Trending Items</p>
         <div className="relative">
-          <Swiper modules={[Autoplay, Navigation]} autoplay={{ delay: 3000, disableOnInteraction: false }} navigation={{ nextEl: ".swiper-button-next", prevEl: ".swiper-button-prev" }} breakpoints={{ 0: { slidesPerView: 1, spaceBetween: 20 }, 480: { slidesPerView: 2, spaceBetween: 20 }, 768: { slidesPerView: 3, spaceBetween: 30 }, 1024: { slidesPerView: 3, spaceBetween: 20 }, 1280 : { slidesPerView: 4, spaceBetween: 35 } }} loop={true} grabCursor={true}>
+          <Swiper modules={[Autoplay, Navigation]} autoplay={{ delay: 3000, disableOnInteraction: false }} navigation={{ nextEl: ".swiper-button-next", prevEl: ".swiper-button-prev" }} breakpoints={{ 0: { slidesPerView: 1, spaceBetween: 20 }, 480: { slidesPerView: 2, spaceBetween: 20 }, 768: { slidesPerView: 3, spaceBetween: 20 }, 1024: { slidesPerView: 3, spaceBetween: 20 }, 1280 : { slidesPerView: 4, spaceBetween: 20 } }} loop={true} grabCursor={true}>
             {
               product_list.map((product) => {
                 const isHovered = hoveredId === product._id;
                 return (
                   <SwiperSlide key={product._id}>
-                    <Link to={`/product-details/${product.url}`} className="bg-white rounded-md p-3 flex flex-col w-full lg:w-[350px] cursor-pointer relative" onMouseEnter={() => setHoveredId(product._id)} onMouseLeave={() => setHoveredId(null)}>
+                    <Link to={`/product-details/${product.url}`} className="bg-white rounded-md p-3 flex flex-col w-full cursor-pointer relative" onMouseEnter={() => setHoveredId(product._id)} onMouseLeave={() => setHoveredId(null)}>
                       <div className="flex relative">
                         <p className="absolute -top-3 -left-2 text-white bg-pink-600 px-1 py-1 rounded-sm text-[14px] leading-[21px] font-semibold">80%</p>
                         <div className="w-full h-72 sm:h-[280px] flex items-center justify-center">
@@ -44,17 +50,11 @@ const ProductsCollection = ({ color }) => {
                         hoveredId === product._id && (
                           <div className={`absolute right-4 top-4 transform transition-all duration-300 z-20 ${isHovered ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"}`}>
                             <div className="flex flex-col gap-2 items-center">
-                              <div style={{ boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)" }} className="w-8 h-8 flex items-center justify-center rounded-full bg-white transition-colors hover:bg-[#00bbae] text-black hover:text-white">
-                                <Heart className="w-4 h-4" />
+                              <div onClick={(event)=>addFavouriteItemsWishList(product, event)} style={{ boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)" }} className="md:w-10 w-8 md:h-10 h-8 flex items-center justify-center rounded-full bg-white transition-colors hover:bg-[#00bbae] text-black hover:text-white">
+                                <Heart className="w-4 md:w-5 h-4 md:h-5" />
                               </div>
-                              <div style={{ boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)" }} className="w-8 h-8 flex items-center justify-center rounded-full bg-white transition-colors hover:bg-[#00bbae] text-black hover:text-white">
-                                <ShoppingBag className="w-4 h-4" />
-                              </div>
-                              <div style={{ boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)" }} className="w-8 h-8 flex items-center justify-center rounded-full bg-white transition-colors hover:bg-[#00bbae] text-black hover:text-white">
-                                <Eye className="w-4 h-4" />
-                              </div>
-                              <div style={{ boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)" }} className="w-8 h-8 flex items-center justify-center rounded-full bg-white transition-colors hover:bg-[#00bbae] text-black hover:text-white">
-                                <RefreshCcw className="w-4 h-4" />
+                              <div onClick={(event)=>addProductToCart(product, event)} style={{ boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)" }} className="md:w-10 w-8 md:h-10 h-8 flex items-center justify-center rounded-full bg-white transition-colors hover:bg-[#00bbae] text-black hover:text-white">
+                                <ShoppingBag className="w-4 md:w-5 h-4 md:h-5" />
                               </div>
                             </div>
                           </div>

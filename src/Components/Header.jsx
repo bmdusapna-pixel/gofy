@@ -81,7 +81,7 @@ const FirstHeader = () => {
     <div className="w-full bg-[#dc3545]">
       <div className="w-full lg:px-12 px-5 py-2 lg:py-0 lg:h-12 mx-auto flex lg:flex-row flex-col gap-2 items-center">
         <div className="overflow-hidden w-full cursor-pointer">
-          <p className="text-base font-medium text-white marquee">Free shipping worldwide for all orders over ₹599/-{" "}<a href="/" className="underline">Shop Now</a>{" "}Hello, Welcome to Gofy! Enjoy exclusive deals & free delivery across India.</p>
+          <p className="text-base font-medium text-white marquee">Free shipping worldwide for all orders over ₹599/-{" "}<Link to="/products" className="underline">Shop Now</Link>{" "}Hello, Welcome to Gofy! Enjoy exclusive deals & free delivery across India.</p>
         </div>
         <div className="flex gap-3 items-center w-60">
           <div className="flex gap-1 items-center">
@@ -96,7 +96,7 @@ const FirstHeader = () => {
   );
 };
 
-const SecondHeader = ({ cartItems, openCart, setOpenCart, totalItems }) => {
+const SecondHeader = ({ cartItems, openCart, setOpenCart, totalItems, totalFavouriteItems }) => {
   const [openSearchMobile, setOpenSearchMobile] = useState(false);
   const navigate = useNavigate();
 
@@ -132,17 +132,17 @@ const SecondHeader = ({ cartItems, openCart, setOpenCart, totalItems }) => {
         <div onClick={()=>setOpenSearchMobile((prev) => !prev)} className="md:hidden flex w-10 h-10 items-center justify-center rounded-md bg-gray-200 cursor-pointer hover:bg-gray-300 duration-300 transition-colors">
           <Search className="w-5 h-5 text-black" />
         </div>
-        <div className="bg-[#00bbae] hidden sm:flex gap-2 items-center rounded-full px-4 py-2 w-[200px]">
+        <div className="bg-[#00bbae] hidden lg:flex gap-2 items-center rounded-full px-4 py-2 w-[200px]">
           <Phone className="w-5 h-5 text-white" />
           <div className="flex flex-col">
             <p className="text-white font-normal text-sm">24/7 Support</p>
-            <p className="text-white font-semibold text-base">+91 234 786 8907</p>
+            <a href="tel:+912347868907"className="text-white font-semibold text-base">+91 234 786 8907</a>
           </div>
         </div>
         <div className="flex gap-4 sm:gap-6 items-center">
           <Link to="/wishList" className="relative cursor-pointer">
             <Heart className="w-6 h-6 text-black" />
-            <p className="absolute -top-2 -right-3 text-white bg-pink-600 p-0.5 rounded-full w-5 h-5 text-[12px] font-semibold text-center">0</p>
+            <p className="absolute -top-2 -right-3 text-white bg-pink-600 p-0.5 rounded-full w-5 h-5 text-[12px] font-semibold text-center">{totalFavouriteItems}</p>
           </Link>
           <div onClick={chechkingOut} className="relative cursor-pointer">
             <ShoppingBag className="w-6 h-6 text-black" />
@@ -157,7 +157,7 @@ const SecondHeader = ({ cartItems, openCart, setOpenCart, totalItems }) => {
           </Link>
         </div>
       </div>
-      <div className={`md:hidden flex flex-col items-center gap-3 max-w-xl ${openSearchMobile ? "max-h-20 z-50 opacity-100" : "max-h-0 -z-0 opacity-0"} bg-[#f7f7f7] relative top-3 left-1/2 -translate-x-1/2 lg:left-1/3 lg:translate-x-0 p-2`}>
+      <div className={`md:hidden flex flex-col items-center gap-3 w-sm rounded-md sm:w-xl ${openSearchMobile ? "max-h-20 z-50 opacity-100" : "max-h-0 -z-0 opacity-0"} bg-[#f7f7f7] relative top-3 left-1/2 -translate-x-1/2 lg:left-1/3 lg:translate-x-0 p-2`}>
         <input type="text" placeholder="Search products..." className="w-full px-4 py-1 bg-transparent outline-none text-black font-medium text-base placeholder:text-gray-400"/>
       </div>
     </div>
@@ -324,7 +324,7 @@ const ThirdHeader = ({isMobileMenuOpen, setIsMobileMenuOpen}) => {
 };
 
 const Header = () => {
-  const {isMobileMenuOpen, setIsMobileMenuOpen, cartItems, openCart, setOpenCart, totalItems} = useContext(CartContext);
+  const {isMobileMenuOpen, setIsMobileMenuOpen, cartItems, openCart, setOpenCart, totalItems, totalFavouriteItems} = useContext(CartContext);
   const [isSticky, setIsSticky] = useState(false);
 
   useEffect(() => {
@@ -341,7 +341,7 @@ const Header = () => {
     <div>
       <FirstHeader />
       <div className={`w-full transition-all duration-300 ${isSticky ? "fixed top-0 shadow-md z-40" : ""}`}>
-        <SecondHeader cartItems={cartItems} openCart={openCart} setOpenCart={setOpenCart} totalItems={totalItems} />
+        <SecondHeader totalFavouriteItems={totalFavouriteItems} cartItems={cartItems} openCart={openCart} setOpenCart={setOpenCart} totalItems={totalItems} />
         <hr />
         <ThirdHeader isMobileMenuOpen={isMobileMenuOpen} setIsMobileMenuOpen={setIsMobileMenuOpen} />
       </div>

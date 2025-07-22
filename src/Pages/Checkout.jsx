@@ -21,6 +21,7 @@ const Checkout = () => {
     state: "",
     message: "",
   });
+  
   const [shippingAddress, setShippingAddress] = useState({
     houseAndStreet: "",
     apartments: "",

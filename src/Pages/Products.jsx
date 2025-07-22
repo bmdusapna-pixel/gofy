@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { ChevronDown, Heart, Menu, MoveRight, Star, ShoppingBag, Eye, RefreshCcw } from "lucide-react";
+import { ChevronDown, Heart, Menu, MoveRight, Star, ShoppingBag } from "lucide-react";
 import product_list from "../assets/product-list";
 import { Link } from "react-router-dom";
 import { CartContext } from "../Context/CartContext";
@@ -20,12 +20,18 @@ const product_categories = [
 const Products = () => {
   const [hoveredProductCategory, setHoveredProductCategory] = useState(null);
   const [productHovered, setProductHoverd] = useState(null);
-  const { addToCart } = useContext(CartContext);
+  const { addToCart, addFavouriteItems } = useContext(CartContext);
 
   const addProductToCart = (product, event) => {
     event.stopPropagation();
     event.preventDefault();
     addToCart(product);
+  };
+
+  const addFavouriteItemsWishList = (product, event) => { 
+    event.stopPropagation();
+    event.preventDefault();
+    addFavouriteItems(product);
   };
 
   return (
@@ -100,17 +106,11 @@ const Products = () => {
                         productHovered === product._id && (
                           <div className="absolute sm:block hidden bottom-3 left-1/2 -translate-x-1/2 transform transition-all duration-300 translate-y-8 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 z-20">
                             <div className="flex gap-2 items-center">
-                              <div className="w-8 h-8 flex items-center justify-center rounded-full bg-white transition-colors hover:bg-[#00bbae] text-black hover:text-white">
-                                <Heart className="w-4 h-4" />
+                              <div onClick={(event)=>addFavouriteItemsWishList(product, event)} className="w-10 h-10 flex items-center justify-center rounded-full bg-white transition-colors hover:bg-[#00bbae] text-black hover:text-white">
+                                <Heart className="w-5 h-4" />
                               </div>
-                              <div onClick={(event)=>addProductToCart(product, event)} className="w-8 h-8 flex items-center justify-center rounded-full bg-white transition-colors hover:bg-[#00bbae] text-black hover:text-white">
-                                <ShoppingBag className="w-4 h-4" />
-                              </div>
-                              <div className="w-8 h-8 flex items-center justify-center rounded-full bg-white transition-colors hover:bg-[#00bbae] text-black hover:text-white">
-                                <Eye className="w-4 h-4" />
-                              </div>
-                              <div className="w-8 h-8 flex items-center justify-center rounded-full bg-white transition-colors hover:bg-[#00bbae] text-black hover:text-white">
-                                <RefreshCcw className="w-4 h-4" />
+                              <div onClick={(event)=>addProductToCart(product, event)} className="w-10 h-10 flex items-center justify-center rounded-full bg-white transition-colors hover:bg-[#00bbae] text-black hover:text-white">
+                                <ShoppingBag className="w-5 h-5" />
                               </div>
                             </div>
                           </div>
@@ -131,17 +131,11 @@ const Products = () => {
                         <p className="text-[#00bbae] text-[20px] leading-[30px] font-semibold">₹{product.price}</p>
                       </div>
                       <div className="flex sm:hidden gap-2 justify-between items-center">
-                        <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#00bbae] text-white">
-                          <Heart className="w-5 h-5" />
+                        <div onClick={(event)=>addFavouriteItemsWishList(product, event)} className="w-8 h-8 flex items-center justify-center rounded-full bg-[#00bbae] text-white">
+                          <Heart className="w-4 h-4" />
                         </div>
-                        <div onClick={(event)=>addProductToCart(product, event)} className="w-10 h-10 flex items-center justify-center rounded-full bg-[#00bbae] text-white">
-                          <ShoppingBag className="w-5 h-5" />
-                        </div>
-                        <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#00bbae] text-white">
-                          <Eye className="w-5 h-5" />
-                        </div>
-                        <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#00bbae] text-white">
-                          <RefreshCcw className="w-5 h-5" />
+                        <div onClick={(event)=>addProductToCart(product, event)} className="w-8 h-8 flex items-center justify-center rounded-full bg-[#00bbae] text-white">
+                          <ShoppingBag className="w-4 h-4" />
                         </div>
                       </div>
                     </div>
