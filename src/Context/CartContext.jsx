@@ -162,6 +162,38 @@ const CartContextProvider = ({ children }) => {
     }
   };
 
+  // add favour items to the wish list
+  const addFavouriteItems = (product) => {
+    const alreadyExists = favouriteItems.some(
+      (item) => item._id === product._id
+    );
+    if (alreadyExists) return;
+    const newFavourite = {
+      _id: product._id,
+      name: product.name,
+      price: product.price,
+      product_type: product.product_type,
+      images: product.images,
+    };
+    const updatedFavourites = [...favouriteItems, newFavourite];
+    setFavouriteItems(updatedFavourites);
+    setTotalFavouriteItems(updatedFavourites.length);
+  };
+
+  // removing favourite items from the wish list
+  const removeFavouriteItemsWishList = (product) => {
+    const updatedFavourites = favouriteItems.filter(
+      (item) => item._id !== product._id
+    );
+    setFavouriteItems(updatedFavourites);
+    setTotalFavouriteItems(updatedFavourites.length);
+    localStorage.setItem("favouriteItems", JSON.stringify(updatedFavourites));
+    localStorage.setItem(
+      "totalFavouriteItems",
+      JSON.stringify(updatedFavourites.length)
+    );
+  };
+
   // removing all product from the cart
   const emptyCart = () => {
     setCartItems([]);
@@ -173,38 +205,12 @@ const CartContextProvider = ({ children }) => {
     localStorage.removeItem("totalPrice");
   };
 
-  // add favour items to the cart
-  const addFavouriteItems = (product) => {
-    // Check if product already exists in favourites
-    const alreadyExists = favouriteItems.some(
-      (item) => item._id === product._id
-    );
-    if (alreadyExists) return;
-
-    // Create new favourite item object
-    const newFavourite = {
-      _id: product._id,
-      name: product.name,
-      price: product.price,
-      product_type: product.product_type,
-      images: product.images,
-    };
-
-    // Update state and localStorage
-    const updatedFavourites = [...favouriteItems, newFavourite];
-    setFavouriteItems(updatedFavourites);
-    setTotalFavouriteItems(updatedFavourites.length);
-  };
-
   useEffect(() => {
     localStorage.setItem("cartItems", JSON.stringify(cartItems));
     localStorage.setItem("totalItems", JSON.stringify(totalItems));
     localStorage.setItem("totalPrice", JSON.stringify(totalPrice));
     localStorage.setItem("favouriteItems", JSON.stringify(favouriteItems));
-    localStorage.setItem(
-      "totalFavouriteItems",
-      JSON.stringify(totalFavouriteItems)
-    );
+    localStorage.setItem("totalFavouriteItems", JSON.stringify(totalFavouriteItems));
   }, [cartItems, totalItems, totalPrice, favouriteItems, totalFavouriteItems]);
 
   const contextValues = {
@@ -233,6 +239,7 @@ const CartContextProvider = ({ children }) => {
     addFavouriteItems,
     totalFavouriteItems,
     favouriteItems,
+    removeFavouriteItemsWishList,
   };
 
   return (

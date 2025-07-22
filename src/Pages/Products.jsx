@@ -130,7 +130,7 @@ const Products = () => {
                         <p className="text-black text-[20px] leading-[30px] transition-colors duration-300 hover:text-[#00bbae] font-semibold">{product.name}</p>
                         <p className="text-[#00bbae] text-[20px] leading-[30px] font-semibold">₹{product.price}</p>
                       </div>
-                      <div className="flex sm:hidden gap-2 justify-between items-center">
+                      <div className="flex sm:hidden gap-2 items-center">
                         <div onClick={(event)=>addFavouriteItemsWishList(product, event)} className="w-8 h-8 flex items-center justify-center rounded-full bg-[#00bbae] text-white">
                           <Heart className="w-4 h-4" />
                         </div>
