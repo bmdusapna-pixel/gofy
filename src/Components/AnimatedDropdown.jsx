@@ -1,6 +1,33 @@
 import React, { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import { Baby, BookOpenCheck, Puzzle, Home, Book, Sun, Bike, User, Car } from "lucide-react";
+import product_list from '../assets/product-list';
+import { slugify } from '../assets/helper';
+
+const IconComponents = {
+  Baby,
+  BookOpenCheck,
+  Puzzle,
+  Home,
+  Book,
+  Sun,
+  Bike,
+  Car,
+  User,
+};
+
+const categories_items = [
+  { _id: 1, title: "Dolls", icon: "Baby" },
+  { _id: 2, title: "Educational Toy", icon: "BookOpenCheck" },
+  { _id: 3, title: "Games and puzzle", icon: "Puzzle" },
+  { _id: 4, title: "Indoor Play", icon: "Home" },
+  { _id: 5, title: "Kids Books", icon: "Book" },
+  { _id: 6, title: "Outdoor Toy", icon: "Sun" },
+  { _id: 7, title: "Rockers & Rides", icon: "Bike" },
+  { _id: 8, title: "Toy Figures", icon: "User" },
+  { _id: 9, title: "Vehicles Toys", icon: "Car" }
+];
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -16,18 +43,18 @@ const AnimatedDropdown = ({ items}) => {
 
   return (
     <AnimatePresence>
-      <motion.div initial={{ y: 40, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 6, opacity: 0 }} transition={{ type: "tween", duration: 0.5, ease: "easeInOut" }} className="absolute top-7 left-0 border-[1px] border-gray-400 bg-white w-4xl rounded-md overflow-y-auto z-50 grid grid-cols-4 items-center">
+      <motion.div initial={{ y: 40, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 6, opacity: 0 }} transition={{ type: "tween", duration: 0.5, ease: "easeInOut" }} className="absolute top-7 left-0 border-[1px] border-gray-400 bg-white w-6xl rounded-md z-50 grid grid-cols-7 custom-grid-5">
         {
-          items.map((item, index) => (
-            <div key={index} className="flex gap-5 flex-col w-full cursor-pointer items-start justify-center p-8">
-              <p className="text-[20px] px-4 leading-[30px] text-[#DC3545] transition-colors duration-300 hover:text-[#06a096] font-bold">{item.name}</p>
+          items?.map((item, index) => (
+            <div key={index} className="flex gap-3 flex-col w-full p-1.5">
+              <Link to={`/products/${item.url}`} className="text-[18px] px-2 leading-[27px] text-[#DC3545] font-bold">{item.label}</Link>
               <div className="flex flex-col gap-0.5 w-full items-center justify-center">
                 {
-                  item.toys.map((toy) => (
-                    <div className="relative overflow-hidden group w-full px-4 py-2 rounded-md text-[#001430] hover:text-white transition-colors duration-500 items-start justify-center" key={toy._id}>
+                  item?.items?.map((product) => (
+                    <Link to={product.category === "toy" ? `/products/toys/item/${slugify(product.name)}` : `/products/clothes/item/${slugify(product.name)}`} className="relative overflow-hidden group cursor-pointer w-full px-3 py-1 rounded-md text-[#001430] hover:text-white transition-colors duration-500 items-start justify-center" key={product._id}>
                       <span className="absolute top-0 left-0 w-full h-0 bg-[#00bbae] z-[-1] transition-all duration-500 group-hover:h-full" />
-                      <p className="text-[16px] leading-[24px] font-semibold">{toy.name}</p>
-                    </div>
+                      <p className="text-[16px] leading-[24px] font-semibold">{product.name}</p>
+                    </Link>
                   ))
                 }
               </div>
@@ -49,25 +76,16 @@ const FlipUnit = ({ value }) => {
   }, [value]);
 
   return (
-    <div className="relative h-[30px] w-[40px] overflow-hidden">
+    <div className="relative h-[30px] mx-auto w-[40px] overflow-hidden">
       <AnimatePresence initial={false}>
-        <motion.p
-          key={value}
-          initial={{ y: "-100%", opacity: 0 }}
-          animate={{ y: "0%", opacity: 1 }}
-          exit={{ y: "100%", opacity: 0 }}
-          transition={{ duration: 0.3 }}
-          className="absolute w-full text-[#dc3545] font-semibold text-[18px] leading-[27px]"
-        >
-          {value.toString().padStart(2, "0")}
-        </motion.p>
+        <motion.p key={value} initial={{ y: "-100%", opacity: 0 }} animate={{ y: "0%", opacity: 1 }} exit={{ y: "100%", opacity: 0 }} transition={{ duration: 0.3 }} className="absolute w-full text-[#dc3545] font-semibold text-[18px] leading-[27px]">{value.toString().padStart(2, "0")}</motion.p>
       </AnimatePresence>
     </div>
   );
 };
 
 const Countdown = () => {
-  const [timeLeft, setTimeLeft] = useState(498 * 24 * 60 * 60 + 13 * 3600 + 56 * 60);
+  const [timeLeft, setTimeLeft] = useState(40 * 24 * 60 * 60 + 13 * 3600 + 56 * 60);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -87,16 +105,13 @@ const Countdown = () => {
   const { days, hours, minutes, seconds } = getTimeParts();
 
   return (
-    <div className="flex gap-2 items-center justify-center">
-      <div className="flex">
-        <FlipUnit value={days} /> <span className="text-[#dc3545] font-semibold text-[16px] leading-[24px]">:</span>
-      </div>
-      <div className="flex">
-        <FlipUnit value={hours} /> <span className="text-[#dc3545] font-semibold text-[16px] leading-[24px]">:</span>
-      </div>
-      <div className="flex">
-        <FlipUnit value={minutes} /> <span className="text-[#dc3545] font-semibold text-[16px] leading-[24px]">:</span>
-      </div>
+    <div className="bg-white rounded-md px-2 py-1 flex gap-1 items-center">
+      <FlipUnit value={days} />
+      <span className="text-[#dc3545] font-semibold text-[18px] leading-[27px]">:</span>
+      <FlipUnit value={hours} />
+      <span className="text-[#dc3545] font-semibold text-[18px] leading-[27px]">:</span>
+      <FlipUnit value={minutes} />
+      <span className="text-[#dc3545] font-semibold text-[18px] leading-[27px]">:</span>
       <FlipUnit value={seconds} />
     </div>
   );
@@ -112,8 +127,8 @@ const DropDownMobileTablet = ({ items }) => {
             <p className="text-[16px] px-2 leading-[20px] text-[#001430] transition-colors duration-300 hover:text-[#06a096] font-semibold">{item.name}</p>
             <div className="flex flex-col gap-0.5 w-full items-start">
               {
-                item.toys.map((toy) => (
-                  <p key={toy._id} className="text-[16px] px-2 leading-[20px] font-semibold text-[#001430] transition-colors duration-300 hover:text-[#06a096]">{toy.name}</p>
+                item.items.map((product) => (
+                  <p key={product._id} className="text-[16px] px-2 leading-[20px] font-semibold text-[#001430] transition-colors duration-300 hover:text-[#06a096]">{product.name}</p>
                 ))
               }
             </div>
@@ -124,4 +139,78 @@ const DropDownMobileTablet = ({ items }) => {
   );
 };
 
-export { AnimatedDropdown, Countdown, ScrollToTop, DropDownMobileTablet };
+const AllCategories = () => {
+
+  return (
+    <AnimatePresence>
+      <motion.div initial={{ y: -10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 6, opacity: 0 }} transition={{ type: "tween", duration: 0.4, ease: "easeInOut" }} className="absolute left-0 top-12 h-96 hide-scrollbar w-60 overflow-y-auto bg-white z-50 shadow-2xl">
+        <div className="flex flex-col border-[2px] border-gray-300">
+          {
+            categories_items.map((item) => {
+              const Icon = IconComponents[item.icon];
+              return (
+                <div key={item._id} className="group flex gap-3 justify-start text-black hover:text-white relative overflow-hidden transition-colors duration-300 items-center w-full px-3 py-2 border-b-[2px] border-gray-300">
+                  <span className="absolute top-0 left-0 w-0 h-full bg-[#00bbae] z-[-1] transition-all duration-700 group-hover:w-full" />
+                  <div className="w-8 h-8 flex items-center justify-center">
+                    <Icon className="w-5 h-5" />
+                  </div>
+                  <p className="text-[16px] leading-[24px] font-semibold">{item.title}</p>
+                </div>
+              )
+            })
+          }
+        </div>
+      </motion.div>
+    </AnimatePresence>
+  );
+};
+
+const SearchProducts = ({ searchProduct, debouncedSearch }) => {
+  const [filteredProducts,setFilteredProducts] = useState([]);
+  const isTyping = searchProduct !== debouncedSearch;
+
+  useEffect(() => {
+    const query = debouncedSearch.toLowerCase().trim();
+    if (query === "") {
+      setFilteredProducts([]);
+      return;
+    }
+    const results = product_list.filter((product) =>
+      product.name.toLowerCase().includes(query) ||
+      product.product_type.toLowerCase().includes(query)
+    );
+    setFilteredProducts(results);
+  }, [debouncedSearch]);
+
+  
+  return (
+    <div className="absolute top-12 left-0 w-full bg-white shadow-xl z-40">
+      <div className="grid grid-cols-2">
+        {
+          isTyping ? 
+          (
+            <p className="p-4 text-gray-500 text-base">Searching...</p>
+          ) 
+          : 
+          (
+            filteredProducts.length > 0 && (
+              filteredProducts.map((product, index) => (
+                <div key={product._id} className="flex bg-white gap-5 w-full items-center cursor-pointer p-3">
+                  <div className="w-18 h-18 bg-gray-100 p-1 rounded-md flex items-center justify-center">
+                    <img src={product.images[0]} alt={product.name} />
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <p className="text-black font-semibold transition-colors duration-300 text-[16px] leading-[24px] hover:text-[#00bbae]">{product.name}</p>
+                    <p className="text-gray-600 font-semibold text-[16px] leading-[24px]">₹ {product.price}</p>
+                  </div>
+                </div>
+              ))
+            )     
+          )
+        }
+      </div>
+    </div>
+  );
+};
+
+export { AnimatedDropdown, Countdown, ScrollToTop, DropDownMobileTablet, AllCategories, SearchProducts };

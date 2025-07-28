@@ -1,80 +1,24 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import {
-  ChevronDown,
-  Flame,
-  Heart,
-  MapPin,
-  Menu,
-  Phone,
-  Search,
-  ShoppingBag,
-  User,
-  X,
-} from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { ChevronDown, Flame, Heart, MapPin, Menu, Phone, Search, ShoppingCart, User, X } from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import logo from "../assets/logo.webp";
-import { AnimatedDropdown, DropDownMobileTablet } from "./AnimatedDropdown";
+import { AllCategories, AnimatedDropdown, DropDownMobileTablet, SearchProducts } from "./AnimatedDropdown";
 import { CartContext } from "../Context/CartContext";
+import { groupedCombined } from "../assets/helper.js";
 
-const products = [
+const shop_collection = [
   {
     _id: 1,
-    name: "Age 0 to 2",
-    toys: [
-      { _id: 1, name: "Football" },
-      { _id: 2, name: "Cycle" },
-      { _id: 3, name: "Doll" },
-      { _id: 4, name: "Puzzle" },
-      { _id: 5, name: "Building Blocks" },
-      { _id: 6, name: "Remote Car" },
-      { _id: 7, name: "Action Figure" },
-      { _id: 8, name: "Kitchen Set" },
-    ],
+    label: "Toys",
+    url: "/products/toys",
   },
   {
     _id: 2,
-    name: "Age 3 to 5",
-    toys: [
-      { _id: 1, name: "Football" },
-      { _id: 2, name: "Cycle" },
-      { _id: 3, name: "Doll" },
-      { _id: 4, name: "Puzzle" },
-      { _id: 5, name: "Building Blocks" },
-      { _id: 6, name: "Remote Car" },
-      { _id: 7, name: "Action Figure" },
-      { _id: 8, name: "Kitchen Set" },
-    ],
+    label: "Clothes",
+    url: "/products/clothes",
+    items: [],
   },
-  {
-    _id: 3,
-    name: "Age 6 to 9",
-    toys: [
-      { _id: 1, name: "Football" },
-      { _id: 2, name: "Cycle" },
-      { _id: 3, name: "Doll" },
-      { _id: 4, name: "Puzzle" },
-      { _id: 5, name: "Building Blocks" },
-      { _id: 6, name: "Remote Car" },
-      { _id: 7, name: "Action Figure" },
-      { _id: 8, name: "Kitchen Set" },
-    ],
-  },
-  {
-    _id: 4,
-    name: "Age 9 to 12",
-    toys: [
-      { _id: 1, name: "Football" },
-      { _id: 2, name: "Cycle" },
-      { _id: 3, name: "Doll" },
-      { _id: 4, name: "Puzzle" },
-      { _id: 5, name: "Building Blocks" },
-      { _id: 6, name: "Remote Car" },
-      { _id: 7, name: "Action Figure" },
-      { _id: 8, name: "Kitchen Set" },
-    ],
-  },
-];
-
+]
 
 const FirstHeader = () => {
   return (
@@ -88,7 +32,6 @@ const FirstHeader = () => {
             <MapPin className="w-5 h-5 text-white" />
             <p className="text-base font-medium text-white">Delhi, India</p>
           </div>
-          <Link to="/blog" className="text-base font-medium text-white">Blog</Link>
           <Link to="/faq" className="text-base font-medium text-white">FAQ's</Link>
         </div>
       </div>
@@ -98,7 +41,11 @@ const FirstHeader = () => {
 
 const SecondHeader = ({ cartItems, openCart, setOpenCart, totalItems, totalFavouriteItems }) => {
   const [openSearchMobile, setOpenSearchMobile] = useState(false);
+  const [category, setCategory] = useState(false);
+  const categoryRef = useRef(null);
   const navigate = useNavigate();
+  const [searchProduct, setSearchProduct] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
 
   const chechkingOut = () => {
     if (cartItems.length === 0) {
@@ -108,23 +55,50 @@ const SecondHeader = ({ cartItems, openCart, setOpenCart, totalItems, totalFavou
     }
   };
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(searchProduct);
+    }, 400);
+
+    return () => clearTimeout(timer);
+  }, [searchProduct]);
+
+  useEffect(() => {
+    const handleMouseLeave = (event) => {
+      if (categoryRef.current && !categoryRef.current.contains(event.relatedTarget)) {
+        setCategory(false);
+      }
+    };
+    const currentRef = categoryRef.current;
+    if (currentRef) {
+      currentRef.addEventListener("mouseleave", handleMouseLeave);
+    }
+    return () => {
+      if (currentRef) {
+        currentRef.removeEventListener("mouseleave", handleMouseLeave);
+      }
+    };
+  }, []);
+
   return (
-    <div className={`${openSearchMobile ? "h-40" : "h-20"} transition-all duration-300 w-full shadow-sm bg-white`}>
-      <div className="w-full lg:px-12 px-5 h-20 mx-auto flex justify-between gap-2 items-center">
+    <div className={`${openSearchMobile ? "h-40" : "h-14"} py-1 transition-all duration-300 w-full shadow-sm bg-white`}>
+      <div className="w-full lg:px-12 px-5 mx-auto flex justify-between gap-2 items-center">
         <Link to="/" className="w-32">
           <img src={logo} alt="" className="w-full" />
         </Link>
-        <div className="md:flex flex-1 hidden max-w-3xl">
-          <div className="w-full flex items-center bg-[#f9f9f9] rounded-md overflow-hidden">
-            <div className="flex gap-2 p-3 items-center cursor-pointer hover:bg-gray-100">
+        <div className="md:flex flex-1 hidden max-w-3xl border-[1px] border-gray-400 focus-within:border-[#00bbae] outline-none rounded-md">
+          <div className="w-full flex items-center bg-gray-50 rounded-md" ref={categoryRef}>
+            <div onClick={()=>setCategory((prev) => !prev)} className="flex gap-2 p-3 items-center cursor-pointer hover:bg-gray-100 rounded-bl-md rounded-tl-md relative">
               <p className="text-black font-medium text-base whitespace-nowrap">All Categories</p>
-              <ChevronDown className="w-5 h-5 text-gray-400" />
+              <ChevronDown className={`w-5 h-5 text-black transition-transform duration-300 ${category ? "rotate-180" : "rotate-0"}`} />
+              {category && <AllCategories />}
             </div>
-            <div className="h-8 w-px bg-gray-300"></div>
-            <div className="flex-1">
-              <input type="text" placeholder="Search products..." className="w-full px-4 py-3 bg-transparent outline-none text-black font-medium text-base placeholder:text-gray-400"/>
+            <div className="h-full w-px bg-gray-300"></div>
+            <div className="flex-1 relative">
+              <input name="searchProduct" value={searchProduct} onChange={(event)=>setSearchProduct(event.target.value)} type="text" placeholder="Search products..." className="w-full px-4 py-3 bg-transparent outline-none text-black font-medium text-base placeholder:text-gray-400" />
+              {searchProduct.length > 0 && <SearchProducts searchProduct={searchProduct} debouncedSearch={debouncedSearch} />}
             </div>
-            <button className="p-3 hover:bg-gray-200 bg-transparent duration-300 transition-colors cursor-pointer">
+            <button className="p-3 h-full hover:bg-gray-100 rounded-br-md rounded-tr-md bg-transparent duration-300 transition-colors cursor-pointer">
               <Search className="w-5 h-5 text-black" />
             </button>
           </div>
@@ -145,7 +119,7 @@ const SecondHeader = ({ cartItems, openCart, setOpenCart, totalItems, totalFavou
             <p className="absolute -top-2 -right-3 text-white bg-pink-600 p-0.5 rounded-full w-5 h-5 text-[12px] font-semibold text-center">{totalFavouriteItems}</p>
           </Link>
           <div onClick={chechkingOut} className="relative cursor-pointer">
-            <ShoppingBag className="w-6 h-6 text-black" />
+            <ShoppingCart className="w-6 h-6 text-black" />
             <p className="absolute -top-2 -right-3 text-white bg-pink-600 p-0.5 rounded-full w-5 h-5 text-[12px] font-semibold text-center">{totalItems}</p>
           </div>
           <Link to="/sign-in" className="flex gap-0.5 items-center">
@@ -167,6 +141,8 @@ const SecondHeader = ({ cartItems, openCart, setOpenCart, totalItems, totalFavou
 const ThirdHeader = ({isMobileMenuOpen, setIsMobileMenuOpen}) => {
   const [itemHovered, setItemHovered] = useState(null);
   const laptopMenuRef = useRef(null);
+  const [productItems, setProductItems] = useState([]);
+  const location = useLocation();
 
   const navigatingPageInMobileTablet = (item) => {
     if (itemHovered === item) {
@@ -176,6 +152,15 @@ const ThirdHeader = ({isMobileMenuOpen, setIsMobileMenuOpen}) => {
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
+
+  useEffect(() => {
+    setItemHovered(null);
+  }, [location]);
+
+  useEffect(() => {
+    const productsData = groupedCombined;
+    setProductItems(productsData);
+  }, []);
 
   useEffect(() => {
     const handleMouseLeave = () => {
@@ -198,14 +183,14 @@ const ThirdHeader = ({isMobileMenuOpen, setIsMobileMenuOpen}) => {
         <div className="w-full hidden lg:block lg:px-12 px-0 py-5 mx-auto">  
           <div ref={laptopMenuRef} className="flex items-center justify-between w-full" onMouseLeave={() => setItemHovered(null)}>
             <div className="flex gap-5 items-center relative">
-              <Link onMouseEnter={() => setItemHovered(null)} to="/" className="text-[16px] leading-[24px] text-black font-semibold transition-colors duration-300 hover:text-[#00bbae]">Home</Link>
-              <Link onMouseEnter={() => setItemHovered(null)} to="/about" className="text-[16px] leading-[24px] text-black font-semibold transition-colors duration-300 hover:text-[#00bbae]">About</Link>
-              <div onMouseEnter={() => setItemHovered("shopByAge")} className="flex gap-1 items-center cursor-pointer text-black font-semibold transition-colors duration-300 hover:text-[#00bbae]">
-                <p className="text-[16px] leading-[24px] font-semibold">Shop By Age</p>
-                <ChevronDown className={`w-5 h-5 transition-transform duration-300 ${itemHovered === "shopByAge" ? "rotate-180" : "rotate-0"}`} />
+              <Link onMouseEnter={() => setItemHovered(null)} to="/" className={`${location.pathname === "/" ? "text-[#00bbae]" : "text-black"} text-[16px] leading-[24px] font-semibold transition-colors duration-300 hover:text-[#00bbae]`}>Home</Link>
+              <Link onMouseEnter={() => setItemHovered(null)} to="/about" className={`${location.pathname === "/about" ? "text-[#00bbae]" : "text-black"} text-[16px] leading-[24px] font-semibold transition-colors duration-300 hover:text-[#00bbae]`}>About Us</Link>
+              <div onMouseEnter={() => setItemHovered("shopByAge")} className="flex gap-1 items-center text-black font-semibold transition-colors duration-300 hover:text-[#00bbae]">
+                <p className="text-[16px] leading-[24px] font-semibold cursor-pointer">Shop By Age</p>
+                <ChevronDown className={`w-5 h-5 transition-transform duration-300 cursor-pointer ${itemHovered === "shopByAge" ? "rotate-180" : "rotate-0"}`} />
                 {
                   itemHovered === "shopByAge" && (
-                    <AnimatedDropdown items={products} />
+                    <AnimatedDropdown items={productItems} />
                   )
                 }
               </div>
@@ -213,40 +198,15 @@ const ThirdHeader = ({isMobileMenuOpen, setIsMobileMenuOpen}) => {
                 <p className="text-[16px] leading-[24px] font-semibold">Shop By Collection</p>
                 <p id="items" className="text-[11px] leading-[11px] text-white bg-[#198754] p-1.5 rounded-md font-semibold">SALE</p>
                 <ChevronDown className={`w-5 h-5 transition-transform duration-300 ${itemHovered === "shopByCollection" ? "rotate-180" : "rotate-0"}`} />
-                {
+                {/* {
                   itemHovered === "shopByCollection" && (
-                    <AnimatedDropdown items={products} />
+                    <AnimatedDropdown items={shop_collection} />
                   )
-                }
+                } */}
               </div>
-              <div onMouseEnter={() => setItemHovered("newArrivals")} className="flex gap-1 items-center cursor-pointer text-black transition-colors duration-300 hover:text-[#00bbae]">
-                <p className="text-[16px] leading-[24px] font-semibold">New Arrivals</p>
-                <p id="items" className="text-[11px] leading-[11px] text-white bg-pink-600 p-1.5 rounded-md font-semibold">HOT</p>
-                <ChevronDown className={`w-5 h-5 transition-transform duration-300 ${itemHovered === "newArrivals" ? "rotate-180" : "rotate-0"}`} />
-                {
-                  itemHovered === "newArrivals" && (
-                    <AnimatedDropdown items={products} />
-                  )
-                }
-              </div>
-              <div onMouseEnter={() => setItemHovered("trending")} className="flex gap-1 items-center cursor-pointer text-black transition-colors duration-300 hover:text-[#00bbae]">
-                <p className="text-[16px] leading-[24px] font-semibold">Trending</p>
-                <ChevronDown className={`w-5 h-5 transition-transform duration-300 ${itemHovered === "trending" ? "rotate-180" : "rotate-0"}`} />
-                {
-                  itemHovered === "trending" && (
-                    <AnimatedDropdown items={products} />
-                  )
-                }
-              </div>
-              <div onMouseEnter={() => setItemHovered("offer")} className="flex gap-2 items-center cursor-pointer text-black transition-colors duration-300 hover:text-[#00bbae]">
-                <p className="text-[16px] leading-[24px] font-semibold">Offer</p>
-                <ChevronDown className={`w-5 h-5 transition-transform duration-300 ${itemHovered === "offer" ? "rotate-180" : "rotate-0"}`} />
-                {
-                  itemHovered === "offer" && (
-                    <AnimatedDropdown items={products} />
-                  )
-                }
-              </div>
+              <Link to="/new-arrivals" onMouseEnter={() => setItemHovered("newArrivals")} className={`${location.pathname === "/new-arrivals" ? "text-[#00bbae]" : "text-black"} text-[16px] leading-[24px] font-semibold cursor-pointer transition-colors duration-300 hover:text-[#00bbae]`}>New Arrivals</Link>
+              <p onMouseEnter={() => setItemHovered("trending")} className="text-[16px] leading-[24px] font-semibold  cursor-pointer text-black transition-colors duration-300 hover:text-[#00bbae]">Trending</p>
+              <p onMouseEnter={() => setItemHovered("offer")} className="cursor-pointer text-black transition-colors duration-300 hover:text-[#00bbae] text-[16px] leading-[24px] font-semibold">Offer</p>
             </div>
             <div className="border border-gray-200 rounded-full bg-[#fce7ef] flex gap-0.5 items-center py-2 px-5">
               <Flame className="w-5 h-5 text-[#dc3545]" fill="#dc3545" />
@@ -278,7 +238,7 @@ const ThirdHeader = ({isMobileMenuOpen, setIsMobileMenuOpen}) => {
                   </div>
                   {
                     itemHovered === "shopByAge" && (
-                      <DropDownMobileTablet items={products} />
+                      <DropDownMobileTablet items={productItems} />
                     )
                   }
                 </div>
@@ -292,7 +252,7 @@ const ThirdHeader = ({isMobileMenuOpen, setIsMobileMenuOpen}) => {
                   </div>
                   {
                     itemHovered === "shopByCollection" && (
-                      <DropDownMobileTablet items={products} />
+                      <DropDownMobileTablet items={productItems} />
                     )
                   }
                 </div>
@@ -340,9 +300,8 @@ const Header = () => {
   return (
     <div>
       <FirstHeader />
-      <div className={`w-full transition-all duration-300 ${isSticky ? "fixed top-0 shadow-md z-40" : ""}`}>
+      <div className={`w-full transition-all duration-300 ${isSticky ? "fixed top-0 shadow-md z-30" : ""}`}>
         <SecondHeader totalFavouriteItems={totalFavouriteItems} cartItems={cartItems} openCart={openCart} setOpenCart={setOpenCart} totalItems={totalItems} />
-        <hr />
         <ThirdHeader isMobileMenuOpen={isMobileMenuOpen} setIsMobileMenuOpen={setIsMobileMenuOpen} />
       </div>
     </div>

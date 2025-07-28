@@ -24,6 +24,12 @@ import SignIn from "./Pages/SignIn";
 import WishList from "./Pages/WishList";
 import Account from "./Pages/Account";
 import BlogDetails from "./Pages/BlogDetails";
+import Toys from "./Pages/Toys";
+import Clothes from "./Pages/Clothes";
+import ToysDetails from "./Pages/ToysDetails";
+import ClothesDetails from "./Pages/ClothesDetails";
+import SpecificToyProducts from "./Pages/SpecificToyProducts";
+import SpecificClotheProducts from "./Pages/SpecificClotheProducts";
 
 const product = {
   name: "Outdoor Swing Set",
@@ -98,8 +104,14 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
-          <Route path="/products" element={<Products />} />
+          <Route path="/products/:category?/:slug?" element={<Products />} />
           <Route path="/product-details/:url" element={<ProductDetails />} />
+          <Route path="/products/toys" element={<Toys />} />
+          <Route path="/products/toys/item/:url" element={<SpecificToyProducts />} />
+          <Route path="/products/toys/:url" element={<ToysDetails />} />
+          <Route path="/products/clothes" element={<Clothes />} />
+          <Route path="/products/clothes/item/:url" element={<SpecificClotheProducts />} />
+          <Route path="/products/clothes/:url" element={<ClothesDetails />} />
           <Route path="/faq" element={<Faq />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/cart" element={<CartDetails />} />
@@ -110,7 +122,7 @@ const App = () => {
           <Route path="/sign-up" element={<SignUp />} />
           <Route path="/sign-in" element={<SignIn />} />
           <Route path="/checkout" element={<Checkout />} />
-          <Route path="/blog" element={<Blog />} />UserDashboard
+          <Route path="/blog" element={<Blog />} />
           <Route path="/wishList" element={<WishList />} />
           <Route path="/account" element={<Account />} />
           <Route path="/blog-details" element={<BlogDetails />} />

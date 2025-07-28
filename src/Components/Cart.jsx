@@ -20,8 +20,7 @@ const Cart = () => {
   };
 
   return (
-    <div
-      className={`fixed right-0 top-0 w-full sm:w-[450px] bg-white lg:w-96 h-full sm:h-screen z-50 transition-transform duration-300 ${ openCart ? "translate-x-0" : "translate-x-full" }`}>
+    <div className={`fixed right-0 top-0 w-full sm:w-[450px] bg-white lg:w-96 h-full sm:h-screen z-50 transition-transform duration-300 ${ openCart ? "translate-x-0" : "translate-x-full" }`}>
       <div className="flex flex-col w-full h-full">
         <div className="flex justify-between w-full items-center p-4">
           <div className="flex gap-3 items-center">

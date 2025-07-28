@@ -8,6 +8,7 @@ const CartContextProvider = ({ children }) => {
   const [itemDescriptions, setItemDescriptions] = useState([]);
   const [isQuickBuyClicked, setIsQuickBuyClicked] = useState(null);
   const [formSubmit, setFormSubmit] = useState(false);
+  const [isForgotPasswordOpen, setIsForgotPasswordOpen] = useState(true);
 
   const [totalFavouriteItems, setTotalFavouriteItems] = useState(() => {
     const stored = localStorage.getItem("totalFavouriteItems");
@@ -210,7 +211,10 @@ const CartContextProvider = ({ children }) => {
     localStorage.setItem("totalItems", JSON.stringify(totalItems));
     localStorage.setItem("totalPrice", JSON.stringify(totalPrice));
     localStorage.setItem("favouriteItems", JSON.stringify(favouriteItems));
-    localStorage.setItem("totalFavouriteItems", JSON.stringify(totalFavouriteItems));
+    localStorage.setItem(
+      "totalFavouriteItems",
+      JSON.stringify(totalFavouriteItems)
+    );
   }, [cartItems, totalItems, totalPrice, favouriteItems, totalFavouriteItems]);
 
   const contextValues = {
@@ -240,6 +244,8 @@ const CartContextProvider = ({ children }) => {
     totalFavouriteItems,
     favouriteItems,
     removeFavouriteItemsWishList,
+    isForgotPasswordOpen,
+    setIsForgotPasswordOpen,
   };
 
   return (

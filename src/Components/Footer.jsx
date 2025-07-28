@@ -55,6 +55,11 @@ const footer_links = [
     title: "Refund and Returns",
     url: "/refund-returns",
   },
+  {
+    _id: 9,
+    title: "Blog",
+    url: "/blog",
+  },
 ];
 
 const footer_social = [
@@ -92,6 +97,10 @@ const Footer = () => {
     event.preventDefault();
   };
 
+  const length = footer_links?.length;
+  const firstHalf = footer_links.slice(0, Math.ceil(length / 2));
+  const secondHalf = footer_links.slice(Math.ceil(length / 2), length);
+
   return (
     <div className="w-full bg-[#f8f9fa]">
       <div className="flex flex-col gap-14 lg:px-12 px-5 mx-auto w-full py-10">
@@ -111,7 +120,7 @@ const Footer = () => {
             </div>
             <div className="flex flex-col gap-3 w-full">
               {
-                footer_links.slice(0, 4).map((item) => (
+                firstHalf.map((item) => (
                   <Link to={item.url} className="relative w-fit after:content-[''] after:absolute after:left-0 after:bottom-0 after:h-0.5 after:bg-[#00bbae] after:w-0 after:transition-all after:duration-300 hover:after:w-full text-[16px] leading-[24px] font-semibold opacity-50 text-[#212529] cursor-pointer hover:opacity-100 transition-all duration-300 hover:text-[#00bbae]" key={item._id}>{item.title}</Link>
                 ))
               }
@@ -124,7 +133,7 @@ const Footer = () => {
             </div>
             <div className="flex flex-col gap-3 w-full">
               {
-                footer_links.slice(4).map((item) => (
+                secondHalf.map((item) => (
                   <Link to={item.url} className="relative w-fit after:content-[''] after:absolute after:left-0 after:bottom-0 after:h-0.5 after:bg-[#00bbae] after:w-0 after:transition-all after:duration-300 hover:after:w-full text-[16px] leading-[24px] font-semibold opacity-50 text-[#212529] cursor-pointer hover:opacity-100 transition-all duration-300 hover:text-[#00bbae]" key={item._id}>{item.title}</Link>
                 ))
               }
@@ -168,7 +177,7 @@ const Footer = () => {
           <img src={footer_girl} alt="" className="w-40 md:w-52" />
           <img src={footer_boy} alt="" className="w-40 md:w-52" />
         </div>
-        <p className="text-black font-semibold absolute bottom-5 text-center text-[14px] leading-[21px] w-full">©️ 2025 Gofy.app. All Rights Reserved Created by BMDU</p>
+        <p className="text-[#F88E0F] font-semibold absolute bottom-5 text-center text-[14px] leading-[21px] w-full">© 2025 Gofy.app. All Rights Reserved Created by BMDU</p>
        </div>
     </div>
   );

@@ -32,7 +32,7 @@ const ProductsCollection = ({ color }) => {
         <p className="text-[18px] leading-[27px] font-semibold underline text-center mb-5" style={{ color }}>Best Selling Products</p>
         <p className="text-[32px] md:text-[38px] leading-[48px] md:leading-[57px] font-bold text-center text-[#212529] mb-10">Browsing Our Trending Items</p>
         <div className="relative">
-          <Swiper modules={[Autoplay, Navigation]} autoplay={{ delay: 3000, disableOnInteraction: false }} navigation={{ nextEl: ".swiper-button-next", prevEl: ".swiper-button-prev" }} breakpoints={{ 0: { slidesPerView: 1, spaceBetween: 20 }, 480: { slidesPerView: 2, spaceBetween: 20 }, 768: { slidesPerView: 3, spaceBetween: 20 }, 1024: { slidesPerView: 3, spaceBetween: 20 }, 1280 : { slidesPerView: 4, spaceBetween: 20 } }} loop={true} grabCursor={true}>
+          <Swiper modules={[Autoplay, Navigation]} autoplay={{ delay: 3000, disableOnInteraction: false }} navigation={{ nextEl: ".swiper-button-next-pc", prevEl: ".swiper-button-prev-pc" }} breakpoints={{ 0: { slidesPerView: 1, spaceBetween: 20 }, 480: { slidesPerView: 2, spaceBetween: 20 }, 768: { slidesPerView: 3, spaceBetween: 20 }, 1024: { slidesPerView: 3, spaceBetween: 20 }, 1280 : { slidesPerView: 4, spaceBetween: 20 }, 1536: { slidesPerView: 6, spaceBetween: 20, }, }} loop={true} grabCursor={true}>
             {
               product_list.map((product) => {
                 const isHovered = hoveredId === product._id;
@@ -61,7 +61,7 @@ const ProductsCollection = ({ color }) => {
                         )
                       }
                       <div className="flex flex-col gap-2 px-2">
-                        <div style={{ boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)" }} className="bg-white rounded-md flex items-center justify-center mx-5 py-2">
+                        <div style={{ boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)" }} className="w-60 mx-auto">
                           <Countdown />
                         </div>
                         <p className="text-[20px] leading-[30px] font-semibold text-[#212529] mt-4">{product.name}</p>
@@ -85,8 +85,8 @@ const ProductsCollection = ({ color }) => {
               })
             }
           </Swiper>
-          <ChevronLeft className="swiper-button-prev absolute left-0 top-1/2 transform -translate-y-1/2 z-10 bg-[#e9f9fc] text-black rounded-full hover:bg-[#f8f9fa] cursor-pointer" style={{ boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)" }} />
-          <ChevronRight className="swiper-button-next absolute right-0 top-1/2 transform -translate-y-1/2 z-10 bg-[#e9f9fc] text-black rounded-full hover:bg-[#f8f9fa] cursor-pointer" style={{ boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)" }} />
+          <ChevronLeft className="swiper-button-prev-pc absolute left-0 top-32 p-1 w-10 h-10 transform -translate-y-1/2 z-10 bg-[#e9f9fc] text-black rounded-full hover:bg-[#f8f9fa] cursor-pointer" style={{ boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)" }} />
+          <ChevronRight className="swiper-button-next-pc absolute right-0 top-32 p-1 w-10 h-10 transform -translate-y-1/2 z-10 bg-[#e9f9fc] text-black rounded-full hover:bg-[#f8f9fa] cursor-pointer" style={{ boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)" }} />
         </div>
         <Link to="/products" className="flex justify-center items-center w-full ml-0 sm:ml-4">
           <p className="mt-5 rounded-full py-2 px-8 font-semibold text-[16px] leading-[24px] transition-all duration-300 text-white hover:bg-amber-700 hover:scale-100 cursor-pointer bg-amber-500 flex items-center justify-center">VIEW ALL</p>

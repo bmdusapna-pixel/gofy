@@ -1,83 +1,36 @@
-import React, { useContext, useState, useEffect } from "react";
-import { ChevronDown, Heart, Menu, MoveRight, Star, ShoppingBag } from "lucide-react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
+import { ChevronDown, Heart, Menu, MoveRight, ShoppingBag, Star, X } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
-import { CartContext } from "../Context/CartContext";
-import { clothe_items, slugToAgeGroup, toys_items, unslugify } from '../assets/helper';
+import { CartContext } from "../Context/CartContext.jsx";
+import { priceRanges, unslugify } from "../assets/helper.js";
+import FilterCategory from "./FilterCategory.jsx";
+import FilterColorCategory from "./FilterColorCategory.jsx";
 
-const product_categories = [
-  { _id: 1, name: "Dolls" },
-  { _id: 2, name: "Educational Toy" },
-  { _id: 3, name: "Games and puzzle" },
-  { _id: 4, name: "Indoor Play" },
-  { _id: 5, name: "Kids Books" },
-  { _id: 6, name: "Outdoor Toy" },
-  { _id: 7, name: "Rockers & Rides" },
-  { _id: 8, name: "Toy Figures" },
-  { _id: 9, name: "Uncategorized" },
-  { _id: 10, name: "Vehicles Toys" }
+const categories = [
+  { _id: 1, name: "Toys" },
+  { _id: 2, name: "Clothes" },
 ];
 
-const Products = () => {
+const AllProducts = ({  }) => {
   const {category, slug} = useParams();
   const [productItems, setProductItems] = useState([]);
+  const { addToCart, addFavouriteItems } = useContext(CartContext);
   const [hoveredProductCategory, setHoveredProductCategory] = useState(null);
   const [productHovered, setProductHoverd] = useState(null);
-  const { addToCart, addFavouriteItems } = useContext(CartContext);
-
-  useEffect(() => {
-    let items = [];
-    if (category === "age" && slugToAgeGroup[slug]) {
-      const ageGroup = slugToAgeGroup[slug];
-      const filteredClothes = clothe_items.filter(item => item.age_group === ageGroup).map(item => ({ ...item, category: "clothes" }));
-      const filteredToys = toys_items.filter(item => item.age_group === ageGroup).map(item => ({ ...item, category: "toys" }));
-      items = [...filteredClothes, ...filteredToys];
-      setProductItems(items);
-    } else if (!category && !slug) {
-      setProductItems([...clothe_items, ...toys_items]);
-    } else if(category === "toys") {
-      if(slug) {
-        items = toys_items.filter(item => unslugify(slug) === item.sub_category);
-        setProductItems(items);
-      } else {
-        items = toys_items.map(item => ({ ...item, category: "toys" }));console.log(items)
-        setProductItems(items);
-      } 
-    } else if(category === "clothes") {
-      if(slug) {
-        items = clothe_items.filter(item => unslugify(slug) === item.sub_category);
-        setProductItems(items);
-      } else {
-        items = clothe_items.map(item => ({ ...item, category: "clothes" }));
-        setProductItems(items);
-      }
-    }
-  }, [category, slug]);
-
-  const addProductToCart = (product, event) => {
-    event.stopPropagation();
-    event.preventDefault();
-    addToCart(product);
-  };
-
-  const addFavouriteItemsWishList = (product, event) => { 
-    event.stopPropagation();
-    event.preventDefault();
-    addFavouriteItems(product);
-  };
-
+  
   return (
     <div className="w-full bg-[#f9f9f9]">
       <div className="w-full lg:px-12 px-5 mx-auto py-10">
         <div className="flex gap-5 w-full">
           <div className="lg:w-1/4 lg:flex hidden flex-col gap-5">
-            <div onMouseLeave={() => setHoveredProductCategory(null)} className="border-gray-200 border-[2px] bg-white rounded-2xl p-6 flex flex-col gap-8">
+            <div onMouseLeave={() => setHoveredProductCategory(null)} className="border-gray-200 border-[2px] bg-white rounded-2xl p-6 flex flex-col gap-5">
               <div className="flex flex-col gap-2 w-full">
-                <p className="text-[18px] leading-[27px] font-semibold text-black">Product Categories</p>
+                <p className="text-[18px] leading-[27px] font-semibold text-black">Category</p>
                 <hr className="w-14 rounded-2xl bg-[#f88e0f] h-1 border-none" />
               </div>
               <div className="flex flex-col gap-2 w-full">
                 {
-                  product_categories.map((item) => (
+                  categories.map((item) => (
                     <div className="flex w-full items-center cursor-pointer text-[#69778a] hover:text-[#00bbae] transition-colors duration-300" key={item._id} onMouseEnter={()=>setHoveredProductCategory(item._id)}>
                       <MoveRight className={`w-5 h-5 ${hoveredProductCategory === item._id ? "block" : "hidden"}`} />
                       <p className={`text-[16px] leading-[24px] font-semibold transition-transform duration-500 ${hoveredProductCategory === item._id ? "translate-x-1" : "translate-x-0"}`}>{item.name}</p>
@@ -181,4 +134,5 @@ const Products = () => {
   );
 };
 
-export default Products;
+
+export default AllProducts;

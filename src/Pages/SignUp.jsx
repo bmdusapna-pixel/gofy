@@ -10,6 +10,7 @@ const SignUp = () => {
     name: "",
     email: "",
     password: "",
+    phone: "",
   });
 
   const inputChangeHandler = (event) => {
@@ -42,20 +43,27 @@ const SignUp = () => {
       <div className="max-w-xl mx-auto lg:px-0 px-5">
         <div className="w-full flex flex-col gap-5 bg-white rounded-2xl p-5 md:p-10">
           <p className="text-[32px] md:text-[38px] leading-[48px] md:leading-[57px] font-semibold text-black">Sign up</p>
-          <form onSubmit={submitFrom} className="w-full border border-gray-200 rounded-2xl p-5 flex flex-col gap-2 sm:gap-5">
+          <form onSubmit={submitFrom} className="w-full border border-gray-200 rounded-2xl p-5 flex flex-col gap-2 sm:gap-4">
             <div className="flex flex-col gap-1 w-full">
               <div className="flex gap-2 items-center">
                 <p className="text-[16px] leading-[24px] font-semibold text-black">Name</p>
                 <Star className="w-2 h-2 text-[#dc3545] self-start translate-y-2" fill="#dc3545" />
               </div>
-              <input type="text" className="transition-colors duration-300 text-[18px] leading-[27px] w-full px-4 py-2 border border-gray-200 focus:border-[#00bbae] outline-none rounded-md" autoComplete="current-name" placeholder="Name" />
+              <input required onChange={inputChangeHandler} value={singUpData.name} name="name" type="text" className="transition-colors duration-300 text-[18px] leading-[27px] w-full px-4 py-2 border border-gray-200 focus:border-[#00bbae] outline-none rounded-md" autoComplete="current-name" placeholder="Name" />
             </div>
             <div className="flex flex-col gap-1 w-full">
               <div className="flex gap-2 items-center">
                 <p className="text-[16px] leading-[24px] font-semibold text-black">Email address</p>
                 <Star className="w-2 h-2 text-[#dc3545] self-start translate-y-2" fill="#dc3545" />
               </div>
-              <input type="email" className="transition-colors duration-300 text-[18px] leading-[27px] w-full px-4 py-2 border border-gray-200 focus:border-[#00bbae] outline-none rounded-md" autoComplete="current-email" placeholder="Email" />
+              <input required onChange={inputChangeHandler} value={singUpData.email} name="email" type="email" className="transition-colors duration-300 text-[18px] leading-[27px] w-full px-4 py-2 border border-gray-200 focus:border-[#00bbae] outline-none rounded-md" autoComplete="current-email" placeholder="Email" />
+            </div>
+            <div className="flex flex-col gap-1 w-full">
+              <div className="flex gap-2 items-center">
+                <p className="text-[16px] leading-[24px] font-semibold text-black">Phone</p>
+                <Star className="w-2 h-2 text-[#dc3545] self-start translate-y-2" fill="#dc3545" />
+              </div>
+              <input required onChange={inputChangeHandler} value={singUpData.phone} name="phone" type="tel" className="transition-colors duration-300 text-[18px] leading-[27px] w-full px-4 py-2 border border-gray-200 focus:border-[#00bbae] outline-none rounded-md" autoComplete="current-name" placeholder="Phone" />
             </div>
             <div className="flex flex-col gap-1 w-full">
               <div className="flex gap-2 items-center">

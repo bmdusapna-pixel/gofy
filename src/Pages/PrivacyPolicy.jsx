@@ -3,7 +3,7 @@ import React from "react";
 const privacy_policy = [
   {
     heading: "Lorem ipsum dolor sit amet? Who we are",
-    description: "Lorem ipsum dolor sit amet. Our website address is: http://toyup.local.",
+    description: "Lorem ipsum dolor sit amet. Our website address is: http://gofy.in.",
   },
   {
     heading: "Lorem ipsum why do we collect comments? Comments",

@@ -7,13 +7,16 @@ import age_4 from "../assets/age_4.png";
 import age_5 from "../assets/age_5.png";
 import ProductsCollection from "./ProductsCollection";
 import { ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const age_category_array = [
-  { _id: 1, image: age_1, age_difference: "0-3 years", bg: "#06a096" },
-  { _id: 2, image: age_2, age_difference: "4-5 years", bg: "#e91e63" },
-  { _id: 3, image: age_3, age_difference: "6-7 years", bg: "#28a745" },
-  { _id: 4, image: age_4, age_difference: "8-9 years", bg: "#dc3545" },
-  { _id: 5, image: age_5, age_difference: "10-11 years", bg: "#0d6efd" },
+  { _id: 1, image: age_1, age_difference: "0-2 years", bg: "#06a096", url: "age/zero-to-two" },
+  { _id: 2, image: age_2, age_difference: "2-4 years", bg: "#e91e63", url: "age/two-to-four" },
+  { _id: 3, image: age_3, age_difference: "4-6 years", bg: "#28a745", url: "age/four-to-six" },
+  { _id: 4, image: age_4, age_difference: "6-8 years", bg: "#dc3545", url: "age/six-to-eight" },
+  { _id: 5, image: age_5, age_difference: "8-10 years", bg: "#0d6efd", url: "age/eight-to-ten" },
+  { _id: 6, image: age_1, age_difference: "10-12 years", bg: "#dc3545", url: "age/ten-to-twelve" },
+  { _id: 7, image: age_3, age_difference: "12-14 years", bg: "#0d6efd", url: "age/twelve-to-fourteen" },
 ];
 
 const CTA = () => {
@@ -39,17 +42,17 @@ const CTA = () => {
       <div className="flex lg:px-12 sm:px-10 px-5 flex-col gap-2 w-full mx-auto items-center justify-center">
         <p className="text-[32px] md:text-[38px] leading-[48px] md:leading-[57px] text-[#212529] font-bold">Shop By Age</p>
         <p className="text-[16px] leading-[24px] font-normal text-gray-500">Lorem ipsum dolor sit amet consectetur. Id fames there are many vulputate eget dolor.</p>
-        <div className="grid lg:grid-cols-5 md:grid-cols-3 grid-cols-2 gap-0 sm:gap-10 w-full my-5 sm:my-10 items-center">
+        <div className="grid lg:grid-cols-7 md:grid-cols-3 grid-cols-2 gap-0 sm:gap-5 w-full my-5 sm:my-10 items-center">
           {
             age_category_array.map((item) => (
-              <div key={item._id} className="flex flex-col gap-5 w-full items-center relative">
+              <Link to={`/products/${item.url}`} key={item._id} className="flex flex-col gap-5 w-full items-center relative">
                 <div style={{ backgroundColor: item.bg }} className="flex items-center justify-center sm:w-44 w-36 sm:h-44 h-36 rounded-full">
                   <img src={item.image} alt="" className="w-20 sm:w-24 absolute z-10 h-24 sm:h-32 top-[23px]" />
                   <div className="w-28 h-28 border border-white border-dashed rounded-full absolute"></div>
                   <div className="absolute w-full h-10 bg-white bottom-8"></div>
                 </div>
                 <p className="relative bottom-8 text-[18px] leading-[27px] text-[#000000] font-semibold">{item.age_difference}</p>
-              </div>
+              </Link>
             ))
           }
         </div>

@@ -106,10 +106,10 @@ const Banners = () => {
                 banners_first.map((item) => {
                     const IconComponent = iconMap[item.icon];
                     return (
-                        <div key={item._id} style={{ backgroundColor: item.card_bg_color }} className="flex gap-2 md:gap-5 w-full rounded-2xl p-5 md:p-10 items-center">
+                        <div key={item._id} style={{ backgroundColor: item.card_bg_color }} className="flex gap-2 md:gap-5 w-full rounded-2xl p-5 md:p-10 lg:p-5 items-center">
                             <div className="w-full md:w-1/3 flex items-center justify-center">
-                                <Badge className="w-20 h-20 rounded-full absolute z-5" style={{ color: item.icon_bg_color }} />
-                                <div style={{ backgroundColor: item.icon_bg_color }} className="w-14 z-10 rounded-full p-2 h-14 flex items-center justify-center">
+                                <Badge className="w-16 md:w-20 h-16 md:h-20 rounded-full absolute z-5" style={{ color: item.icon_bg_color }} />
+                                <div style={{ backgroundColor: item.icon_bg_color }} className="md:w-14 w-10 z-10 rounded-full p-2 md:h-14 h-10 flex items-center justify-center">
                                     <IconComponent className="w-6 h-6 text-white" />
                                 </div>
                             </div>
@@ -123,7 +123,7 @@ const Banners = () => {
             }
         </div>
         <div className="w-full">
-            <Swiper spaceBetween={20} breakpoints={{320:{slidesPerView:1},640:{slidesPerView:2},768:{slidesPerView:3},1024:{slidesPerView:3}}}>
+            <Swiper spaceBetween={20} breakpoints={{ 320:{slidesPerView:1}, 640:{slidesPerView:2}, 1024:{slidesPerView:3}, 1536: { slidesPerView: 4, spaceBetween: 20 }}}>
                 {
                     banners_second.map((item) => (
                         <SwiperSlide key={item._id}>
