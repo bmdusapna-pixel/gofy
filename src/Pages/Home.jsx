@@ -6,7 +6,6 @@ import Deals from "../Components/Deals";
 import Banners from "../Components/Banners";
 
 const Home = () => {
-  
   return (
     <div>
       <HeroSection />

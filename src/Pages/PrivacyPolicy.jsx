@@ -2,48 +2,34 @@ import React from "react";
 
 const privacy_policy = [
   {
-    heading: "Lorem ipsum dolor sit amet? Who we are",
-    description: "Lorem ipsum dolor sit amet. Our website address is: http://gofy.in.",
+    heading: "Introduction",
+    description:
+      "At Gofy Kids Mall, Model Town, we value your privacy and are committed to protecting the personal information you share with us. This Privacy Policy outlines how we collect, use, and safeguard your data when you visit our store or interact with our services.",
   },
   {
-    heading: "Lorem ipsum why do we collect comments? Comments",
+    heading: "Information We Collect",
     description:
-      "Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. When visitors leave comments on the site we collect the data shown in the comments form, and also the visitor’s IP address and browser user agent string to help spam detection. An anonymized string created from your email address (also called a hash) may be provided to the Gravatar service to see if you are using it. The Gravatar service privacy policy is available here: https://automattic.com/privacy/. After approval of your comment, your profile picture is visible to the public in the context of your comment.",
+      "We collect only the essential information necessary, such as your name, contact number, and email address, at the time of billing, inquiry, or participation in promotional events. This information is used solely for processing transactions, providing customer support, and sharing relevant offers or updates with your consent.",
   },
   {
-    heading: "Lorem ipsum can images leak data? Media",
+    heading: "Data Sharing and Third Parties",
     description:
-      "Lorem ipsum dolor sit amet consectetur adipiscing elit. If you upload images to the website, you should avoid uploading images with embedded location data (EXIF GPS) included. Visitors to the website can download and extract any location data from images on the website.",
+      "We do not sell, rent, or trade your data with any third parties. All customer data is stored securely and is accessible only to authorised personnel. Any third-party service providers we engage with are also bound to maintain the confidentiality of your information.",
   },
   {
-    heading: "Lorem ipsum why do we use cookies? Cookies",
+    heading: "Data Security",
     description:
-      "Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua ut enim ad minim veniam. If you leave a comment on our site you may opt-in to saving your name, email address and website in cookies. These are for your convenience so that you do not have to fill in your details again when you leave another comment. These cookies will last for one year. If you visit our login page, we will set a temporary cookie to determine if your browser accepts cookies. This cookie contains no personal data and is discarded when you close your browser. When you log in, we will also set up several cookies to save your login information and your screen display choices. Login cookies last for two days, and screen options cookies last for a year. If you select 'Remember Me', your login will persist for two weeks. If you log out of your account, the login cookies will be removed. If you edit or publish an article, an additional cookie will be saved in your browser. This cookie includes no personal data and simply indicates the post ID of the article you just edited. It expires after 1 day.",
+      "Our systems are designed to protect your data from unauthorized access, loss, or misuse. While we take all necessary steps to secure your information, you acknowledge that no method of data transmission over the internet or physical system is 100% secure.",
   },
   {
-    heading: "Lorem ipsum what about other websites? Embedded content from other websites",
+    heading: "Changes to This Policy",
     description:
-      "Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Articles on this site may include embedded content (e.g. videos, images, articles, etc.). Embedded content from other websites behaves in the exact same way as if the visitor has visited the other website. These websites may collect data about you, use cookies, embed additional third-party tracking, and monitor your interaction with that embedded content, including tracking your interaction with the embedded content if you have an account and are logged in to that website.",
+      "This Privacy Policy may be updated from time to time to reflect changes in our practices or legal requirements. We encourage you to review this policy periodically to stay informed.",
   },
   {
-    heading: "Lorem ipsum who sees your data? Who we share your data with",
+    heading: "Your Consent",
     description:
-      "Lorem ipsum dolor sit amet consectetur. If you request a password reset, your IP address will be included in the reset email.",
-  },
-  {
-    heading: "Lorem ipsum how long do we store your data? How long we retain your data",
-    description:
-      "Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. If you leave a comment, the comment and its metadata are retained indefinitely. This is so we can recognize and approve any follow-up comments automatically instead of holding them in a moderation queue. For users that register on our website (if any), we also store the personal information they provide in their user profile. All users can see, edit, or delete their personal information at any time (except they cannot change their username). Website administrators can also see and edit that information.",
-  },
-  {
-    heading: "Lorem ipsum what control do you have? What rights you have over your data",
-    description:
-      "Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. If you have an account on this site, or have left comments, you can request to receive an exported file of the personal data we hold about you, including any data you have provided to us. You can also request that we erase any personal data we hold about you. This does not include any data we are obliged to keep for administrative, legal, or security purposes.",
-  },
-  {
-    heading: "Lorem ipsum where does your data go? Where your data is sent",
-    description:
-      "Lorem ipsum dolor sit amet consectetur. Visitor comments may be checked through an automated spam detection service.",
+      "By visiting Gofy Kids Mall or using our services, you agree to the terms of this Privacy Policy.",
   },
 ];
 
@@ -51,15 +37,19 @@ const PrivacyPolicy = () => {
   return (
     <div className="w-full h-full py-10 bg-[#f8f9fa]">
       <div className="w-full mx-auto flex flex-col gap-8 px-5 lg:px-12">
-        <p className="text-[32px] md:text-[38px] leading-[48px] md:leading-[57px] text-black font-semibold">Privacy Policy</p>
-        {
-          privacy_policy.map((item, index) => (
-            <div className="flex flex-col gap-1 w-full" key={index}>
-              <p className="text-[#001430] text-[27px] leading-[40px] font-bold">{item.heading}</p>
-              <p className="text-[#69778a] text-[16px] leading-[24px] font-medium">{item.description}</p>
-            </div>
-          ))
-        }
+        <p className="text-[32px] md:text-[38px] leading-[48px] md:leading-[57px] text-black font-semibold">
+          Privacy Policy
+        </p>
+        {privacy_policy.map((item, index) => (
+          <div className="flex flex-col gap-1 w-full" key={index}>
+            <p className="text-[#001430] text-[27px] leading-[40px] font-bold">
+              {item.heading}
+            </p>
+            <p className="text-[#69778a] text-[16px] leading-[24px] font-medium">
+              {item.description}
+            </p>
+          </div>
+        ))}
       </div>
     </div>
   );

@@ -55,43 +55,78 @@ const HeroSection = () => {
       <div className="w-full bg-[#fce7ef] px-5 py-5 lg:py-0">
         <div className="w-full mx-auto flex items-center justify-center">
           <Slider {...settings} className="w-full">
-            {
-              hero_slider_array.map((item) => (
-                <div key={item._id}>
-                  <div className="flex flex-col lg:flex-row items-center justify-center gap-10 h-full lg:h-[550px] 2xl:h-[750px]">
-                    <div className="w-full lg:w-1/3 flex items-center justify-center">
-                      <img src={item.image_url} alt={item.heading} className="w-96 h-full xl:h-[50vh]" />
-                    </div>
-                    <div className="w-full lg:w-1/2 flex flex-col items-center lg:items-start justify-center gap-6">
-                      <p className="text-[#dc3545] text-[18px] leading-[27px] font-semibold">{item.sub_heading}</p>
-                      <p className="text-[#212529] text-[32px] md:text-[38px] lg:text-[54px] leading-[48px] sm:text-left text-center lg:leading-[57px] font-bold">{item.heading}</p>
-                      <Link to="/products" className="transition-all duration-300 hover:bg-pink-600 hover:scale-105 cursor-pointer bg-[#ec407a] text-white text-[18px] leading-[27px] py-2 px-5 rounded-md">SHOP NOW</Link>
-                    </div>
+            {hero_slider_array.map((item) => (
+              <div key={item._id}>
+                <div className="flex flex-col lg:flex-row items-center justify-center gap-10 h-full lg:h-[550px] 2xl:h-[750px]">
+                  <div className="w-full lg:w-1/2 flex items-center justify-center">
+                    <img
+                      src={item.image_url}
+                      alt={item.heading}
+                      className="w-auto h-full object-cover"
+                    />
+                  </div>
+                  <div className="w-full lg:w-1/2 flex flex-col items-center lg:items-start justify-center gap-6">
+                    <p className="text-[#dc3545] text-[18px] leading-[27px] font-semibold">
+                      {item.sub_heading}
+                    </p>
+                    <p className="text-[#212529] text-[32px] md:text-[38px] lg:text-[54px] leading-[48px] sm:text-left text-center lg:leading-[57px] font-bold">
+                      {item.heading}
+                    </p>
+                    <Link
+                      to="/products"
+                      className="transition-all duration-300 hover:bg-pink-600 hover:scale-105 cursor-pointer bg-[#ec407a] text-white text-[18px] leading-[27px] py-2 px-5 rounded-md"
+                    >
+                      SHOP NOW
+                    </Link>
                   </div>
                 </div>
-              ))
-            }
+              </div>
+            ))}
           </Slider>
         </div>
       </div>
       <div className="flex lg:px-12 mx-auto sm:px-10 px-5 flex-col gap-2 w-full items-center justify-center">
-        <p className="text-[32px] md:text-[38px] leading-[48px] md:leading-[57px] text-[#212529] font-bold">Shop By Categories</p>
-        <p className="text-[16px] leading-[24px] font-normal text-gray-500 w-full sm:w-sm text-center">Lorem ipsum dolor sit amet consectetur. Id fames there are many vulputate eget dolor.</p>
+        <p className="text-[32px] md:text-[38px] leading-[48px] md:leading-[57px] text-[#212529] font-bold">
+          Shop By Categories
+        </p>
+        <p className="text-[16px] leading-[24px] font-normal text-gray-500 w-full sm:w-sm text-center">
+          Lorem ipsum dolor sit amet consectetur. Id fames there are many
+          vulputate eget dolor.
+        </p>
         <div className="w-full my-10 relative">
           <div className="w-full bg-[#e9f9fc] rounded-full px-8 sm:px-10 category-swiper">
-            <Swiper breakpoints={{320: { slidesPerView: 2 }, 640: { slidesPerView: 3 }, 768: { slidesPerView: 4 }, 1024: { slidesPerView: 5 }, 1536: { slidesPerView: 7 }}}>
-              {
-                categories.map((item) => (
-                  <SwiperSlide key={item._id}>
-                    <Link to={item.category === "toys" ? `/products/toys/item/${slugify(item.name)}` : `/products/clothes/item/${slugify(item.name)}`} className="flex cursor-pointer flex-col items-center justify-center gap-3 transition-transform duration-300 py-5 md:py-10 hover:-translate-y-1">
-                      <div className="w-20 md:w-28 h-20 md:h-28 border-8 flex items-center justify-center rounded-full border-white bg-[#e9f9fc] shadow-md">
-                        <img src={item.image_url} alt={item.name} className="w-full h-full object-contain rounded-full" />
-                      </div>
-                      <p className="text-[16px] leading-[24px] sm:text-[18px] sm:leading-[27px] text-[#000000] font-semibold text-center">{item.name}</p>
-                    </Link>
-                  </SwiperSlide>
-                ))
-              }
+            <Swiper
+              breakpoints={{
+                320: { slidesPerView: 2 },
+                640: { slidesPerView: 3 },
+                768: { slidesPerView: 4 },
+                1024: { slidesPerView: 5 },
+                1536: { slidesPerView: 7 },
+              }}
+            >
+              {categories.map((item) => (
+                <SwiperSlide key={item._id}>
+                  <Link
+                    to={
+                      item.category === "toys"
+                        ? `/products/toys/item/${slugify(item.name)}`
+                        : `/products/clothes/item/${slugify(item.name)}`
+                    }
+                    className="flex cursor-pointer flex-col items-center justify-center gap-3 transition-transform duration-300 py-5 md:py-10 hover:-translate-y-1"
+                  >
+                    <div className="w-20 md:w-28 h-20 md:h-28 border-8 flex items-center justify-center rounded-full border-white bg-[#e9f9fc] shadow-md">
+                      <img
+                        src={item.image_url}
+                        alt={item.name}
+                        className="w-full h-full object-contain rounded-full"
+                      />
+                    </div>
+                    <p className="text-[16px] leading-[24px] sm:text-[18px] sm:leading-[27px] text-[#000000] font-semibold text-center">
+                      {item.name}
+                    </p>
+                  </Link>
+                </SwiperSlide>
+              ))}
             </Swiper>
           </div>
         </div>

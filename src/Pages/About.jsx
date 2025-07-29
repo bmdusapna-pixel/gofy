@@ -6,6 +6,7 @@ import TestimonialsPage from "../Components/Testemonials.jsx";
 import OfferBanner from "../Components/OfferBanner.jsx";
 import Brands from "../Components/Brands.jsx";
 import Subscribe from "../Components/SubscribeComp.jsx";
+import AboutContent from "../Components/AboutContent.jsx";
 
 const About = () => {
   return (
@@ -13,6 +14,7 @@ const About = () => {
       <AboutHeroSection />
       <Feature />
       <VideoThumbnail />
+      <AboutContent />
       <TestimonialsPage />
       <OfferBanner />
       <Brands />
