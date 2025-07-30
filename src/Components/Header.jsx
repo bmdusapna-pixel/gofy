@@ -121,48 +121,50 @@ const SecondHeader = ({
       } py-1 transition-all duration-300 w-full shadow-sm bg-white`}
     >
       <div className="w-full lg:px-12 px-5 mx-auto flex justify-between gap-2 items-center">
-        <Link to="/" className="w-32">
-          <img src={logo} alt="" className="w-full" />
-        </Link>
-        <div className="md:flex flex-1 hidden max-w-3xl border-[1px] border-gray-400 focus-within:border-[#00bbae] outline-none rounded-md">
-          <div
-            className="w-full flex items-center bg-gray-50 rounded-md"
-            ref={categoryRef}
-          >
+        <div className="flex items-center gap-2 w-full">
+          <Link to="/" className="w-32">
+            <img src={logo} alt="" className="w-full" />
+          </Link>
+          <div className="md:flex flex-1 hidden max-w-3xl border-[1px] border-gray-400 focus-within:border-[#00bbae] outline-none rounded-md">
             <div
-              onClick={() => setCategory((prev) => !prev)}
-              className="flex gap-2 p-3 items-center cursor-pointer hover:bg-gray-100 rounded-bl-md rounded-tl-md relative"
+              className="w-full flex items-center bg-gray-50 rounded-md"
+              ref={categoryRef}
             >
-              <p className="text-black font-medium text-base whitespace-nowrap">
-                All Categories
-              </p>
-              <ChevronDown
-                className={`w-5 h-5 text-black transition-transform duration-300 ${
-                  category ? "rotate-180" : "rotate-0"
-                }`}
-              />
-              {category && <AllCategories />}
-            </div>
-            <div className="h-full w-px bg-gray-300"></div>
-            <div className="flex-1 relative">
-              <input
-                name="searchProduct"
-                value={searchProduct}
-                onChange={(event) => setSearchProduct(event.target.value)}
-                type="text"
-                placeholder="Search products..."
-                className="w-full px-4 py-3 bg-transparent outline-none text-black font-medium text-base placeholder:text-gray-400"
-              />
-              {searchProduct.length > 0 && (
-                <SearchProducts
-                  searchProduct={searchProduct}
-                  debouncedSearch={debouncedSearch}
+              <div
+                onClick={() => setCategory((prev) => !prev)}
+                className="flex gap-2 p-3 items-center cursor-pointer hover:bg-gray-100 rounded-bl-md rounded-tl-md relative"
+              >
+                <p className="text-black font-medium text-base whitespace-nowrap">
+                  All Categories
+                </p>
+                <ChevronDown
+                  className={`w-5 h-5 text-black transition-transform duration-300 ${
+                    category ? "rotate-180" : "rotate-0"
+                  }`}
                 />
-              )}
+                {category && <AllCategories />}
+              </div>
+              <div className="h-full w-px bg-gray-300"></div>
+              <div className="flex-1 relative">
+                <input
+                  name="searchProduct"
+                  value={searchProduct}
+                  onChange={(event) => setSearchProduct(event.target.value)}
+                  type="text"
+                  placeholder="Search products..."
+                  className="w-full px-4 py-3 bg-transparent outline-none text-black font-medium text-base placeholder:text-gray-400"
+                />
+                {searchProduct.length > 0 && (
+                  <SearchProducts
+                    searchProduct={searchProduct}
+                    debouncedSearch={debouncedSearch}
+                  />
+                )}
+              </div>
+              <button className="p-3 h-full hover:bg-gray-100 rounded-br-md rounded-tr-md bg-transparent duration-300 transition-colors cursor-pointer">
+                <Search className="w-5 h-5 text-black" />
+              </button>
             </div>
-            <button className="p-3 h-full hover:bg-gray-100 rounded-br-md rounded-tr-md bg-transparent duration-300 transition-colors cursor-pointer">
-              <Search className="w-5 h-5 text-black" />
-            </button>
           </div>
         </div>
         <div
@@ -171,7 +173,7 @@ const SecondHeader = ({
         >
           <Search className="w-5 h-5 text-black" />
         </div>
-        <div className="bg-[#00bbae] hidden lg:flex gap-2 items-center rounded-full px-4 py-2 w-[200px]">
+        <div className="bg-[#00bbae] hidden lg:flex gap-2 items-center rounded-full px-4 py-2 w-[200px] flex-none">
           <Phone className="w-5 h-5 text-white" />
           <div className="flex flex-col">
             <p className="text-white font-normal text-sm">24/7 Support</p>
@@ -346,25 +348,43 @@ const ThirdHeader = ({ isMobileMenuOpen, setIsMobileMenuOpen }) => {
                 HOT
               </p>
             </Link>
-            <p
+            <Link
+              to={"/trending"}
               onMouseEnter={() => setItemHovered("trending")}
-              className="text-[16px] leading-[24px] font-semibold  cursor-pointer text-black transition-colors duration-300 hover:text-[#00bbae]"
+              className={`${
+                location.pathname === "/trending"
+                  ? "text-[#00bbae]"
+                  : "text-black"
+              } text-[16px] leading-[24px] font-semibold cursor-pointer transition-colors duration-300 hover:text-[#00bbae]`}
             >
               Trending
-            </p>
-            <p
+            </Link>
+            {/* <p
               onMouseEnter={() => setItemHovered("offer")}
               className="cursor-pointer text-black transition-colors duration-300 hover:text-[#00bbae] text-[16px] leading-[24px] font-semibold"
             >
               Offer
-            </p>
+            </p> */}
+            <Link
+              to="/offer"
+              onMouseEnter={() => setItemHovered("offer")}
+              className={`${
+                location.pathname === "/offer" ? "text-[#00bbae]" : "text-black"
+              } text-[16px] leading-[24px] font-semibold cursor-pointer transition-colors duration-300 hover:text-[#00bbae]`}
+            >
+              Offer
+            </Link>
           </div>
-          <div className="border border-gray-200 rounded-full bg-[#fce7ef] flex gap-0.5 items-center py-2 px-5">
+          <Link
+            // tempary code
+            to="/products"
+            className="border border-gray-200 rounded-full bg-[#fce7ef] flex gap-0.5 items-center py-2 px-5"
+          >
             <Flame className="w-5 h-5 text-[#dc3545]" fill="#dc3545" />
             <p className="text-[16px] leading-[24px] text-[#dc3545] font-semibold">
               Super Deals Product
             </p>
-          </div>
+          </Link>
         </div>
       </div>
 

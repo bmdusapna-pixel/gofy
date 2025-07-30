@@ -56,7 +56,7 @@ const footer_links = [
   {
     _id: 7,
     title: "About Us",
-    url: "/about-us",
+    url: "/about",
   },
   {
     _id: 8,
@@ -109,11 +109,21 @@ const footer_social = [
 ];
 
 const Footer = () => {
-  const [email, setEmail] = useState("");
+  // const [email, setEmail] = useState("");
+  const [whatsappNumber, setWhatsappNumber] = useState("");
 
-  const subsribeGofy = (event) => {
+  const subscribeToWhatsapp = (event) => {
     event.preventDefault();
+    // Here you would handle the submission of the WhatsApp number
+    // For example, send it to an API endpoint
+    console.log("Subscribing WhatsApp number:", whatsappNumber);
+    alert(`Thank you for subscribing with ${whatsappNumber} on WhatsApp!`);
+    setWhatsappNumber(""); // Clear the input after submission
   };
+
+  // const subsribeGofy = (event) => {
+  //   event.preventDefault();
+  // };
 
   const length = footer_links?.length;
   const firstHalf = footer_links.slice(0, Math.ceil(length / 2));
@@ -174,7 +184,7 @@ const Footer = () => {
               ))}
             </div>
           </div>
-          <div className="w-full flex flex-col gap-8">
+          {/* <div className="w-full flex flex-col gap-8">
             <div className="flex flex-col gap-2 w-full">
               <p className="text-[18px] leading-[27px] font-semibold text-black">
                 Subscribe Our NewsLetter
@@ -200,6 +210,46 @@ const Footer = () => {
                   type="text"
                   className="py-3 px-2 w-full border-none outline-none"
                   placeholder="Email Address"
+                />
+              </div>
+              <button
+                type="submit"
+                className="bg-[#f88e0f] w-10 h-10 mr-2 flex items-center justify-center rounded-full cursor-pointer"
+              >
+                <ArrowRight className="w-5 h-5 text-white transition-transform duration-300 hover:translate-x-1" />
+              </button>
+            </form>
+          </div> */}
+          <div className="w-full flex flex-col gap-8">
+            <div className="flex flex-col gap-2 w-full">
+              <p className="text-[18px] leading-[27px] font-semibold text-black">
+                Subscribe to Our WhatsApp Updates
+              </p>
+              <hr className="w-14 rounded-2xl bg-[#f88e0f] h-1 border-none" />
+            </div>
+            <p className="text-[16px] leading-[24px] font-semibold opacity-50 text-[#212529]">
+              Get important updates directly on WhatsApp – you won't miss a
+              thing!
+            </p>
+            <form
+              onSubmit={subscribeToWhatsapp} // Updated onSubmit handler
+              className="flex justify-between h-14 w-full items-center border transition-colors duration-300 border-gray-300 bg-white rounded-full focus-within:border-[#00bbae]"
+            >
+              <div className="flex gap-1 items-center">
+                <div className="py-3 pl-4 flex items-center justify-center">
+                  {/* Replace Mail with a Phone/WhatsApp icon if available */}
+                  {/* If using lucide-react, it could be <Phone className="w-4 h-4 text-black" /> */}
+                  <Mail className="w-4 h-4 text-black" />{" "}
+                  {/* Placeholder, ideally replace with Phone or WhatsApp icon */}
+                </div>
+                <input
+                  required
+                  value={whatsappNumber}
+                  name="whatsappNumber"
+                  onChange={(event) => setWhatsappNumber(event.target.value)}
+                  type="tel" // Use 'tel' type for phone numbers
+                  className="py-3 px-2 w-full border-none outline-none"
+                  placeholder="WhatsApp Number"
                 />
               </div>
               <button

@@ -9,7 +9,6 @@ import cloud from "../assets/cloud-2.svg";
 const AboutHeroSection = () => {
   return (
     <div className="flex flex-col md:flex-col lg:flex-row gap-10 py-10 px-4 lg:px-20 items-center">
-      
       {/* Left Image Section */}
       <div className="relative flex justify-center w-full lg:w-1/2">
         <img
@@ -56,9 +55,8 @@ const AboutHeroSection = () => {
         </p>
 
         {/* Features Cards */}
-        <div className="mt-10 flex flex-col md:flex-row gap-6 items-center lg:items-start justify-center lg:justify-start">
+        {/* <div className="mt-10 flex flex-col md:flex-row gap-6 items-center lg:items-start justify-center lg:justify-start">
           
-          {/* Card 1 */}
           <div className="flex group w-full max-w-xs flex-col p-5 rounded-lg items-center bg-white text-center shadow transition-transform hover:-translate-y-2 duration-300">
             <div className="relative h-20 w-20 rounded-full bg-white p-3 shadow-[0_0_20px_rgba(34,197,94,0.4)] mb-4 overflow-hidden flex items-center justify-center group">
               <Blocks className="absolute inset-0 m-auto h-12 w-12 text-green-500 transition-all duration-500 group-hover:-translate-y-4 group-hover:opacity-0" />
@@ -70,7 +68,6 @@ const AboutHeroSection = () => {
             </p>
           </div>
 
-          {/* Card 2 */}
           <div className="flex group w-full max-w-xs flex-col p-5 rounded-lg items-center bg-white text-center shadow transition-transform hover:-translate-y-2 duration-300">
             <div className="relative h-20 w-20 rounded-full bg-white p-3 shadow-[0_0_20px_rgba(255,140,0,0.4)] mb-4 overflow-hidden flex items-center justify-center group">
               <Shield className="absolute inset-0 m-auto h-12 w-12 text-orange-500 transition-all duration-500 group-hover:-translate-y-4 group-hover:opacity-0" />
@@ -82,7 +79,7 @@ const AboutHeroSection = () => {
             </p>
           </div>
 
-        </div>
+        </div> */}
       </div>
     </div>
   );

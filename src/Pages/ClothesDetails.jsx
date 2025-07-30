@@ -132,7 +132,19 @@ const ClothesDetails = () => {
     email: "",
     starRating: 5,
   });
+  const [copiedCode, setCopiedCode] = useState(null);
 
+  const handleCopy = async (code) => {
+    try {
+      await navigator.clipboard.writeText(code);
+      setCopiedCode(code); // Set the code that was just copied
+      setTimeout(() => setCopiedCode(null), 2000); // Clear "Copied!" message after 2 seconds
+    } catch (err) {
+      console.error("Failed to copy text: ", err);
+      // Fallback for older browsers or if permission is denied
+      alert(`Failed to copy "${code}". Please copy manually.`);
+    }
+  };
   const clothe = clothe_items.find((item) => item.url === url);
 
   const addFavouriteItemsWishList = (product, event) => {
@@ -258,7 +270,7 @@ const ClothesDetails = () => {
               volutpat egestas. Mollis scelerisque a sem morbi sed donec eu. Dui
               platea scelerisque ut posuere. Sit posuere aliquet venenatis quam.
             </p>
-            <div className="flex gap-3 items-center w-full">
+            <div className="flex gap-3 items-center w-full flex-wrap">
               <div className="flex gap-1 items-center">
                 <p className="text-[20px] leading-[30px] text-[#001430] line-through">
                   ₹56.00
@@ -315,7 +327,7 @@ const ClothesDetails = () => {
               </div>
             </div>
             <div className="flex sm:flex-row flex-col w-full gap-3 sm:gap-10">
-              <div className="flex flex-col gap-2">
+              <div className="flex flex-col gap-2 W-full">
                 <div className="flex justify-between items-center">
                   <p className="text-[16px] leading-[24px] text-blank font-medium mr-5">
                     Sizes
@@ -332,7 +344,7 @@ const ClothesDetails = () => {
                     <div
                       onClick={() => setIsSizeSelected(item.size)}
                       key={item._id}
-                      className="py-1 px-2 rounded-sm gap-3 border border-gray-500 transition-colors duration-300 hover:text-white hover:bg-[#00BBAE] cursor-pointer flex items-center justify-center"
+                      className="py-1 px-2 rounded-sm gap-3 bg-[#e9ecef] transition-colors duration-300 hover:text-white hover:bg-[#00BBAE] cursor-pointer flex items-center justify-center"
                     >
                       <p className="text-[14px] leading-[21px] font-medium">
                         {item.size}
@@ -342,30 +354,72 @@ const ClothesDetails = () => {
                 </div>
               </div>
             </div>
-            <div className="flex flex-col gap-3">
-              <p className="text-[20px] leading-[30px] font-semibold text-black">
+            <div className="flex flex-col gap-4 px-4 py-3">
+              {" "}
+              <p className="text-xl leading-8 font-bold text-gray-800 border-b pb-3 mb-1">
+                {" "}
                 Offers Available
               </p>
-              <div className="flex flex-col gap-1">
+              <div className="flex flex-col gap-0 md:max-w-[500px]">
+                {" "}
                 {coupon_data.map((coupon) => (
                   <div
-                    className="flex gap-5 sm:gap-20 items-center"
+                    className="flex flex-col sm:flex-row items-start sm:items-center justify-between
+                       p-3 rounded-lg transition-all duration-200 ease-in-out
+                       hover:bg-gray-50 border-b border-gray-100 last:border-b-0"
                     key={coupon._id}
                   >
-                    <div className="flex gap-1 sm:gap-3 items-center">
-                      <div className="w-5 h-5">
-                        <Tag className="w-full h-full text-black" fill="#fff" />
+                    <div className="flex items-center gap-3 mb-2 sm:mb-0">
+                      {" "}
+                      <div className="w-5 h-5 flex-shrink-0 text-green-600">
+                        {" "}
+                        <Tag className="w-full h-full" strokeWidth={2} />{" "}
                       </div>
-                      <p className="text-[16px] leading-[24px] text-black font-medium">
+                      <p className="text-base leading-relaxed text-gray-700 font-medium">
+                        {" "}
                         {coupon.description}
                       </p>
                     </div>
-                    <div className="border-[2px] border-dashed border-[#00BBAE] p-1 bg-[#e9f9fc] rounded-sm flex gap-3 items-center">
-                      <p className="text-[14px] leading-[21px] text-black">
+
+                    <button
+                      onClick={() => handleCopy(coupon.code)}
+                      className="group relative flex items-center justify-center gap-2
+                         px-4 py-2 bg-blue-50 text-blue-700 text-sm font-semibold
+                         rounded-full transition-all duration-200 ease-in-out
+                         hover:bg-blue-100 hover:shadow-md active:scale-95
+                         focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50
+                         min-w-[120px] h-9" // Ensures consistent width/height
+                    >
+                      <span
+                        className={`transition-opacity duration-200 ${
+                          copiedCode === coupon.code
+                            ? "opacity-0 absolute"
+                            : "opacity-100"
+                        }`}
+                      >
                         {coupon.code}
-                      </p>
-                      <Copy className="w-4 h-4 text-black" />
-                    </div>
+                      </span>
+                      <span
+                        className={`absolute transition-opacity duration-200 flex items-center gap-1
+                                ${
+                                  copiedCode === coupon.code
+                                    ? "opacity-100"
+                                    : "opacity-0"
+                                }`}
+                      >
+                        Copied!{" "}
+                        <Copy
+                          className="w-4 h-4 text-blue-700"
+                          strokeWidth={2}
+                        />
+                      </span>
+                      {!copiedCode && (
+                        <Copy
+                          className="w-4 h-4 text-blue-700 opacity-80 group-hover:opacity-100 transition-opacity duration-200"
+                          strokeWidth={2}
+                        />
+                      )}
+                    </button>
                   </div>
                 ))}
               </div>
@@ -575,6 +629,9 @@ const ClothesDetails = () => {
                         </p>
                       </div>
                       <p className="text-black text-[20px] leading-[30px] font-semibold">
+                        ₹ {chlothe.price}
+                      </p>
+                      <p className="text-gray-600 text-[16px] line-through leading-[30px] font-semibold">
                         ₹ {chlothe.price}
                       </p>
                       <div className="flex md:flex-col lg:flex-row flex-row gap-5 md:gap-2 lg:gap-5 items-center">

@@ -13,12 +13,23 @@ const AboutContent = () => {
         "At Gofy Kids Mall, we believe that childhood should be celebrated with joy, creativity, and comfort. That’s why every product we offer is carefully curated to meet the highest standards of safety, durability, and style. Whether you're shopping for a newborn or a growing child, our mall is designed to make your experience smooth, playful, and family-friendly.",
     },
     {
-      heading: "Our Model Town store offers:", // This is the heading for the list
+      heading: "What You'll Find at Gofy:", // Updated heading for clarity
       listItems: [
-        "An exclusive range of kids’ fashion – from daily wear to festive collections.",
-        "A thoughtfully selected range of educational and fun toys.",
-        "Reliable and gentle baby care products.",
-        "Stylish, comfortable footwear for all kids.",
+        "Kids Clothing – Trendy, colorful, and comfortable clothes for babies, toddlers, and kids, including exclusive daily wear and festive collections.",
+        "Footwear – Shoes, sandals, and slippers made for small feet with care.",
+        "Toys – Fun, safe, and educational toys for all age groups, including a thoughtfully selected range of educational and fun toys.",
+        "Baby Care Products – Diapers, creams, shampoos, and everything new parents need, ensuring reliable and gentle care.",
+        "School Supplies – Bags, bottles, lunchboxes, stationery, and more.",
+      ],
+    },
+    {
+      heading: "Why Parents Love Gofy:", // Added a section for "Why Parents Love Gofy"
+      listItems: [
+        "Good Quality Products",
+        "Pocket-Friendly Prices",
+        "Friendly Staff and Clean Store",
+        "Wide Variety in Every Category",
+        "Valet Parking for your comfort",
       ],
     },
     {
@@ -27,9 +38,9 @@ const AboutContent = () => {
         "Our team is dedicated to offering a warm and helpful shopping experience. With spacious aisles, child-friendly sections, and regular promotional offers, Gofy Kids Mall is more than just a store – it’s a vibrant space where shopping becomes a happy memory.",
     },
     {
-      heading: "Visit Us!",
+      heading: "Visit Us Today!",
       description:
-        "We invite you to step in and explore a world designed just for kids – because at Gofy, growing up is a celebration!",
+        "We invite you to step in and explore a world designed just for kids – because at Gofy, growing up is a celebration! Come and explore Gofy Kids Mall – where every child smiles, and every parent relaxes. Gofy Kids Mall – Your Child’s Favourite Store.",
     },
   ];
 
