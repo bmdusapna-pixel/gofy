@@ -5,7 +5,7 @@ import age_2 from "../assets/age_2.png";
 import age_3 from "../assets/age_3.png";
 import age_4 from "../assets/age_4.png";
 import age_5 from "../assets/age_5.png";
-import ProductsCollection from "./ProductsCollection";
+// import ProductsCollection from "./ProductsCollection";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -93,7 +93,7 @@ const CTA = () => {
           </div>
         </div>
       </div>
-      <ProductsCollection color={"#2563eb"} />
+      {/* <ProductsCollection color={"#2563eb"} /> */}
       <div className="flex lg:px-12 sm:px-10 px-5 flex-col gap-2 w-full mx-auto items-center justify-center">
         <p className="text-[32px] md:text-[38px] leading-[48px] md:leading-[57px] text-[#212529] font-bold">
           Shop By Age
