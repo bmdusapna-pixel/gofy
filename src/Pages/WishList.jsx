@@ -3,6 +3,8 @@ import { Trash2 } from "lucide-react";
 import { CartContext } from "../Context/CartContext";
 import { Link } from "react-router-dom";
 
+import EmptyCart from "../assets/emptyWishlist.png";
+
 const WishList = () => {
   const {
     isMobileMenuOpen,
@@ -81,11 +83,12 @@ const WishList = () => {
           </div>
           {favouriteItems.length === 0 && (
             <div className="flex items-center flex-col gap-3 justify-center bg-white rounded-2xl py-4">
-              <p className="text-[16px] font-medium text-black leading-[24px]">
+              {/* <p className="text-[16px] font-medium text-black leading-[24px]">
                 No favourites items present
-              </p>
+              </p> */}
+              <img src={EmptyCart} alt="" />
               <Link
-                to="/products"
+                to="/"
                 className="rounded-xl w-40 text-[18px] leading-[24px] font-semibold text-white transition-colors duration-300 hover:bg-[#f88e0f] cursor-pointer px-3 py-4 bg-[#00bbae] flex gap-3 items-center justify-center"
               >
                 Return to shop

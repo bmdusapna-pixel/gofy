@@ -265,17 +265,17 @@ const ClothesDetails = () => {
                 </div>
               </div>
             </div>
-            <p className="text-[#69778a] text-[16px] leading-[24px]">
+            {/* <p className="text-[#69778a] text-[16px] leading-[24px]">
               Lorem ipsum dolor sit amet consectetur. Nunc sit morbi turpis sed
               volutpat egestas. Mollis scelerisque a sem morbi sed donec eu. Dui
               platea scelerisque ut posuere. Sit posuere aliquet venenatis quam.
-            </p>
+            </p> */}
             <div className="flex gap-3 items-center w-full flex-wrap">
               <div className="flex gap-1 items-center">
                 <p className="text-[20px] leading-[30px] text-[#001430] line-through">
                   ₹56.00
                 </p>
-                <p className="text-[30px] leading-[40px] text-[#001430] font-semibold">
+                <p className="text-[30px] leading-[40px] text-pink-600 font-semibold">
                   ₹56.00
                 </p>
               </div>
@@ -457,6 +457,110 @@ const ClothesDetails = () => {
             </div>
           </div>
         </div>
+        {/* realated products */}
+        <div className="flex flex-col gap-5 w-full">
+          <p className="text-[32px] md:text-[38px] leading-[48px] md:leading-[57px] text-[#212529] font-bold">
+            Related Products
+          </p>
+          <div className="w-full overflow-x-hidden relative">
+            <Swiper
+              modules={[Autoplay, Navigation]}
+              autoplay={{ delay: 3000, disableOnInteraction: false }}
+              navigation={{
+                nextEl: ".swiper-button-next",
+                prevEl: ".swiper-button-prev",
+              }}
+              breakpoints={{
+                0: { slidesPerView: 1, spaceBetween: 20 },
+                480: { slidesPerView: 2, spaceBetween: 20 },
+                800: { slidesPerView: 2, spaceBetween: 10 },
+                1280: { slidesPerView: 3, spaceBetween: 10 },
+                1536: { slidesPerView: 4, spaceBetween: 10 },
+              }}
+              loop={true}
+              grabCursor={true}
+            >
+              {clothe_items.map((chlothe) => (
+                <SwiperSlide key={chlothe._id}>
+                  <Link
+                    to={`/products/clothes/${chlothe.url}`}
+                    className="w-full border flex md:flex-row flex-col gap-3 xl:gap-5 border-gray-200 rounded-md p-2"
+                  >
+                    <div className="w-full h-60 lg:w-1/2 bg-[#FFC0CB] rounded-md flex items-center justify-center relative">
+                      <img
+                        src={chlothe.images[0]}
+                        alt=""
+                        className="object-contain"
+                      />
+                      <p className="absolute top-0 left-0 bg-[#dc3545] rounded-tl-md rounded-br-md text-white text-[14px] leading-[20px] px-3 py-0.5">
+                        -23%
+                      </p>
+                    </div>
+                    <div className="flex flex-col gap-1 py-5 w-full lg:w-1/2 lg:px-0 px-2">
+                      <p className="text-[#212529] text-[16px] leading-[24px] opacity-75">
+                        {chlothe.sub_category}
+                      </p>
+                      <p className="text-[20px] leading-[30px] text-[#212529] font-bold">
+                        {chlothe?.name}
+                      </p>
+                      <div className="flex lg:flex-row md:flex-col flex-row w-full items-center">
+                        <div className="flex gap-1 items-center">
+                          {Array.from({
+                            length: Math.floor(chlothe.rating),
+                          }).map((_, index) => (
+                            <Star
+                              key={index}
+                              className="w-5 h-5 text-[white]"
+                              fill="#f88e0f"
+                            />
+                          ))}
+                        </div>
+                        <p className="text-gray-500 text-base leading-[16px]">
+                          ({chlothe.review} Reviews)
+                        </p>
+                      </div>
+                      <p className="text-black text-[20px] leading-[30px] font-semibold">
+                        ₹ {chlothe.price}
+                      </p>
+                      <p className="text-gray-600 text-[16px] line-through leading-[30px] font-semibold">
+                        ₹ {chlothe.price}
+                      </p>
+                      <div className="flex md:flex-col lg:flex-row flex-row gap-5 md:gap-2 lg:gap-5 items-center">
+                        <div
+                          onClick={(event) => addProductToCart(chlothe, event)}
+                          className="rounded-full transition-colors duration-300 hover:bg-[#f88e0f] cursor-pointer px-4 py-2 bg-[#00bbae] flex gap-3 items-center justify-center"
+                        >
+                          <ShoppingBasket className="w-5 h-5 text-white" />
+                          <p className="text-[16px] leading-[18px] font-semibold text-white">
+                            Add to cart
+                          </p>
+                        </div>
+                        <div className="flex gap-5">
+                          <div
+                            onClick={(event) =>
+                              addFavouriteItemsWishList(chlothe, event)
+                            }
+                            className="cursor-pointer w-10 border border-gray-200 h-10 flex items-center justify-center rounded-full bg-white transition-colors hover:bg-[#00bbae] text-gray-500 hover:text-white"
+                          >
+                            <Heart className="w-5 h-5" />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </Link>
+                </SwiperSlide>
+              ))}
+            </Swiper>
+            <ChevronLeft
+              className="swiper-button-prev absolute left-0 top-40 transform -translate-y-1/2 z-10 bg-[#e9f9fc] text-black rounded-full hover:bg-[#f8f9fa] cursor-pointer"
+              style={{ boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)" }}
+            />
+            <ChevronRight
+              className="swiper-button-next absolute right-0 top-40 transform -translate-y-1/2 z-10 bg-[#e9f9fc] text-black rounded-full hover:bg-[#f8f9fa] cursor-pointer"
+              style={{ boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)" }}
+            />
+          </div>
+        </div>
         <div className="w-full flex flex-col gap-5">
           <div className="flex gap-1 sm:gap-5 items-center border-b-[2px] border-gray-200">
             {product_details.map((item) => (
@@ -564,110 +668,6 @@ const ClothesDetails = () => {
                 </p>
               </div>
             )}
-          </div>
-        </div>
-        {/* realated products */}
-        <div className="flex flex-col gap-5 w-full">
-          <p className="text-[32px] md:text-[38px] leading-[48px] md:leading-[57px] text-[#212529] font-bold">
-            Related Products
-          </p>
-          <div className="w-full overflow-x-hidden relative">
-            <Swiper
-              modules={[Autoplay, Navigation]}
-              autoplay={{ delay: 3000, disableOnInteraction: false }}
-              navigation={{
-                nextEl: ".swiper-button-next",
-                prevEl: ".swiper-button-prev",
-              }}
-              breakpoints={{
-                0: { slidesPerView: 1, spaceBetween: 20 },
-                480: { slidesPerView: 2, spaceBetween: 20 },
-                800: { slidesPerView: 2, spaceBetween: 10 },
-                1280: { slidesPerView: 3, spaceBetween: 10 },
-                1536: { slidesPerView: 4, spaceBetween: 10 },
-              }}
-              loop={true}
-              grabCursor={true}
-            >
-              {clothe_items.map((chlothe) => (
-                <SwiperSlide key={chlothe._id}>
-                  <Link
-                    to={`/products/clothes/${chlothe.url}`}
-                    className="w-full border flex md:flex-row flex-col gap-3 xl:gap-5 border-gray-200 rounded-md p-2"
-                  >
-                    <div className="w-full h-60 lg:w-1/2 bg-[#FFC0CB] rounded-md flex items-center justify-center relative">
-                      <img
-                        src={chlothe.images[0]}
-                        alt=""
-                        className="object-contain"
-                      />
-                      <p className="absolute top-0 left-0 bg-[#dc3545] rounded-tl-md rounded-br-md text-white text-[14px] leading-[20px] px-3 py-0.5">
-                        -23%
-                      </p>
-                    </div>
-                    <div className="flex flex-col gap-1 py-5 w-full lg:w-1/2 lg:px-0 px-2">
-                      <p className="text-[#212529] text-[16px] leading-[24px] opacity-75">
-                        {chlothe.sub_category}
-                      </p>
-                      <p className="text-[20px] leading-[30px] text-[#212529] font-bold">
-                        {chlothe?.name}
-                      </p>
-                      <div className="flex lg:flex-row md:flex-col flex-row w-full items-center">
-                        <div className="flex gap-1 items-center">
-                          {Array.from({
-                            length: Math.floor(chlothe.rating),
-                          }).map((_, index) => (
-                            <Star
-                              key={index}
-                              className="w-5 h-5 text-[white]"
-                              fill="#f88e0f"
-                            />
-                          ))}
-                        </div>
-                        <p className="text-gray-500 text-base leading-[16px]">
-                          ({chlothe.review} Reviews)
-                        </p>
-                      </div>
-                      <p className="text-black text-[20px] leading-[30px] font-semibold">
-                        ₹ {chlothe.price}
-                      </p>
-                      <p className="text-gray-600 text-[16px] line-through leading-[30px] font-semibold">
-                        ₹ {chlothe.price}
-                      </p>
-                      <div className="flex md:flex-col lg:flex-row flex-row gap-5 md:gap-2 lg:gap-5 items-center">
-                        <div
-                          onClick={(event) => addProductToCart(chlothe, event)}
-                          className="rounded-full transition-colors duration-300 hover:bg-[#f88e0f] cursor-pointer px-4 py-2 bg-[#00bbae] flex gap-3 items-center justify-center"
-                        >
-                          <ShoppingBasket className="w-5 h-5 text-white" />
-                          <p className="text-[16px] leading-[18px] font-semibold text-white">
-                            Add to cart
-                          </p>
-                        </div>
-                        <div className="flex gap-5">
-                          <div
-                            onClick={(event) =>
-                              addFavouriteItemsWishList(chlothe, event)
-                            }
-                            className="cursor-pointer w-10 border border-gray-200 h-10 flex items-center justify-center rounded-full bg-white transition-colors hover:bg-[#00bbae] text-gray-500 hover:text-white"
-                          >
-                            <Heart className="w-5 h-5" />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </Link>
-                </SwiperSlide>
-              ))}
-            </Swiper>
-            <ChevronLeft
-              className="swiper-button-prev absolute left-0 top-40 transform -translate-y-1/2 z-10 bg-[#e9f9fc] text-black rounded-full hover:bg-[#f8f9fa] cursor-pointer"
-              style={{ boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)" }}
-            />
-            <ChevronRight
-              className="swiper-button-next absolute right-0 top-40 transform -translate-y-1/2 z-10 bg-[#e9f9fc] text-black rounded-full hover:bg-[#f8f9fa] cursor-pointer"
-              style={{ boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)" }}
-            />
           </div>
         </div>
         <div className="w-full border border-gray-200 rounded-2xl p-6 bg-white relative">

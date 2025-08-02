@@ -257,17 +257,17 @@ const ClothesDetails = () => {
                 </div>
               </div>
             </div>
-            <p className="text-[#69778a] text-[16px] leading-[24px]">
+            {/* <p className="text-[#69778a] text-[16px] leading-[24px]">
               Lorem ipsum dolor sit amet consectetur. Nunc sit morbi turpis sed
               volutpat egestas. Mollis scelerisque a sem morbi sed donec eu. Dui
               platea scelerisque ut posuere. Sit posuere aliquet venenatis quam.
-            </p>
+            </p> */}
             <div className="flex gap-3 items-center w-full flex-wrap">
               <div className="flex gap-1 items-center">
                 <p className="text-[20px] leading-[30px] text-[#001430] line-through">
                   ₹56.00
                 </p>
-                <p className="text-[30px] leading-[40px] text-[#001430] font-semibold">
+                <p className="text-[30px] leading-[40px] text-pink-600 font-semibold">
                   ₹56.00
                 </p>
               </div>
@@ -446,112 +446,6 @@ const ClothesDetails = () => {
             </div>
           </div>
         </div>
-        <div className="w-full flex flex-col gap-5">
-          <div className="flex gap-1 sm:gap-5 items-center border-b-[2px] border-gray-200">
-            {product_details.map((item) => (
-              <div
-                onClick={() => setCurrentMenu(item.title)}
-                className={`cursor-pointer px-2 sm:px-4 py-2 transition-colors duration-300 ${
-                  currentMenu === item.title
-                    ? "bg-[#00bbae] text-white font-semibold"
-                    : "bg-gray-200 text-black hover:bg-[#00bbae] hover:text-white font-medium"
-                }`}
-                key={item._id}
-              >
-                <p className="md:text-[18px] md:leading-[27px] text-[16px] leading-[24px]">
-                  {item.title}
-                </p>
-              </div>
-            ))}
-          </div>
-          <div className="w-full border border-gray-200 rounded-2xl p-6 bg-white">
-            {currentMenu === "Product Description" && (
-              <p className="sm:text-[16px] sm:leading-[24px] text-[14px] leading-[21px] font-medium text-black">
-                Lorem ipsum dolor sit amet consectetur. Dui elit hac massa nulla
-                nibh neque. Id risus feugiat turpis amet odio in. Tellus
-                convallis et viverra mattis senectus urna risus velit. Maecenas
-                augue viverra quam euismod convallis id aliquet et. Morbi a
-                euismod non tellus mi auctor. Venenatis id pellentesque
-                venenatis aliquet tortor morbi. Amet morbi feugiat volutpat
-                neque amet id massa non. Sollicitudin maecenas turpis
-                scelerisque orci vitae purus maecenas tempus consequat. Eu amet
-                interdum venenatis egestas sed faucibus varius.Elementum massa
-                ultrices a et libero etiam pulvinar. Diam quis tristique leo
-                risus tellus in pellentesque proin. Viverra pellentesque pretium
-                mauris ornare sed elementum praesent massa tristique. Ut magna
-                at facilisi sed morbi sit arcu. Dignissim semper sed mattis
-                risus ornare donec. Sem sed interdum arcu pellentesque pulvinar
-                leo. Velit mattis blandit luctus sed massa tempor adipiscing
-                pretium. Pellentesque dignissim massa sed ullamcorper ac nibh a.
-                Odio neque molestie scelerisque ipsum aliquam. Mauris semper
-                lorem est nisl scelerisque.Eget consequat nunc id sed ultrices.
-                Sed dui id tincidunt lacus morbi nullam. Cras enim faucibus elit
-                auctor purus amet. Gravida proin diam fermentum amet diam eget
-                viverra. Netus dui nullam arcu duis amet sed adipiscing nisl
-                nisi. Nulla auctor hac quisque bibendum suspendisse blandit enim
-                pellentesque ornare. Ornare ac scelerisque.
-              </p>
-            )}
-            {currentMenu === "Product Specification" && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 space-y-2 lg:space-y-1 w-full">
-                <ToyDetailRow
-                  label="Items Included in the Package"
-                  value="1 Toy"
-                />
-                <ToyDetailRow label="Country Of Origin" value="India" />
-                <ToyDetailRow label="Material" value={toy.material} />
-                <ToyDetailRow label="Color" value={toy.color} />
-                <ToyDetailRow label="Age Group" value={toy.age_group} />
-                <ToyDetailRow label="Sub Category" value={toy.sub_category} />
-              </div>
-            )}
-            {currentMenu === "Shipping & Returns" && (
-              <div className="flex flex-col gap-2">
-                <ToyDetailRow
-                  label="Estimated Order Processing Time:"
-                  value="24 to 48 hours"
-                />
-                <ToyDetailRow
-                  label="Estimated Delivery Time: Metros:"
-                  value="3 - 4 days, Rest of India: 5 -10 days"
-                />
-                <p className="sm:text-[16px] sm:leading-[24px] text-[14px] leading-[21px] font-medium text-black">
-                  Customers can return their order within 14 days after an order
-                  has been delivered. We have a reverse pick up facility for
-                  most pin codes. For pin codes that are non- serviceable by our
-                  courier partners against the reverse pick up policy, you will
-                  have to self ship the product(s).
-                </p>
-              </div>
-            )}
-            {currentMenu === "Wash Care" && (
-              <div className="grid sm:grid-cols-2 grid-cols-1 lg:grid-cols-3 gap-2">
-                <p className="sm:text-[16px] sm:leading-[24px] text-[14px] leading-[21px] font-medium text-black">
-                  Machine wash..
-                </p>
-                <p className="sm:text-[16px] sm:leading-[24px] text-[14px] leading-[21px] font-medium text-black">
-                  Wash in cold water, use mild detergent.
-                </p>
-                <p className="sm:text-[16px] sm:leading-[24px] text-[14px] leading-[21px] font-medium text-black">
-                  Dry in shade.
-                </p>
-                <p className="sm:text-[16px] sm:leading-[24px] text-[14px] leading-[21px] font-medium text-black">
-                  Do not iron directly or scrub on print.
-                </p>
-                <p className="sm:text-[16px] sm:leading-[24px] text-[14px] leading-[21px] font-medium text-black">
-                  Do not bleach.
-                </p>
-                <p className="sm:text-[16px] sm:leading-[24px] text-[14px] leading-[21px] font-medium text-black">
-                  Do not tumble dry.
-                </p>
-                <p className="sm:text-[16px] sm:leading-[24px] text-[14px] leading-[21px] font-medium text-black">
-                  Dry on flat surface as hanging may cause measurement
-                  variations.
-                </p>
-              </div>
-            )}
-          </div>
-        </div>
         {/* realated products */}
         <div className="flex flex-col gap-5 w-full">
           <p className="text-[32px] md:text-[38px] leading-[48px] md:leading-[57px] text-[#212529] font-bold">
@@ -659,6 +553,112 @@ const ClothesDetails = () => {
               className="swiper-button-next-rp absolute right-0 top-30 transform -translate-y-1/2 z-10 bg-[#e9f9fc] text-black rounded-full hover:bg-[#f8f9fa] cursor-pointer h-10 w-10 opacity-25 hover:opacity-100 p-1"
               style={{ boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)" }}
             />
+          </div>
+        </div>
+        <div className="w-full flex flex-col gap-5">
+          <div className="flex gap-1 sm:gap-5 items-center border-b-[2px] border-gray-200">
+            {product_details.map((item) => (
+              <div
+                onClick={() => setCurrentMenu(item.title)}
+                className={`cursor-pointer px-2 sm:px-4 py-2 transition-colors duration-300 ${
+                  currentMenu === item.title
+                    ? "bg-[#00bbae] text-white font-semibold"
+                    : "bg-gray-200 text-black hover:bg-[#00bbae] hover:text-white font-medium"
+                }`}
+                key={item._id}
+              >
+                <p className="md:text-[18px] md:leading-[27px] text-[16px] leading-[24px]">
+                  {item.title}
+                </p>
+              </div>
+            ))}
+          </div>
+          <div className="w-full border border-gray-200 rounded-2xl p-6 bg-white">
+            {currentMenu === "Product Description" && (
+              <p className="sm:text-[16px] sm:leading-[24px] text-[14px] leading-[21px] font-medium text-black">
+                Lorem ipsum dolor sit amet consectetur. Dui elit hac massa nulla
+                nibh neque. Id risus feugiat turpis amet odio in. Tellus
+                convallis et viverra mattis senectus urna risus velit. Maecenas
+                augue viverra quam euismod convallis id aliquet et. Morbi a
+                euismod non tellus mi auctor. Venenatis id pellentesque
+                venenatis aliquet tortor morbi. Amet morbi feugiat volutpat
+                neque amet id massa non. Sollicitudin maecenas turpis
+                scelerisque orci vitae purus maecenas tempus consequat. Eu amet
+                interdum venenatis egestas sed faucibus varius.Elementum massa
+                ultrices a et libero etiam pulvinar. Diam quis tristique leo
+                risus tellus in pellentesque proin. Viverra pellentesque pretium
+                mauris ornare sed elementum praesent massa tristique. Ut magna
+                at facilisi sed morbi sit arcu. Dignissim semper sed mattis
+                risus ornare donec. Sem sed interdum arcu pellentesque pulvinar
+                leo. Velit mattis blandit luctus sed massa tempor adipiscing
+                pretium. Pellentesque dignissim massa sed ullamcorper ac nibh a.
+                Odio neque molestie scelerisque ipsum aliquam. Mauris semper
+                lorem est nisl scelerisque.Eget consequat nunc id sed ultrices.
+                Sed dui id tincidunt lacus morbi nullam. Cras enim faucibus elit
+                auctor purus amet. Gravida proin diam fermentum amet diam eget
+                viverra. Netus dui nullam arcu duis amet sed adipiscing nisl
+                nisi. Nulla auctor hac quisque bibendum suspendisse blandit enim
+                pellentesque ornare. Ornare ac scelerisque.
+              </p>
+            )}
+            {currentMenu === "Product Specification" && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 space-y-2 lg:space-y-1 w-full">
+                <ToyDetailRow
+                  label="Items Included in the Package"
+                  value="1 Toy"
+                />
+                <ToyDetailRow label="Country Of Origin" value="India" />
+                <ToyDetailRow label="Material" value={toy.material} />
+                <ToyDetailRow label="Color" value={toy.color} />
+                <ToyDetailRow label="Age Group" value={toy.age_group} />
+                <ToyDetailRow label="Sub Category" value={toy.sub_category} />
+              </div>
+            )}
+            {currentMenu === "Shipping & Returns" && (
+              <div className="flex flex-col gap-2">
+                <ToyDetailRow
+                  label="Estimated Order Processing Time:"
+                  value="24 to 48 hours"
+                />
+                <ToyDetailRow
+                  label="Estimated Delivery Time: Metros:"
+                  value="3 - 4 days, Rest of India: 5 -10 days"
+                />
+                <p className="sm:text-[16px] sm:leading-[24px] text-[14px] leading-[21px] font-medium text-black">
+                  Customers can return their order within 14 days after an order
+                  has been delivered. We have a reverse pick up facility for
+                  most pin codes. For pin codes that are non- serviceable by our
+                  courier partners against the reverse pick up policy, you will
+                  have to self ship the product(s).
+                </p>
+              </div>
+            )}
+            {currentMenu === "Wash Care" && (
+              <div className="grid sm:grid-cols-2 grid-cols-1 lg:grid-cols-3 gap-2">
+                <p className="sm:text-[16px] sm:leading-[24px] text-[14px] leading-[21px] font-medium text-black">
+                  Machine wash..
+                </p>
+                <p className="sm:text-[16px] sm:leading-[24px] text-[14px] leading-[21px] font-medium text-black">
+                  Wash in cold water, use mild detergent.
+                </p>
+                <p className="sm:text-[16px] sm:leading-[24px] text-[14px] leading-[21px] font-medium text-black">
+                  Dry in shade.
+                </p>
+                <p className="sm:text-[16px] sm:leading-[24px] text-[14px] leading-[21px] font-medium text-black">
+                  Do not iron directly or scrub on print.
+                </p>
+                <p className="sm:text-[16px] sm:leading-[24px] text-[14px] leading-[21px] font-medium text-black">
+                  Do not bleach.
+                </p>
+                <p className="sm:text-[16px] sm:leading-[24px] text-[14px] leading-[21px] font-medium text-black">
+                  Do not tumble dry.
+                </p>
+                <p className="sm:text-[16px] sm:leading-[24px] text-[14px] leading-[21px] font-medium text-black">
+                  Dry on flat surface as hanging may cause measurement
+                  variations.
+                </p>
+              </div>
+            )}
           </div>
         </div>
         <div className="w-full border border-gray-200 rounded-2xl p-6 bg-white relative">

@@ -1,5 +1,6 @@
 import React from "react";
-import childPlay from "../assets/about_01.jpg";
+// import childPlay from "../assets/about_01.jpg";
+import AboutIng from "../assets/about02.jpeg";
 import { Shield, Blocks } from "lucide-react";
 import sun from "../assets/sun.svg";
 import parashuit from "../assets/parasuit.svg";
@@ -13,7 +14,7 @@ const AboutHeroSection = () => {
       <div className="relative flex justify-center w-full lg:w-1/2">
         <img
           className="rounded-full aspect-square object-cover w-full max-w-[350px] md:max-w-[80%] shadow-lg"
-          src={childPlay}
+          src={AboutIng}
           alt="children playing"
         />
 
@@ -45,13 +46,24 @@ const AboutHeroSection = () => {
           about us
         </h3>
         <h1 className="text-2xl md:text-3xl lg:text-4xl mt-4 text-[#001430] font-semibold">
-          Unleash endless adventures - your toy kingdom awaits!
+          Welcome to Gofy Kids Mall!
         </h1>
         <p className="mt-4 text-base text-[#69778A] px-2 md:px-0">
-          When an unknown printer took a galley of type and scrambled it to make
-          a type specimen book. It has survived not only five centuries, but
-          also the leap types remaining essentially unchanged. It was
-          popularised.
+          Welcome to Gofy Kids Mall, Model Town – your one-stop destination for
+          everything your little one needs! From trendy kidswear and comfortable
+          footwear to a wide range of toys, games, and baby care essentials, we
+          bring the best of quality and fun under one colorful roof.
+        </p>
+        <h1 className="text-2xl md:text-3xl lg:text-4xl mt-4 text-[#001430] font-semibold">
+          Our Philosophy
+        </h1>
+        <p className="mt-4 text-base text-[#69778A] px-2 md:px-0">
+          At Gofy Kids Mall, we believe that childhood should be celebrated with
+          joy, creativity, and comfort. That’s why every product we offer is
+          carefully curated to meet the highest standards of safety, durability,
+          and style. Whether you're shopping for a newborn or a growing child,
+          our mall is designed to make your experience smooth, playful, and
+          family-friendly.
         </p>
 
         {/* Features Cards */}

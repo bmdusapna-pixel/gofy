@@ -70,6 +70,7 @@ const SecondHeader = ({
   setOpenCart,
   totalItems,
   totalFavouriteItems,
+  setIsMobileMenuOpen,
 }) => {
   const [openSearchMobile, setOpenSearchMobile] = useState(false);
   const [category, setCategory] = useState(false);
@@ -205,6 +206,15 @@ const SecondHeader = ({
               <p className="text-base font-semibold text-black">Account</p>
             </div>
           </Link>
+        </div>
+        <div className="flex lg:hidden">
+          <div
+            onClick={() => setIsMobileMenuOpen((prev) => !prev)}
+            className="flex gap-2 items-center p-1 text-blacktransition-colors duration-300 hover:text-white bg-transparent hover:bg-[#6c757d] cursor-pointer rounded-md z-20"
+          >
+            <Menu className="w-6 h-6" />
+            {/* <p className="text-[16px] leading-[24px]">Browse Categories</p> */}
+          </div>
         </div>
       </div>
       <div
@@ -391,13 +401,13 @@ const ThirdHeader = ({ isMobileMenuOpen, setIsMobileMenuOpen }) => {
       {/* for tablet and mobile */}
       <div className="lg:hidden block w-full px-5 py-2">
         <div className="flex justify-end w-full">
-          <div
+          {/* <div
             onClick={() => setIsMobileMenuOpen((prev) => !prev)}
-            className="flex gap-2 items-center p-1 text-[#6c757d] transition-colors duration-300 hover:text-white bg-transparent hover:bg-[#6c757d] cursor-pointer border border-gray-200 rounded-md z-20"
+            className="flex gap-2 items-center p-1 text-blacktransition-colors duration-300 hover:text-white bg-transparent hover:bg-[#6c757d] cursor-pointer rounded-md z-20"
           >
             <Menu className="w-6 h-6" />
             <p className="text-[16px] leading-[24px]">Browse Categories</p>
-          </div>
+          </div> */}
           <div
             className={`w-full sm:w-96 h-full overflow-y-scroll bg-white fixed top-0 left-0 z-50 shadow-lg flex flex-col py-10 px-6 gap-5 transition-transform duration-300 ${
               isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
@@ -526,6 +536,7 @@ const Header = () => {
           openCart={openCart}
           setOpenCart={setOpenCart}
           totalItems={totalItems}
+          setIsMobileMenuOpen={setIsMobileMenuOpen}
         />
         <ThirdHeader
           isMobileMenuOpen={isMobileMenuOpen}

@@ -4,7 +4,7 @@ import cta from "../assets/cta_02.png";
 const OfferBanner = () => {
   return (
     <div className="w-full ">
-      <div className="bg-[#001430] flex mt-10  flex-col md:flex-row rounded-2xl overflow-hidden">
+      <div className="bg-[#001430] flex mt-10  flex-col md:flex-row rounded-2xl overflow-hidden md:h-[280px]">
         <div className="flex-1 flex items-center justify-center px-6 py-10 md:px-16 md:py-0 text-center md:text-left">
           <h2 className="text-white text-2xl md:text-3xl font-bold max-w-xl leading-snug">
             Get 25% discount in all kinds of superhero themes!

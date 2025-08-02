@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import cta_banner from "../assets/cta.png";
-import age_1 from "../assets/age_1.png";
-import age_2 from "../assets/age_2.png";
-import age_3 from "../assets/age_3.png";
-import age_4 from "../assets/age_4.png";
-import age_5 from "../assets/age_5.png";
+import I1 from "../assets/1.png";
+import I2 from "../assets/2.png";
+import I3 from "../assets/3.png";
+import I4 from "../assets/4.png";
+import I5 from "../assets/5.png";
+import I6 from "../assets/6.png";
+import I7 from "../assets/7.png";
 // import ProductsCollection from "./ProductsCollection";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -12,51 +14,50 @@ import { Link } from "react-router-dom";
 const age_category_array = [
   {
     _id: 1,
-    image: age_1,
-    age_difference: "0-2 years",
-    bg: "#06a096",
+    image: I1,
+    age_difference: "0-6 months",
     url: "age/zero-to-two",
   },
   {
     _id: 2,
-    image: age_2,
-    age_difference: "2-4 years",
-    bg: "#e91e63",
+    image: I2,
+    age_difference: "6-12 months",
     url: "age/two-to-four",
   },
   {
     _id: 3,
-    image: age_3,
-    age_difference: "4-6 years",
-    bg: "#28a745",
+    image: I3,
+    age_difference: "1-2 years",
     url: "age/four-to-six",
   },
   {
     _id: 4,
-    image: age_4,
-    age_difference: "6-8 years",
-    bg: "#dc3545",
+    image: I4,
+    age_difference: "2-4 years",
     url: "age/six-to-eight",
   },
   {
     _id: 5,
-    image: age_5,
-    age_difference: "8-10 years",
-    bg: "#0d6efd",
+    image: I5,
+    age_difference: "4-6 years",
     url: "age/eight-to-ten",
   },
   {
     _id: 6,
-    image: age_1,
-    age_difference: "10-12 years",
-    bg: "#dc3545",
+    image: I6,
+    age_difference: "6-8 years",
     url: "age/ten-to-twelve",
   },
   {
     _id: 7,
-    image: age_3,
-    age_difference: "12-14 years",
-    bg: "#0d6efd",
+    image: I7,
+    age_difference: "8-10 years",
+    url: "age/twelve-to-fourteen",
+  },
+  {
+    _id: 8,
+    image: I7,
+    age_difference: "10-12 years",
     url: "age/twelve-to-fourteen",
   },
 ];
@@ -88,7 +89,7 @@ const CTA = () => {
               />
             </button>
           </div>
-          <div className="w-full md:w-1/2 flex items-center justify-center pt-0 sm:pt-10">
+          <div className="w-full md:w-1/2 flex items-center justify-center pt-0 sm:pt-10 pl-8 sm:pl-0">
             <img src={cta_banner} alt="" className="w-full" />
           </div>
         </div>
@@ -102,26 +103,21 @@ const CTA = () => {
           Lorem ipsum dolor sit amet consectetur. Id fames there are many
           vulputate eget dolor.
         </p>
-        <div className="grid lg:grid-cols-7 md:grid-cols-3 grid-cols-2 gap-0 sm:gap-5 w-full my-5 sm:my-10 items-center">
+        <div className="grid xl:grid-cols-8 lg:grid-cols-4 md:grid-cols-3 grid-cols-2 gap-0 sm:gap-5 w-full my-5 sm:my-10 items-center">
           {age_category_array.map((item) => (
             <Link
               to={`/products/${item.url}`}
               key={item._id}
-              className="flex flex-col gap-5 w-full items-center relative group"
+              className="flex flex-col gap-3 w-full items-center group"
             >
-              <div
-                style={{ backgroundColor: item.bg }}
-                className="flex items-center justify-center sm:w-44 w-36 sm:h-44 h-36 rounded-full"
-              >
+              <div className="flex items-center justify-center sm:w-40 w-36 sm:h-40 h-36 rounded-full">
                 <img
                   src={item.image}
                   alt=""
-                  className="w-20 sm:w-24 absolute z-10 h-24 sm:h-32 top-[23px] group-hover:scale-110 transition-transform duration-300"
+                  className="w-full z-10 h-full group-hover:scale-110 transition-transform duration-300"
                 />
-                <div className="w-28 h-28 border border-white border-dashed rounded-full absolute"></div>
-                <div className="absolute w-full h-10 bg-white bottom-8"></div>
               </div>
-              <p className="relative bottom-8 text-[18px] leading-[27px] text-[#000000] font-semibold">
+              <p className="bottom-8 text-[18px] leading-[27px] text-[#000000] font-semibold">
                 {item.age_difference}
               </p>
             </Link>

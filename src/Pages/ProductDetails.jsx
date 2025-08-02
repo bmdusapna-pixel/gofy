@@ -234,16 +234,16 @@ const ProductDetails = () => {
                 </div>
               </div>
             </div>
-            <p className="text-[#69778a] text-[16px] leading-[24px]">
+            {/* <p className="text-[#69778a] text-[16px] leading-[24px]">
               Lorem ipsum dolor sit amet consectetur. Nunc sit morbi turpis sed
               volutpat egestas. Mollis scelerisque a sem morbi sed donec eu. Dui
               platea scelerisque ut posuere. Sit posuere aliquet venenatis quam.
-            </p>
+            </p> */}
             <div className="flex gap-2 items-center">
               <p className="text-[20px] leading-[30px] text-[#001430] line-through">
                 ₹56.00
               </p>
-              <p className="text-[30px] leading-[40px]  text-[#001430] font-semibold">
+              <p className="text-[30px] leading-[40px]  text-pink-600 font-semibold">
                 ₹56.00
               </p>
             </div>
@@ -569,6 +569,9 @@ const ProductDetails = () => {
             </div>
           )}
         </div> */}
+        <div className="w-full">
+          <RelatedItems />
+        </div>
         <div className="w-full flex flex-col gap-5">
           <div className="flex gap-1 sm:gap-5 items-center border-b-[2px] border-gray-200">
             {product_details.map((item) => (
@@ -674,9 +677,6 @@ const ProductDetails = () => {
               </div>
             )}
           </div>
-        </div>
-        <div className="w-full">
-          <RelatedItems />
         </div>
       </div>
     </div>

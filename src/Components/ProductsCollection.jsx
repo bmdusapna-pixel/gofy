@@ -59,9 +59,9 @@ const ProductsCollection = ({ color }) => {
               0: { slidesPerView: 1, spaceBetween: 20 },
               480: { slidesPerView: 2, spaceBetween: 20 },
               768: { slidesPerView: 3, spaceBetween: 20 },
-              1024: { slidesPerView: 5, spaceBetween: 20 },
-              1280: { slidesPerView: 5, spaceBetween: 20 },
-              1536: { slidesPerView: 6, spaceBetween: 20 },
+              1024: { slidesPerView: 4, spaceBetween: 20 },
+              1280: { slidesPerView: 4, spaceBetween: 20 },
+              1536: { slidesPerView: 5, spaceBetween: 20 },
             }}
             loop={true}
             grabCursor={true}
@@ -140,7 +140,7 @@ const ProductsCollection = ({ color }) => {
                       >
                         <Countdown />
                       </div> */}
-                      <p className="text-[18px] leading-[30px] font-semibold text-[#212529] mt-4 whitespace-nowrap overflow-hidden text-ellipsis">
+                      <p className="text-[20px] leading-[30px] font-semibold text-[#212529] mt-4 whitespace-nowrap overflow-hidden text-ellipsis">
                         {product.name}
                       </p>
                       <div className="flex">
@@ -159,7 +159,7 @@ const ProductsCollection = ({ color }) => {
                         />
                       </div>
                       <div className="flex gap-2 items-center">
-                        <p className="text-[18px] leading-[27px] font-semibold text-pink-600">
+                        <p className="text-[24px] leading-[27px] font-semibold text-pink-600">
                           ₹{product.price}
                         </p>
                         <p className="text-[14px] leading-[24px] line-through font-semibold text-[#212529]">
@@ -172,11 +172,11 @@ const ProductsCollection = ({ color }) => {
                       <div className="flex items-center gap-4 mt-2">
                         <button
                           onClick={(event) => addProductToCart(product, event)}
-                          className="text-[16] leading-[24px] px-2 w-1/2 font-semibold cursor-pointer py-2 rounded-md hover:bg-[#00bbae] bg-[#e9ecef] hover:text-white transition duration-300"
+                          className="text-[14] leading-[24px] px-2 w-1/2 font-semibold cursor-pointer py-2 rounded-md hover:bg-[#00bbae] bg-[#e9ecef] hover:text-white transition duration-300"
                         >
                           Add To Cart
                         </button>
-                        <button className="text-[16] leading-[24px] px-2 w-1/2 font-semibold cursor-pointer py-2 rounded-md bg-[#00bbae] text-white hover:text-black hover:bg-[#e9ecef] transition duration-300">
+                        <button className="text-[14] leading-[24px] px-2 w-1/2 font-semibold cursor-pointer py-2 rounded-md bg-[#00bbae] text-white hover:text-black hover:bg-[#e9ecef] transition duration-300">
                           Buy Now
                         </button>
                       </div>
@@ -187,11 +187,11 @@ const ProductsCollection = ({ color }) => {
             })}
           </Swiper>
           <ChevronLeft
-            className="swiper-button-prev-pc absolute left-0 top-32 p-1 w-10 h-10 transform -translate-y-1/2 z-10 bg-[#e9f9fc] text-black rounded-full hover:bg-[#f8f9fa] cursor-pointer opacity-25 hover:opacity-100"
+            className="swiper-button-prev-pc absolute -left-5 top-60 p-1 w-10 h-10 transform -translate-y-1/2 z-10 bg-[#e9f9fc] text-black rounded-full hover:bg-[#f8f9fa] cursor-pointer opacity-25 hover:opacity-100"
             style={{ boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)" }}
           />
           <ChevronRight
-            className="swiper-button-next-pc absolute right-0 top-32 p-1 w-10 h-10 transform -translate-y-1/2 z-10 bg-[#e9f9fc] text-black rounded-full hover:bg-[#f8f9fa] cursor-pointer opacity-25 hover:opacity-100"
+            className="swiper-button-next-pc absolute -right-5 top-60 p-1 w-10 h-10 transform -translate-y-1/2 z-10 bg-[#e9f9fc] text-black rounded-full hover:bg-[#f8f9fa] cursor-pointer opacity-25 hover:opacity-100"
             style={{ boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)" }}
           />
         </div>
@@ -199,7 +199,29 @@ const ProductsCollection = ({ color }) => {
           to="/products"
           className="flex justify-center items-center w-full ml-0 sm:ml-4"
         >
-          <p className="mt-5 rounded-full py-2 px-8 font-semibold text-[16px] leading-[24px] transition-all duration-300 text-white hover:bg-amber-700 hover:scale-100 cursor-pointer bg-amber-500 flex items-center justify-center">
+          <p
+            className="
+              mt-5
+              rounded-full
+              py-1
+              px-8
+              font-semibold
+              text-[16px]
+              leading-[24px]
+              transition-all
+              duration-300
+              cursor-pointer
+              flex items-center justify-center
+              shadow-lg
+              shadow-amber-500/30
+              bg-[#f39924]
+              hover:scale-105
+              text-white
+              hover:text-white
+              transform
+              backdrop-blur-sm
+            "
+          >
             VIEW ALL
           </p>
         </Link>

@@ -10,6 +10,7 @@ import Footer from "./Components/Footer";
 import Cart from "./Components/Cart";
 import PrivacyPolicy from "./Pages/PrivacyPolicy";
 import { ArrowUp } from "lucide-react";
+import { IoLogoWhatsapp } from "react-icons/io";
 import { CartContext } from "./Context/CartContext";
 import About from "./Pages/About";
 import TermsAndConditions from "./Pages/TermsAndConditions";
@@ -31,6 +32,7 @@ import ToysDetails from "./Pages/ToysDetails";
 import ClothesDetails from "./Pages/ClothesDetails";
 import SpecificToyProducts from "./Pages/SpecificToyProducts";
 import SpecificClotheProducts from "./Pages/SpecificClotheProducts";
+import WhatsAppContact from "./Components/WhatsAppContact";
 
 const product = {
   name: "Outdoor Swing Set",
@@ -58,7 +60,19 @@ const App = () => {
     setOpenCart,
     totalItems,
   } = useContext(CartContext);
+  const [isWhatsAppVisible, setIsWhatsAppVisible] = useState(false);
   const cartRef = useRef(null);
+
+  const [isBlinking, setIsBlinking] = useState(false);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIsBlinking((prev) => !prev);
+    }, 500);
+
+    return () => clearInterval(interval);
+  }, []);
+  const blinkingClasses = isBlinking ? "scale-110" : "scale-100";
 
   useEffect(() => {
     const handleScroll = () => {
@@ -178,10 +192,24 @@ const App = () => {
           </div>
         </div>
       </div>
+      <WhatsAppContact
+        show={isWhatsAppVisible}
+        onClose={() => setIsWhatsAppVisible(false)}
+      />
+      <div className="fixed bottom-22 z-50 right-5 w-14 h-14 rounded-full flex items-center justify-center cursor-pointer transition-transform duration-300 hover:scale-110">
+        <button
+          onClick={() => setIsWhatsAppVisible(!isWhatsAppVisible)}
+          className={`w-full h-full flex items-center justify-center bg-white rounded-full shadow-lg hover:shadow-xl transition-shadow duration-300`}
+        >
+          <IoLogoWhatsapp
+            className={`w-12 h-12 text-green-600 duration-300 ${blinkingClasses}`}
+          />
+        </button>
+      </div>
       {isShowTopButton && (
         <div
           onClick={scrollToTop}
-          className="fixed bottom-5 z-50 right-5 w-10 h-10 rounded-full bg-[#f88e0f] flex items-center justify-center cursor-pointer transition-transform duration-300 hover:scale-110"
+          className="fixed bottom-8 z-50 right-5 w-10 h-10 rounded-full bg-[#f88e0f] flex items-center justify-center cursor-pointer transition-transform duration-300 hover:scale-110"
         >
           <ArrowUp className="w-6 h-6 text-white" />
         </div>

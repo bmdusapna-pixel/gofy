@@ -4,6 +4,9 @@ import { AnimatePresence, motion } from "framer-motion";
 import { CartContext } from "../Context/CartContext";
 import { Link } from "react-router-dom";
 
+import EmptyCart from "../assets/empty-cart.jpg";
+import RelatedItems from "../Components/RelatedItems";
+
 const CartDetails = () => {
   const {
     openCart,
@@ -161,25 +164,54 @@ const CartDetails = () => {
               ))}
             </div>
           ) : (
-            <div className="flex flex-col w-full gap-5">
-              <div className="border border-[#00bbae] p-4 rounded-xl flex gap-2 items-center w-full bg-[#edfbfa]">
+            <div className="flex flex-col w-full gap-5 items-center justify-center h-full">
+              {/* <div className="border border-[#00bbae] p-4 rounded-xl flex gap-2 items-center w-full bg-[#edfbfa]">
                 <div className="w-6 h-6 rounded-full bg-[#00bbae] flex items-center justify-center">
                   <Info className="w-4 h-4 text-white" />
                 </div>
                 <p className="text-[14px] text-[#2f2f2f] leading-[21px] font-normal">
                   Your cart is currently empty
                 </p>
-              </div>
+              </div> */}
+              <img src={EmptyCart} alt="" />
               <Link
-                to="/products"
+                to="/"
                 className="rounded-xl w-40 text-[18px] leading-[24px] font-semibold text-white transition-colors duration-300 hover:bg-[#f88e0f] cursor-pointer px-3 py-4 bg-[#00bbae] flex gap-3 items-center justify-center"
               >
-                Return to shop
+                Shop Now
               </Link>
             </div>
           )}
         </div>
         <div className="w-full lg:w-2/6 flex flex-col gap-5">
+          <div className="w-full md:p-10 p-5 flex flex-col gap-3 bg-white rounded-2xl">
+            <p className="text-[28px] leading-[42px] font-semibold text-black">
+              Cart totals
+            </p>
+            <div className="w-full flex-col gap-3 flex">
+              <div className="flex justify-between items-center w-full">
+                <p className="text-[18px] leading-[27px] font-medium text-[#69778a]">
+                  Subtotal
+                </p>
+                <p className="text-[18px] leading-[27px] font-medium text-[#212121]">
+                  ₹ {totalPrice}
+                </p>
+              </div>
+              <div className="flex justify-between items-center w-full">
+                <p className="text-[20px] leading-[30px] font-semibold text-black">
+                  Total
+                </p>
+                <p className="text-[20px] leading-[30px] font-semibold text-black">
+                  ₹ {totalPrice}
+                </p>
+              </div>
+              {totalPrice > 0 && totalPrice < 500 && (
+                <p className="text-[18px] leading-[21px] font-normal text-[#7ba856]">
+                  Free shipping on orders over ₹500
+                </p>
+              )}
+            </div>
+          </div>
           <div className="w-full md:p-10 p-5 flex flex-col gap-5 bg-white rounded-2xl">
             <p className="text-[28px] leading-[42px] font-semibold text-black">
               Apply coupon
@@ -208,30 +240,10 @@ const CartDetails = () => {
               </button>
             </form>
           </div>
-          <div className="w-full md:p-10 p-5 flex flex-col gap-3 bg-white rounded-2xl">
-            <p className="text-[28px] leading-[42px] font-semibold text-black">
-              Cart totals
-            </p>
-            <div className="w-full flex-col gap-3 flex">
-              <div className="flex justify-between items-center w-full">
-                <p className="text-[18px] leading-[27px] font-medium text-[#69778a]">
-                  Subtotal
-                </p>
-                <p className="text-[18px] leading-[27px] font-medium text-[#212121]">
-                  ₹ {totalPrice}
-                </p>
-              </div>
-              <div className="flex justify-between items-center w-full">
-                <p className="text-[20px] leading-[30px] font-semibold text-black">
-                  Total
-                </p>
-                <p className="text-[20px] leading-[30px] font-semibold text-black">
-                  ₹ {totalPrice}
-                </p>
-              </div>
-            </div>
-          </div>
         </div>
+      </div>
+      <div className="w-full lg:px-12 px-5 mx-auto flex lg:flex-row flex-col gap-5">
+        <RelatedItems />
       </div>
     </div>
   );

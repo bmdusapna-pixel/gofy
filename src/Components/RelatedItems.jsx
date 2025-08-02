@@ -30,7 +30,7 @@ const RelatedItems = () => {
       <p className="text-[32px] md:text-[38px] leading-[48px] md:leading-[57px] text-[#212529] font-bold">
         Related Products
       </p>
-      <div className="w-full overflow-x-hidden relative">
+      <div className="w-full relative">
         <Swiper
           modules={[Autoplay, Navigation]}
           autoplay={{ delay: 3000, disableOnInteraction: false }}
@@ -129,11 +129,11 @@ const RelatedItems = () => {
           ))}
         </Swiper>
         <ChevronLeft
-          className="swiper-button-prev-rp absolute left-0 top-1/2 transform -translate-y-1/2 z-10 bg-[#e9f9fc] text-black rounded-full hover:bg-[#f8f9fa] cursor-pointer h-10 w-10 opacity-25 hover:opacity-100 p-1"
+          className="swiper-button-prev-rp absolute -left-5 top-1/2 transform -translate-y-1/2 z-10 bg-[#e9f9fc] text-black rounded-full hover:bg-[#f8f9fa] cursor-pointer h-10 w-10 opacity-25 hover:opacity-100 p-1"
           style={{ boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)" }}
         />
         <ChevronRight
-          className="swiper-button-next-rp absolute right-0 top-1/2 transform -translate-y-1/2 z-10 bg-[#e9f9fc] text-black rounded-full hover:bg-[#f8f9fa] cursor-pointer h-10 w-10 opacity-25 hover:opacity-100 p-1"
+          className="swiper-button-next-rp absolute -right-5 top-1/2 transform -translate-y-1/2 z-10 bg-[#e9f9fc] text-black rounded-full hover:bg-[#f8f9fa] cursor-pointer h-10 w-10 opacity-25 hover:opacity-100 p-1"
           style={{ boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)" }}
         />
       </div>

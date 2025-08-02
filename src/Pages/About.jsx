@@ -12,13 +12,13 @@ const About = () => {
   return (
     <div>
       <AboutHeroSection />
-      <Feature />
-      <VideoThumbnail />
+      {/* <Feature /> */}
+      {/* <VideoThumbnail /> */}
+      <OfferBanner />
       <AboutContent />
       <TestimonialsPage />
-      <OfferBanner />
       <Brands />
-      <Subscribe />
+      {/* <Subscribe /> */}
     </div>
   );
 };

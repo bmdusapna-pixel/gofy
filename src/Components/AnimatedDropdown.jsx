@@ -142,7 +142,7 @@ const Countdown = () => {
   const { days, hours, minutes, seconds } = getTimeParts();
 
   return (
-    <div className="bg-white rounded-md px-2 py-1 flex gap-1 items-center">
+    <div className="bg-white rounded-md flex gap-1 items-center">
       <FlipUnit value={days} />
       <span className="text-[#dc3545] font-semibold text-[18px] leading-[27px]">
         :

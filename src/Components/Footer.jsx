@@ -8,6 +8,7 @@ import {
   Twitter,
   Youtube,
 } from "lucide-react";
+import { IoLogoWhatsapp } from "react-icons/io";
 import logo from "../assets/logo.webp";
 import footer_background from "../assets/footer-background.svg";
 import footer_boy from "../assets/footer-boy.svg";
@@ -20,6 +21,7 @@ const IconComponents = {
   Twitter,
   Mail,
   Youtube,
+  IoLogoWhatsapp,
 };
 
 const footer_links = [
@@ -136,14 +138,30 @@ const Footer = () => {
           <div className="w-full flex flex-col gap-8">
             <img src={logo} alt="" className="w-40" />
             <p className="text-[16px] leading-[24px] font-semibold opacity-50 text-[#212529]">
-              Lorem ipsum dolor sit amet consectetur. Id fames there are many
-              vulputate eget dolor.
+              Welcome to Gofy Kids Mall, Model Town – your one-stop destination
+              for everything your little one needs! From trendy kidswear and
+              comfortable footwear to a wide range of toys.
             </p>
-            <div className="flex gap-3 items-center">
+            {/* <div className="flex gap-3 items-center">
               <MapPin className="w-5 h-5 text-[#198754]" />
               <p className="text-[16px] leading-[24px] text-[#212529]">
                 Delhi, India
               </p>
+            </div> */}
+            <div className="flex gap-3 items-center">
+              {footer_social.map((item) => {
+                const Icon = IconComponents[item.icon];
+                return (
+                  <a
+                    href={item.url}
+                    target="_blank"
+                    key={item._id}
+                    className="w-12 h-12 flex items-center justify-center cursor-pointer transition-colors duration-300 hover:bg-[#00bbae] text-black hover:text-white bg-[#e9ecef] p-1 rounded-full"
+                  >
+                    <Icon className="w-5 h-5" />
+                  </a>
+                );
+              })}
             </div>
           </div>
           <div className="w-full flex flex-col gap-8">
@@ -239,7 +257,9 @@ const Footer = () => {
                 <div className="py-3 pl-4 flex items-center justify-center">
                   {/* Replace Mail with a Phone/WhatsApp icon if available */}
                   {/* If using lucide-react, it could be <Phone className="w-4 h-4 text-black" /> */}
-                  <Mail className="w-4 h-4 text-black" />{" "}
+                  {/* <Mail className="w-4 h-4 text-black" />{" "} */}
+                  <IoLogoWhatsapp className="w-6 h-6 text-black text-green-500" />{" "}
+                  {/* WhatsApp icon */}
                   {/* Placeholder, ideally replace with Phone or WhatsApp icon */}
                 </div>
                 <input
@@ -261,7 +281,7 @@ const Footer = () => {
             </form>
           </div>
         </div>
-        <div className="flex gap-3 items-center">
+        {/* <div className="flex gap-3 items-center">
           {footer_social.map((item) => {
             const Icon = IconComponents[item.icon];
             return (
@@ -275,7 +295,7 @@ const Footer = () => {
               </a>
             );
           })}
-        </div>
+        </div> */}
       </div>
       <div className="w-full h-full relative bg-[#f8f9fa]">
         <img

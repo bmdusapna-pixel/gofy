@@ -29,7 +29,6 @@ const account_items = [
     link: "orders",
     title: "My Orders",
   },
-  // Removed "Change Password" item
   {
     _id: 4,
     icon: "LogOut",
@@ -40,7 +39,6 @@ const account_items = [
 
 const Account = () => {
   const navigate = useNavigate();
-
   const { formSubmit } = useContext(CartContext);
 
   const [sameAddress, setSameAddress] = useState(false);
@@ -48,7 +46,6 @@ const Account = () => {
 
   const [profileData, setProfileData] = useState({
     name: "",
-    email: "",
     phone: "",
   });
 
@@ -117,6 +114,7 @@ const Account = () => {
   const handleProfileUpdate = (event) => {
     event.preventDefault();
     console.log("Updating Profile:", profileData);
+    // Simulating an alert. It's recommended to use a custom message box.
     alert("Profile updated successfully! (Simulated)");
   };
 
@@ -124,21 +122,21 @@ const Account = () => {
     event.preventDefault();
     console.log("Updating Billing Address:", billingAddresss);
     console.log("Updating Shipping Address:", shippingAddress);
+    // Simulating an alert. It's recommended to use a custom message box.
     alert("Address updated successfully! (Simulated)");
   };
 
   const handleLogout = () => {
     console.log("Logging out...");
+    // Simulating an alert. It's recommended to use a custom message box.
     alert("You have been logged out. (Simulated)");
     navigate("/sign-in");
   };
 
   return (
-    <div className="w-full h-full py-10 bg-[#f8f9fa]">
+    <div className="w-full h-full py-10 bg-[#f8f9fa] font-sans">
       <div className="max-w-5xl mx-auto lg:px-0 px-5">
         <div className="w-full flex gap-10 flex-col lg:flex-row">
-          {" "}
-          {/* Added flex-col and lg:flex-row for responsiveness */}
           <div className="w-full lg:w-1/3 bg-[#e9ecef] shadow-sm rounded-2xl flex flex-col">
             <div className="flex gap-5 w-full p-3 items-center">
               <div className="w-16 h-16 p-2 rounded-full bg-[#00bbae] flex items-center justify-center">
@@ -160,7 +158,7 @@ const Account = () => {
                       if (item.link === "logout") {
                         handleLogout();
                       } else if (item.link === "orders") {
-                        navigate("/orders"); // Example: navigate to an orders page
+                        navigate("/orders");
                       } else {
                         setActiveItem(item.link);
                       }
@@ -168,7 +166,7 @@ const Account = () => {
                     key={item._id}
                     className={`flex ${
                       item._id === account_items.length
-                        ? "rounded-b-2xl shadow-none mt-24 lg:mt-auto" // Adjusted margin for responsiveness
+                        ? "rounded-b-2xl shadow-none mt-24 lg:mt-auto"
                         : "rounded-none"
                     } px-3 py-1.5 gap-2 w-full items-center transition-colors duration-300 text-black bg-transparent hover:bg-white hover:text-[#00bbae] cursor-pointer
                     ${
@@ -187,7 +185,6 @@ const Account = () => {
             </div>
           </div>
           <div className="w-full lg:w-2/3 flex flex-col gap-5 p-8 rounded-2xl bg-white shadow-sm">
-            {/* profile data */}
             {activeItem === "profile" && (
               <form
                 onSubmit={handleProfileUpdate}
@@ -205,20 +202,6 @@ const Account = () => {
                     className="transition-colors text-[18px] leading-[27px] duration-300 w-full px-4 py-1 border border-gray-200 focus:border-[#00bbae] outline-none rounded-md"
                     placeholder="Name"
                     autoComplete="name"
-                  />
-                </div>
-                <div className="flex flex-col gap-1 w-full">
-                  <p className="text-[16px] leading-[24px] font-semibold text-black">
-                    Email address
-                  </p>
-                  <input
-                    name="email"
-                    value={profileData.email}
-                    onChange={profileInputChangeHandler}
-                    type="email" // Changed to type="email"
-                    className="transition-colors text-[18px] leading-[27px] duration-300 w-full px-4 py-1 border border-gray-200 focus:border-[#00bbae] outline-none rounded-md"
-                    placeholder="Email Address"
-                    autoComplete="email"
                   />
                 </div>
                 <div className="flex flex-col gap-1 w-full">
@@ -245,7 +228,7 @@ const Account = () => {
                   type="submit"
                   className="rounded-xl w-24 h-10 text-[18px] leading-[27px] font-semibold text-white transition-colors duration-300 hover:bg-[#f88e0f] cursor-pointer bg-[#00bbae] flex gap-3 items-center justify-center"
                 >
-                  {formSubmit ? ( // Assuming formSubmit is managed by CartContext for global loading
+                  {formSubmit ? (
                     <Loader className="w-6 h-6 text-white animate-spin" />
                   ) : (
                     "Update"
@@ -254,12 +237,9 @@ const Account = () => {
               </form>
             )}
 
-            {/* address data */}
             {activeItem === "address" && (
               <form onSubmit={handleAddressUpdate} className="w-full">
                 <div className="flex flex-col gap-5 h-[50vh] overflow-y-scroll pr-2">
-                  {" "}
-                  {/* Added pr-2 for scrollbar spacing */}
                   <p className="text-[18px] leading-[24px] font-semibold text-black">
                     Billing Address
                   </p>
@@ -405,7 +385,6 @@ const Account = () => {
               </form>
             )}
 
-            {/* My Orders section - added for completeness */}
             {activeItem === "orders" && (
               <div className="flex flex-col gap-5 w-full">
                 <p className="text-[18px] leading-[24px] font-semibold text-black">
@@ -413,13 +392,9 @@ const Account = () => {
                 </p>
                 <div className="bg-gray-100 p-4 rounded-md text-gray-700">
                   <p>No orders found. Start shopping now!</p>
-                  {/* You would fetch and display user orders here */}
                 </div>
               </div>
             )}
-
-            {/* password data section is removed */}
-            {/* {activeItem === "password" && (...) } */}
           </div>
         </div>
       </div>
