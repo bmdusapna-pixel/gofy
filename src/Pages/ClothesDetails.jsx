@@ -27,32 +27,38 @@ import "swiper/css/navigation";
 import { Link, useParams } from "react-router-dom";
 import { clothe_items } from "../assets/helper.js";
 import SizeChart from "../Components/SizeChart.jsx";
+import ProductReviews from "../Components/ProductReviews.jsx";
 
-const product_reviews = [
-  {
-    _id: 1,
-    name: "Alice Johnson",
-    date: "2025-07-18",
-    description: "Fantastic quality and fast delivery. Highly recommend!",
-    rating: 5,
-  },
-  {
-    _id: 2,
-    name: "Bob Smith",
-    date: "2025-07-17",
-    description:
-      "The product is decent for the price, but packaging could be better.",
-    rating: 4,
-  },
-  {
-    _id: 3,
-    name: "Charlie Davis",
-    date: "2025-07-16",
-    description:
-      "Not satisfied with the product. It didn’t match the description.",
-    rating: 2,
-  },
-];
+const clotheReview = {
+  id: "some-id",
+  name: "Outdoor Swing Set",
+  review: 3,
+};
+// const product_reviews = [
+//   {
+//     _id: 1,
+//     name: "Alice Johnson",
+//     date: "2025-07-18",
+//     description: "Fantastic quality and fast delivery. Highly recommend!",
+//     rating: 5,
+//   },
+//   {
+//     _id: 2,
+//     name: "Bob Smith",
+//     date: "2025-07-17",
+//     description:
+//       "The product is decent for the price, but packaging could be better.",
+//     rating: 4,
+//   },
+//   {
+//     _id: 3,
+//     name: "Charlie Davis",
+//     date: "2025-07-16",
+//     description:
+//       "Not satisfied with the product. It didn’t match the description.",
+//     rating: 2,
+//   },
+// ];
 
 const coupon_data = [
   {
@@ -365,7 +371,7 @@ const ClothesDetails = () => {
                 {coupon_data.map((coupon) => (
                   <div
                     className="flex flex-col sm:flex-row items-start sm:items-center justify-between
-                       p-3 rounded-lg transition-all duration-200 ease-in-out
+                       px-3 pb-2 rounded-lg transition-all duration-200 ease-in-out
                        hover:bg-gray-50 border-b border-gray-100 last:border-b-0"
                     key={coupon._id}
                   >
@@ -670,7 +676,7 @@ const ClothesDetails = () => {
             )}
           </div>
         </div>
-        <div className="w-full border border-gray-200 rounded-2xl p-6 bg-white relative">
+        {/* <div className="w-full border border-gray-200 rounded-2xl p-6 bg-white relative">
           <div className="absolute top-[-2rem] left-1/2 transform -translate-x-1/2 flex gap-4 items-center w-max">
             <p
               style={{ boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)" }}
@@ -797,7 +803,8 @@ const ClothesDetails = () => {
               </button>
             </form>
           </div>
-        </div>
+        </div> */}
+        <ProductReviews items={clotheReview} />
       </div>
       <SizeChart
         openSizeChart={openSizeChart}

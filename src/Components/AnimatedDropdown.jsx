@@ -11,6 +11,7 @@ import {
   Bike,
   User,
   Car,
+  MoveRight,
 } from "lucide-react";
 import product_list from "../assets/product-list";
 import { slugify } from "../assets/helper";
@@ -79,8 +80,11 @@ const AnimatedDropdown = ({ items }) => {
                   key={product._id}
                 >
                   <span className="absolute top-0 left-0 w-full h-0 bg-[#00bbae] z-[-1] transition-all duration-500 group-hover:h-full" />
-                  <p className="text-[16px] leading-[24px] font-semibold">
-                    {product.name}
+                  <p className="text-[16px] leading-[24px] font-semibold flex items-center whitespace-nowrap">
+                    <MoveRight className="h-4 w-4 hidden group-hover:block -ml-2" />{" "}
+                    <span className="group-hover:translate-x-1 transition-transform duration-300">
+                      {product.name}
+                    </span>
                   </p>
                 </Link>
               ))}

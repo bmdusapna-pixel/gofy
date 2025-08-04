@@ -154,7 +154,7 @@ const Products = () => {
                         {product.name}
                       </p>
                       <p className="text-[#00bbae] text-[16px] leading-[24px] font-semibold">
-                        ${product.price}
+                        ₹ {product.price}
                       </p>
                     </div>
                   </div>
@@ -227,24 +227,53 @@ const Products = () => {
                   </div>
                   <div className="flex flex-col gap-2 w-full px-2">
                     <div className="flex gap-2 items-center">
-                      <div className="flex gap-2 items-center py-0.5 px-1.5 rounded-bl-lg rounded-tr-lg bg-[#f88e0f]">
+                      {/* <div className="flex gap-2 items-center py-0.5 px-1.5 rounded-bl-lg rounded-tr-lg bg-[#f88e0f]">
                         <Star className="w-3 h-3 text-white" fill="white" />
                         <p className="text-white">({product.rating})</p>
                       </div>
                       <p className="text-sm text-gray-500">
                         {product.review} Review
-                      </p>
+                      </p> */}
+                      <div className="flex items-center">
+                        {Array.from({
+                          length: Math.floor(product.rating),
+                        }).map(() => (
+                          <Star
+                            className="w-3 h-3 text-yellow-500"
+                            fill="#f88e0f"
+                          />
+                        ))}
+                        {Array.from({
+                          length: 5 - Math.floor(product.rating),
+                        }).map(() => (
+                          <Star
+                            className="w-3 h-3 text-yellow-500"
+                            fill="white"
+                          />
+                        ))}
+                      </div>
                     </div>
-                    <p className="text-sm text-gray-500">
+                    {/* <p className="text-sm text-gray-500">
                       {product.product_type}
-                    </p>
+                    </p> */}
                     <div className="flex sm:flex-col flex-row justify-between w-full gap-2">
                       <p className="text-black text-[20px] leading-[30px] transition-colors duration-300 hover:text-[#00bbae] font-semibold">
                         {product.name}
                       </p>
-                      <p className="text-[#00bbae] text-[20px] leading-[30px] font-semibold">
+                      {/* <p className="text-[#00bbae] text-[20px] leading-[30px] font-semibold">
                         ₹{product.price}
-                      </p>
+                      </p> */}
+                      <div className="flex gap-2 items-center">
+                        <p className="text-[#00bbae] text-[20px] leading-[30px] font-semibold">
+                          ₹ {product.price}
+                        </p>
+                        <p className="text-gray-700 text-[14px] leading-[30px] line-through font-semibold">
+                          ₹ {product.price + 100}
+                        </p>
+                        <p className="text-yellow-500 text-[18px] leading-[30px] line-through font-semibold">
+                          30% OFF
+                        </p>
+                      </div>
                     </div>
                     <div className="flex sm:hidden gap-2 items-center">
                       <div

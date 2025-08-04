@@ -1,4 +1,5 @@
 import React from "react";
+import TermBanner from "../assets/terms-conditions.png";
 
 const TermsAndConditions = () => {
   const termsData = [
@@ -40,21 +41,30 @@ const TermsAndConditions = () => {
   ];
 
   return (
-    <div className="w-full h-full py-10 bg-[#f8f9fa]">
-      <div className="w-full mx-auto flex flex-col gap-8 px-5 lg:px-12">
-        <p className="text-[32px] md:text-[38px] leading-[48px] md:leading-[57px] text-black font-semibold">
-          Terms & Conditions – Gofy Kids Mall (Model Town)
-        </p>
-        {termsData.map((item, index) => (
-          <div className="flex flex-col gap-1 w-full" key={index}>
-            <p className="text-[#001430] text-[27px] leading-[40px] font-bold">
-              {item.heading}
-            </p>
-            <p className="text-[#69778a] text-[16px] leading-[24px] font-medium">
-              {item.description}
-            </p>
-          </div>
-        ))}
+    <div>
+      <div className="flex flex-col items-center">
+        <img
+          src={TermBanner}
+          alt="term banner"
+          className="w-full object-cover mb-8"
+        />
+      </div>
+      <div className="w-full h-full py-10 bg-[#f8f9fa]">
+        <div className="w-full mx-auto flex flex-col gap-8 px-5 lg:px-12">
+          <p className="text-[32px] md:text-[38px] leading-[48px] md:leading-[57px] text-black font-semibold">
+            Terms & Conditions – Gofy Kids Mall (Model Town)
+          </p>
+          {termsData.map((item, index) => (
+            <div className="flex flex-col gap-1 w-full" key={index}>
+              <p className="text-[#001430] text-[27px] leading-[40px] font-bold">
+                {item.heading}
+              </p>
+              <p className="text-[#69778a] text-[16px] leading-[24px] font-medium">
+                {item.description}
+              </p>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

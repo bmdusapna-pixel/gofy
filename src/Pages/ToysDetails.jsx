@@ -27,32 +27,39 @@ import "swiper/css/navigation";
 import { Link, useParams } from "react-router-dom";
 import { toys_items } from "../assets/helper.js";
 import SizeChart from "../Components/SizeChart.jsx";
+import ProductReviews from "../Components/ProductReviews.jsx";
 
-const product_reviews = [
-  {
-    _id: 1,
-    name: "Alice Johnson",
-    date: "2025-07-18",
-    description: "Fantastic quality and fast delivery. Highly recommend!",
-    rating: 5,
-  },
-  {
-    _id: 2,
-    name: "Bob Smith",
-    date: "2025-07-17",
-    description:
-      "The product is decent for the price, but packaging could be better.",
-    rating: 4,
-  },
-  {
-    _id: 3,
-    name: "Charlie Davis",
-    date: "2025-07-16",
-    description:
-      "Not satisfied with the product. It didn’t match the description.",
-    rating: 2,
-  },
-];
+const toysReview = {
+  id: "some-id",
+  name: "Cute Baby Doll",
+  review: 3,
+};
+
+// const product_reviews = [
+//   {
+//     _id: 1,
+//     name: "Alice Johnson",
+//     date: "2025-07-18",
+//     description: "Fantastic quality and fast delivery. Highly recommend!",
+//     rating: 5,
+//   },
+//   {
+//     _id: 2,
+//     name: "Bob Smith",
+//     date: "2025-07-17",
+//     description:
+//       "The product is decent for the price, but packaging could be better.",
+//     rating: 4,
+//   },
+//   {
+//     _id: 3,
+//     name: "Charlie Davis",
+//     date: "2025-07-16",
+//     description:
+//       "Not satisfied with the product. It didn’t match the description.",
+//     rating: 2,
+//   },
+// ];
 
 const coupon_data = [
   {
@@ -91,12 +98,25 @@ const product_details = [
   },
 ];
 
+// const sizes = [
+//   { _id: 1, size: "6 inches" },
+//   { _id: 2, size: "10 inches" },
+//   { _id: 3, size: "12 inches" },
+//   { _id: 4, size: "18 inches" },
+//   { _id: 5, size: "24 inches" },
+// ];
+
 const sizes = [
-  { _id: 1, size: "6 inches" },
-  { _id: 2, size: "10 inches" },
-  { _id: 3, size: "12 inches" },
-  { _id: 4, size: "18 inches" },
-  { _id: 5, size: "24 inches" },
+  { _id: 1, size: "12-18 Months" },
+  { _id: 2, size: "18-24 Months" },
+  { _id: 3, size: "2-3 Years" },
+  { _id: 4, size: "3-4 Years" },
+  { _id: 5, size: "4-5 Years" },
+  { _id: 6, size: "5-6 Years" },
+  { _id: 7, size: "7-8 Years" },
+  { _id: 8, size: "9-10 Years" },
+  { _id: 9, size: "11-12 Years" },
+  { _id: 10, size: "13-14 Years" },
 ];
 
 const ClothesDetails = () => {
@@ -262,6 +282,34 @@ const ClothesDetails = () => {
               volutpat egestas. Mollis scelerisque a sem morbi sed donec eu. Dui
               platea scelerisque ut posuere. Sit posuere aliquet venenatis quam.
             </p> */}
+            <div className="flex sm:flex-row flex-col w-full gap-3 sm:gap-10">
+              <div className="flex flex-col gap-2 w-full">
+                <div className="flex justify-between items-center">
+                  <p className="text-[16px] leading-[24px] text-blank font-medium mr-5">
+                    Sizes
+                  </p>
+                  <p
+                    onClick={() => setOpenSizeChart(true)}
+                    className="text-[16px] leading-[24px] text-[#dc3545] transition-colors duration-300 hover:text-[#00bbae] hover:font-semibold cursor-pointer font-medium mr-5"
+                  >
+                    SIZE CHART
+                  </p>
+                </div>
+                <div className="w-full flex gap-2 flex-wrap">
+                  {sizes.map((item) => (
+                    <div
+                      onClick={() => setIsSizeSelected(item.size)}
+                      key={item._id}
+                      className="py-1 px-2 rounded-sm gap-3 bg-[#e9ecef] transition-colors duration-300 hover:text-white hover:bg-[#00BBAE] cursor-pointer flex items-center justify-center"
+                    >
+                      <p className="text-[14px] leading-[21px] font-medium">
+                        {item.size}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
             <div className="flex gap-3 items-center w-full flex-wrap">
               <div className="flex gap-1 items-center">
                 <p className="text-[20px] leading-[30px] text-[#001430] line-through">
@@ -315,34 +363,6 @@ const ClothesDetails = () => {
                 <Heart className="w-5 h-5" />
               </div>
             </div>
-            <div className="flex sm:flex-row flex-col w-full gap-3 sm:gap-10">
-              <div className="flex flex-col gap-2 w-full">
-                <div className="flex justify-between items-center">
-                  <p className="text-[16px] leading-[24px] text-blank font-medium mr-5">
-                    Sizes
-                  </p>
-                  <p
-                    onClick={() => setOpenSizeChart(true)}
-                    className="text-[16px] leading-[24px] text-[#dc3545] transition-colors duration-300 hover:text-[#00bbae] hover:font-semibold cursor-pointer font-medium mr-5"
-                  >
-                    SIZE CHART
-                  </p>
-                </div>
-                <div className="w-full flex gap-2 flex-wrap">
-                  {sizes.map((item) => (
-                    <div
-                      onClick={() => setIsSizeSelected(item.size)}
-                      key={item._id}
-                      className="py-1 px-2 rounded-sm gap-3 bg-[#e9ecef] transition-colors duration-300 hover:text-white hover:bg-[#00BBAE] cursor-pointer flex items-center justify-center"
-                    >
-                      <p className="text-[14px] leading-[21px] font-medium">
-                        {item.size}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
             <div className="flex flex-col gap-4 px-4 py-3">
               {" "}
               <p className="text-xl leading-8 font-bold text-gray-800 border-b pb-3 mb-1">
@@ -354,7 +374,7 @@ const ClothesDetails = () => {
                 {coupon_data.map((coupon) => (
                   <div
                     className="flex flex-col sm:flex-row items-start sm:items-center justify-between
-                       p-3 rounded-lg transition-all duration-200 ease-in-out
+                       px-3 pb-2 rounded-lg transition-all duration-200 ease-in-out
                        hover:bg-gray-50 border-b border-gray-100 last:border-b-0"
                     key={coupon._id}
                   >
@@ -661,7 +681,7 @@ const ClothesDetails = () => {
             )}
           </div>
         </div>
-        <div className="w-full border border-gray-200 rounded-2xl p-6 bg-white relative">
+        {/* <div className="w-full border border-gray-200 rounded-2xl p-6 bg-white relative">
           <div className="absolute top-[-2rem] left-1/2 transform -translate-x-1/2 flex gap-4 items-center w-max">
             <p
               style={{ boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)" }}
@@ -788,7 +808,8 @@ const ClothesDetails = () => {
               </button>
             </form>
           </div>
-        </div>
+        </div> */}
+        <ProductReviews items={toysReview} />
       </div>
       <SizeChart
         openSizeChart={openSizeChart}

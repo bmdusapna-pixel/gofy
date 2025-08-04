@@ -12,6 +12,7 @@ import {
   User2Icon,
   Tag,
   Copy,
+  IndianRupee,
 } from "lucide-react";
 import { Countdown } from "../Components/AnimatedDropdown";
 import { CartContext } from "../Context/CartContext";
@@ -22,32 +23,27 @@ import "swiper/css/navigation";
 import { useParams } from "react-router-dom";
 import product_list from "../assets/product-list";
 import RelatedItems from "../Components/RelatedItems";
+import SizeChart from "../Components/SizeChart.jsx";
+import ProductReviews from "../Components/ProductReviews.jsx";
 
-const product_reviews = [
-  {
-    _id: 1,
-    name: "Alice Johnson",
-    date: "2025-07-18",
-    description: "Fantastic quality and fast delivery. Highly recommend!",
-    rating: 5,
-  },
-  {
-    _id: 2,
-    name: "Bob Smith",
-    date: "2025-07-17",
-    description:
-      "The product is decent for the price, but packaging could be better.",
-    rating: 4,
-  },
-  {
-    _id: 3,
-    name: "Charlie Davis",
-    date: "2025-07-16",
-    description:
-      "Not satisfied with the product. It didn’t match the description.",
-    rating: 2,
-  },
+const sizes = [
+  { _id: 1, size: "12-18 Months" },
+  { _id: 2, size: "18-24 Months" },
+  { _id: 3, size: "2-3 Years" },
+  { _id: 4, size: "3-4 Years" },
+  { _id: 5, size: "4-5 Years" },
+  { _id: 6, size: "5-6 Years" },
+  { _id: 7, size: "7-8 Years" },
+  { _id: 8, size: "9-10 Years" },
+  { _id: 9, size: "11-12 Years" },
+  { _id: 10, size: "13-14 Years" },
 ];
+
+const toysReview = {
+  id: "some-id",
+  name: "Remote Control Car",
+  review: 3,
+};
 const coupon_data = [
   {
     _id: 1,
@@ -153,7 +149,8 @@ const ProductDetails = () => {
   const submitReview = (event) => {
     event.preventDefault();
   };
-
+  const [isSizeSelected, setIsSizeSelected] = useState(null);
+  const [openSizeChart, setOpenSizeChart] = useState(false);
   return (
     <div className="w-full bg-[#f9f9f9]">
       <div className="w-full lg:px-12 px-5 mx-auto py-10 flex flex-col gap-20">
@@ -255,6 +252,79 @@ const ProductDetails = () => {
                 <Countdown />
               </div>
             </div> */}
+            <div className="flex sm:flex-row flex-col w-full gap-3 sm:gap-10">
+              <div className="flex flex-col gap-2 w-full">
+                <div className="flex justify-between items-center">
+                  <p className="text-[16px] leading-[24px] text-blank font-medium mr-5">
+                    Sizes
+                  </p>
+                  <p
+                    onClick={() => setOpenSizeChart(true)}
+                    className="text-[16px] leading-[24px] text-[#dc3545] transition-colors duration-300 hover:text-[#00bbae] hover:font-semibold cursor-pointer font-medium mr-5"
+                  >
+                    SIZE CHART
+                  </p>
+                </div>
+                <div className="w-full flex gap-2 flex-wrap">
+                  {sizes.map((item) => (
+                    <div
+                      onClick={() => setIsSizeSelected(item.size)}
+                      key={item._id}
+                      className="py-1 px-2 rounded-sm gap-3 bg-[#e9ecef] transition-colors duration-300 hover:text-white hover:bg-[#00BBAE] cursor-pointer flex items-center justify-center"
+                    >
+                      <p className="text-[14px] leading-[21px] font-medium">
+                        {item.size}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+            <div className="flex flex-wrap gap-5 items-center">
+              <div className="flex w-28 h-12 rounded-2xl border border-gray-200 overflow-hidden">
+                <div className="flex flex-col items-center justify-between bg-white w-1/2 border-r border-gray-200">
+                  <div className="flex justify-center items-center cursor-pointer w-5 h-5">
+                    <Plus
+                      onClick={increaseQuantity}
+                      className="w-4 h-4 text-black cursor-pointer"
+                    />
+                  </div>
+                  <div className="w-full bg-gray-200 h-[0.5px]"></div>
+                  <div className="flex justify-center items-center cursor-pointer w-5 h-5">
+                    <Minus
+                      onClick={decreaseQuantity}
+                      className="w-4 h-4 text-black cursor-pointer"
+                    />
+                  </div>
+                </div>
+                <div className="flex items-center justify-center w-1/2 bg-white">
+                  <span className="text-[20px] leading-[30px] font-semibold text-black">
+                    {quantity}
+                  </span>
+                </div>
+              </div>
+              <div
+                onClick={() => addProductToCart(product)}
+                className="py-2 w-40 rounded-2xl transition-colors duration-300 hover:bg-[#f88e0f] cursor-pointer px-3 bg-[#00bbae] flex gap-3 items-center justify-center"
+              >
+                <ShoppingBasket className="w-6 h-6 text-white" />
+                <p className="text-[18px] leading-[27px] md:text-[20px] md:leading-[30px] font-semibold text-white">
+                  Add to cart
+                </p>
+              </div>
+              <div className="py-2 w-40 rounded-2xl transition-colors duration-300 hover:bg-[#f88e0f] cursor-pointer px-3 bg-[#00bbae] flex gap-3 items-center justify-center">
+                <IndianRupee className="w-6 h-6 text-white" />
+                <p className="text-[18px] leading-[27px] md:text-[20px] md:leading-[30px] font-semibold text-white">
+                  Buy Now
+                </p>
+              </div>
+              <div
+                onClick={() => addFavouriteItems(product)}
+                className="cursor-pointer w-12 h-12 border border-gray-200 flex items-center justify-center rounded-2xl bg-white transition-colors hover:bg-[#00bbae] text-black hover:text-white"
+              >
+                <Heart className="w-5 h-5" />
+              </div>
+            </div>
             <div className="flex flex-col gap-4 px-4 py-3">
               {" "}
               <p className="text-xl leading-8 font-bold text-gray-800 border-b pb-3 mb-1">
@@ -266,7 +336,7 @@ const ProductDetails = () => {
                 {coupon_data.map((coupon) => (
                   <div
                     className="flex flex-col sm:flex-row items-start sm:items-center justify-between
-                       p-3 rounded-lg transition-all duration-200 ease-in-out
+                       px-3 pb-2 rounded-lg transition-all duration-200 ease-in-out
                        hover:bg-gray-50 border-b border-gray-100 last:border-b-0"
                     key={coupon._id}
                   >
@@ -325,42 +395,7 @@ const ProductDetails = () => {
                 ))}
               </div>
             </div>
-            <div className="flex flex-wrap gap-5 items-center">
-              <div className="flex w-28 h-14 sm:h-16 rounded-2xl border border-gray-200 overflow-hidden">
-                <div className="flex flex-col items-center justify-between bg-white w-1/2 py-2 border-r border-gray-200">
-                  <Plus
-                    onClick={increaseQuantity}
-                    className="sm:w-5 sm:h-5 w-4 h-4 text-black cursor-pointer"
-                  />
-                  <div className="w-full bg-gray-200 h-[0.5px]"></div>
-                  <Minus
-                    onClick={decreaseQuantity}
-                    className="sm:w-5 sm:h-5 w-4 h-4 text-black cursor-pointer"
-                  />
-                </div>
-                <div className="flex items-center justify-center w-1/2 bg-white">
-                  <span className="text-[20px] leading-[30px] font-semibold text-black">
-                    {quantity}
-                  </span>
-                </div>
-              </div>
-              <div
-                onClick={() => addProductToCart(product)}
-                className="py-2 sm:py-4 w-40 md:w-48 rounded-2xl transition-colors duration-300 hover:bg-[#f88e0f] cursor-pointer px-3 bg-[#00bbae] flex gap-3 items-center justify-center"
-              >
-                <ShoppingBasket className="w-6 h-6 text-white" />
-                <p className="text-[18px] leading-[27px] md:text-[20px] md:leading-[30px] font-semibold text-white">
-                  Add to cart
-                </p>
-              </div>
-              <div
-                onClick={() => addFavouriteItems(product)}
-                className="cursor-pointer w-14 sm:w-16 h-14 sm:h-16 flex items-center justify-center rounded-2xl bg-white transition-colors hover:bg-[#00bbae] text-black hover:text-white"
-              >
-                <Heart className="w-4 sm:w-6 h-4 sm:h-6" />
-              </div>
-            </div>
-            <div className="w-full flex rounded-2xl bg-white px-2 py-6">
+            {/* <div className="w-full flex rounded-2xl bg-white px-2 py-6">
               <div className="grid grid-cols-2 w-full gap-5 lg:px-10 px-5">
                 <div className="flex gap-1 items-center">
                   <p className="text-[16px] leading-[24px] text-[#001430] font-semibold">
@@ -395,7 +430,7 @@ const ProductDetails = () => {
                   </p>
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
         {/* <div className="w-full border border-gray-200 rounded-2xl p-6 md:p-12 bg-white relative">
@@ -678,7 +713,12 @@ const ProductDetails = () => {
             )}
           </div>
         </div>
+        <ProductReviews items={toysReview} />
       </div>
+      <SizeChart
+        openSizeChart={openSizeChart}
+        setOpenSizeChart={setOpenSizeChart}
+      />
     </div>
   );
 };

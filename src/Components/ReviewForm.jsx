@@ -2,7 +2,7 @@ import React from "react";
 
 const ReviewForm = () => {
   return (
-  <div className="w-full flex flex-col p-8 gap-6">
+    <div className="w-full flex flex-col p-8 gap-6">
       {/* Title */}
       <div>
         <h2 className="text-[26px] font-semibold">Write a Review</h2>
@@ -35,7 +35,8 @@ const ReviewForm = () => {
       <div className="flex gap-2 items-start">
         <input type="checkbox" name="condition" id="condition" />
         <label htmlFor="condition" className="text-[#69778A]">
-          Save my name, email, and website in this browser for the next time I comment.
+          Save my name, email, and website in this browser for the next time I
+          comment.
         </label>
       </div>
 
@@ -46,6 +47,5 @@ const ReviewForm = () => {
     </div>
   );
 };
-
 
 export default ReviewForm;

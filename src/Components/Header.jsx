@@ -11,6 +11,14 @@ import {
   User,
   X,
 } from "lucide-react";
+import {
+  FaFacebook,
+  FaPinterest,
+  FaTwitter,
+  FaEnvelope,
+  FaYoutube,
+  FaWhatsapp,
+} from "react-icons/fa";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import logo from "../assets/logo.webp";
 import {
@@ -35,6 +43,48 @@ const shop_collection = [
     items: [],
   },
 ];
+
+const footer_social = [
+  {
+    _id: 1,
+    icon: "Facebook",
+    url: "/",
+  },
+  {
+    _id: 2,
+    icon: "Pinterest",
+    url: "/",
+  },
+  {
+    _id: 3,
+    icon: "Twitter",
+    url: "/",
+  },
+  {
+    _id: 4,
+    icon: "Mail",
+    url: "/",
+  },
+  {
+    _id: 5,
+    icon: "Youtube",
+    url: "/",
+  },
+  {
+    _id: 6,
+    icon: "Whatsapp",
+    url: "/",
+  },
+];
+
+const IconComponents = {
+  Facebook: FaFacebook,
+  Pinterest: FaPinterest,
+  Twitter: FaTwitter,
+  Mail: FaEnvelope,
+  Youtube: FaYoutube,
+  Whatsapp: FaWhatsapp,
+};
 
 const FirstHeader = () => {
   return (
@@ -422,7 +472,7 @@ const ThirdHeader = ({ isMobileMenuOpen, setIsMobileMenuOpen }) => {
                 className="w-8 h-8 text-black cursor-pointer transition-all duration-300 hover:text-[#dc3545] hover:rotate-90"
               />
             </div>
-            <div className="flex flex-col gap-5 w-full relative">
+            <div className="flex flex-col gap-5 w-full relative h-full">
               <p className="text-[16px] leading-[24px] text-black font-semibold">
                 Home
               </p>
@@ -491,6 +541,28 @@ const ThirdHeader = ({ isMobileMenuOpen, setIsMobileMenuOpen }) => {
                 <p className="text-[16px] leading-[24px] text-[#dc3545] font-semibold">
                   Super Deals Product
                 </p>
+              </div>
+              <div className="flex gap-3 items-center mt-auto">
+                {footer_social.map((item) => {
+                  const Icon = IconComponents[item.icon];
+                  if (!Icon) {
+                    console.warn(
+                      `Icon component for "${item.icon}" not found.`
+                    );
+                    return null;
+                  }
+                  return (
+                    <a
+                      href={item.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      key={item._id}
+                      className="w-12 h-12 flex items-center justify-center cursor-pointer transition-colors duration-300 hover:bg-[#00bbae] text-black hover:text-white bg-[#e9ecef] p-1 rounded-full"
+                    >
+                      <Icon className="w-5 h-5" />
+                    </a>
+                  );
+                })}
               </div>
             </div>
           </div>
