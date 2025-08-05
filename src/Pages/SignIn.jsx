@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Star, Loader, CheckCircle, XCircle } from "lucide-react";
+import {
+  Star,
+  Loader,
+  CheckCircle,
+  XCircle,
+  MessageSquare,
+  Phone,
+} from "lucide-react";
 import LoginBanner from "../assets/login-banner.jpeg";
 import LoginBannerMobile from "../assets/login-banner-mobile.jpeg";
 import { useNavigate, Link } from "react-router-dom";
@@ -7,41 +14,28 @@ import { useNavigate, Link } from "react-router-dom";
 const SignIn = () => {
   const navigate = useNavigate();
 
-  // State to hold the user's phone number and OTP input
   const [loginData, setLoginData] = useState({
     phone: "",
     otp: "",
   });
 
-  // State to manage the UI flow
+  const [otpMethod, setOtpMethod] = useState(""); // 'whatsapp' or 'sms'
+
   const [otpSent, setOtpSent] = useState(false);
   const [loading, setLoading] = useState(false);
   const [otpRequestLoading, setOtpRequestLoading] = useState(false);
 
-  // State for the user feedback message box
   const [message, setMessage] = useState(null);
-  const [messageType, setMessageType] = useState(""); // Can be 'success' or 'error'
+  const [messageType, setMessageType] = useState("");
 
-  // State to handle responsive banner image
   const [activeBanner, setActiveBanner] = useState(LoginBanner);
 
-  /**
-   * Helper function to show a feedback message in the UI.
-   * @param {string} text - The message to display.
-   * @param {string} type - The type of message ('success' or 'error').
-   */
   const showMessage = (text, type) => {
     setMessage(text);
     setMessageType(type);
-    // Hide the message after 5 seconds
     setTimeout(() => setMessage(null), 5000);
   };
 
-  /**
-   * Handles changes to the form input fields.
-   * Restricts phone number input to 10 digits.
-   * @param {Event} event - The input change event.
-   */
   const inputChangeHandler = (event) => {
     const { name, value } = event.target;
     if (name === "phone") {
@@ -54,38 +48,36 @@ const SignIn = () => {
     }
   };
 
-  /**
-   * Simulates an API call to request an OTP.
-   */
   const handleRequestOtp = async () => {
     if (loginData.phone.length !== 10) {
       showMessage("Please enter a valid 10-digit phone number.", "error");
       return;
     }
+    if (!otpMethod) {
+      showMessage("Please select a method to receive your OTP.", "error");
+      return;
+    }
+
     setOtpRequestLoading(true);
 
-    // Simulate a network delay for the API call
     await new Promise((resolve) => setTimeout(resolve, 2000));
 
     setOtpSent(true);
     setOtpRequestLoading(false);
-    showMessage(`OTP sent to +91${loginData.phone}. (Simulated)`, "success");
+    showMessage(
+      `OTP sent to +91${loginData.phone} via ${otpMethod}. (Simulated)`,
+      "success"
+    );
   };
 
-  /**
-   * Simulates an API call to verify the OTP and log in the user.
-   * @param {Event} event - The form submission event.
-   */
   const handleSubmit = async (event) => {
     event.preventDefault();
     setLoading(true);
 
-    // Simulate a network delay for OTP verification
     await new Promise((resolve) => setTimeout(resolve, 2000));
 
     if (loginData.otp === "123456") {
       showMessage("Login successful!", "success");
-      // Redirect to the root path after successful login
       navigate("/");
     } else {
       showMessage("Invalid OTP. Please try again.", "error");
@@ -93,10 +85,8 @@ const SignIn = () => {
     setLoading(false);
   };
 
-  // Effect to handle responsive banner image swapping
   useEffect(() => {
     const handleResize = () => {
-      // Set the mobile banner for screens smaller than 768px (md breakpoint)
       if (window.innerWidth < 768) {
         setActiveBanner(LoginBannerMobile);
       } else {
@@ -104,13 +94,10 @@ const SignIn = () => {
       }
     };
 
-    // Set the initial banner on mount
     handleResize();
 
-    // Add event listener for window resize
     window.addEventListener("resize", handleResize);
 
-    // Cleanup function to remove the event listener on unmount
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
@@ -125,14 +112,9 @@ const SignIn = () => {
             backgroundPosition: "center",
           }}
         >
-          {/* This empty div is for the desktop layout, acting as the left half of the flex container */}
-          <div className="hidden md:flex md:w-1/2 items-center justify-center p-0 relative z-10">
-            {/* The backdrop blur creates a frosted glass effect */}
-          </div>
+          <div className="hidden md:flex md:w-1/2 items-center justify-center p-0 relative z-10"></div>
 
-          {/* Form Container */}
           <div className="relative z-10 w-full md:w-1/2 p-5 md:px-10 md:py-20 flex flex-col gap-5 bg-transparent bg-opacity-90 md:bg-opacity-80 rounded-b-2xl md:rounded-l-none md:rounded-r-2xl">
-            {/* The message box for user feedback */}
             {message && (
               <div
                 className={`p-4 rounded-xl flex items-start gap-3 text-sm border-2 ${
@@ -157,7 +139,6 @@ const SignIn = () => {
               onSubmit={handleSubmit}
               className="w-full flex flex-col gap-2 sm:gap-5"
             >
-              {/* Phone number input field with +91 prefix */}
               {!otpSent && (
                 <div className="flex flex-col gap-1 w-full">
                   <div className="flex gap-2 items-center">
@@ -170,11 +151,9 @@ const SignIn = () => {
                     />
                   </div>
                   <div className="flex">
-                    {/* +91 Prefix */}
                     <span className="flex items-center bg-white border border-gray-200 border-r-0 rounded-l-md px-4 text-[18px] leading-[27px] font-medium text-black">
                       +91
                     </span>
-                    {/* Phone number input */}
                     <input
                       name="phone"
                       required
@@ -187,18 +166,81 @@ const SignIn = () => {
                       autoComplete="tel"
                     />
                   </div>
+
+                  <div className="flex flex-col gap-2 mt-4">
+                    <p className="text-[16px] leading-[24px] font-semibold text-black">
+                      How would you like to receive the OTP?
+                    </p>
+                    <div className="flex gap-4">
+                      <button
+                        type="button"
+                        onClick={() => setOtpMethod("whatsapp")}
+                        className={`flex-1 flex items-center justify-start gap-3 px-4 py-2 rounded-md border-2 transition-all duration-200 ${
+                          otpMethod === "whatsapp"
+                            ? "border-[#25D366] bg-[#D4FCDD] shadow-md"
+                            : "border-gray-300 bg-white hover:bg-gray-50"
+                        }`}
+                      >
+                        <MessageSquare
+                          className={`w-6 h-6 ${
+                            otpMethod === "whatsapp"
+                              ? "text-[#25D366]"
+                              : "text-gray-500"
+                          }`}
+                        />
+                        <span
+                          className={`text-sm font-semibold ${
+                            otpMethod === "whatsapp"
+                              ? "text-[#25D366]"
+                              : "text-gray-700"
+                          }`}
+                        >
+                          WhatsApp
+                        </span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setOtpMethod("sms")}
+                        className={`flex-1 flex items-center justify-start gap-3 px-4 py-2 rounded-md border-2 transition-all duration-200 ${
+                          otpMethod === "sms"
+                            ? "border-[#00bbae] bg-[#E0FCF9] shadow-md"
+                            : "border-gray-300 bg-white hover:bg-gray-50"
+                        }`}
+                      >
+                        <Phone
+                          className={`w-6 h-6 ${
+                            otpMethod === "sms"
+                              ? "text-[#00bbae]"
+                              : "text-gray-500"
+                          }`}
+                        />
+                        <span
+                          className={`text-sm font-semibold ${
+                            otpMethod === "sms"
+                              ? "text-[#00bbae]"
+                              : "text-gray-700"
+                          }`}
+                        >
+                          SMS
+                        </span>
+                      </button>
+                    </div>
+                  </div>
+
                   <button
                     type="button"
                     onClick={handleRequestOtp}
                     disabled={
                       otpRequestLoading ||
                       otpSent ||
-                      loginData.phone.length !== 10
+                      loginData.phone.length !== 10 ||
+                      !otpMethod
                     }
-                    className={`mt-2 rounded-md px-4 py-2 text-[16px] leading-[24px] font-semibold text-white transition-colors duration-300 ${
+                    className={`mt-4 rounded-md px-4 py-2 text-[16px] leading-[24px] font-semibold text-white transition-colors duration-300 ${
                       otpRequestLoading ||
                       otpSent ||
-                      loginData.phone.length !== 10
+                      loginData.phone.length !== 10 ||
+                      !otpMethod
                         ? "bg-gray-400 cursor-not-allowed"
                         : "bg-[#00bbae] hover:bg-[#f88e0f] cursor-pointer"
                     } flex items-center justify-center`}
@@ -214,7 +256,6 @@ const SignIn = () => {
                 </div>
               )}
 
-              {/* OTP input field - conditionally rendered */}
               {otpSent && (
                 <div className="flex flex-col gap-1 w-full mt-4">
                   <div className="flex gap-2 items-center">
@@ -242,10 +283,14 @@ const SignIn = () => {
                       type="button"
                       onClick={handleRequestOtp}
                       disabled={
-                        otpRequestLoading || loginData.phone.length !== 10
+                        otpRequestLoading ||
+                        loginData.phone.length !== 10 ||
+                        !otpMethod
                       }
                       className={`my-1 text-left text-[14px] leading-[20px] transition-colors duration-300 font-semibold ${
-                        otpRequestLoading || loginData.phone.length !== 10
+                        otpRequestLoading ||
+                        loginData.phone.length !== 10 ||
+                        !otpMethod
                           ? "text-gray-400 cursor-not-allowed"
                           : "text-[#00bbae] hover:text-[#f88e0f] cursor-pointer"
                       }`}
@@ -253,7 +298,6 @@ const SignIn = () => {
                       Resend OTP
                     </button>
                   </div>
-                  {/* Log In button with loading indicator */}
                   <button
                     type="submit"
                     className="rounded-md px-4 py-2 text-[16px] leading-[24px] font-semibold text-white transition-colors duration-300 hover:bg-[#f88e0f] cursor-pointer bg-[#00bbae] flex gap-3 items-center justify-center"
@@ -268,8 +312,7 @@ const SignIn = () => {
                 </div>
               )}
 
-              {/* New User/Sign Up link */}
-              <div className="flex sm:flex-row flex-col sm:gap-0 gap-3 justify-end w-full items-start sm:items-center pt-10 pb-5">
+              <div className="flex sm:flex-row flex-col sm:gap-0 gap-3 justify-end w-full items-start sm:items-center pb-5">
                 <div className="flex gap-3 items-center">
                   <p className="text-[16px] leading-[24px] font-semibold text-black">
                     New User?

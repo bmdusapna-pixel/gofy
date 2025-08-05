@@ -13,6 +13,7 @@ import {
   Tag,
   Copy,
   IndianRupee,
+  Clock,
 } from "lucide-react";
 import { Countdown } from "../Components/AnimatedDropdown";
 import { CartContext } from "../Context/CartContext";
@@ -393,6 +394,29 @@ const ProductDetails = () => {
                     </button>
                   </div>
                 ))}
+              </div>
+            </div>
+            <div className="flex gap-10 items-center">
+              <div className="flex flex-col gap-1 items-start">
+                <div className="flex gap-1 items-center">
+                  <Clock className="w-4 h-4 text-black" />
+                  <p className="text-[14px] leading-[21px] font-medium">
+                    Expected delivery time :
+                  </p>
+                </div>
+                <p className="text-[16px] leading-[24px] font-semibold">
+                  Monday 28 July - Tuesday 29 July.
+                </p>
+              </div>
+              <div className="flex gap-2 items-center">
+                <input
+                  type="text"
+                  className="transition-colors bg-white text-[18px] leading-[27px] duration-300 w-28 px-2 py-1 border border-gray-200 focus:border-[#00bbae] outline-none rounded-md"
+                  placeholder="PIN Code"
+                />
+                <button className="rounded-md py-1.5 px-2 text-[16px] leading-[24px] font-semibold text-white transition-colors duration-300 hover:bg-[#f88e0f] cursor-pointer bg-[#00bbae] flex gap-3 items-center justify-center">
+                  Get Expected Delivery
+                </button>
               </div>
             </div>
             {/* <div className="w-full flex rounded-2xl bg-white px-2 py-6">

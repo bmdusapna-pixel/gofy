@@ -5,6 +5,8 @@ import { CartContext } from "../Context/CartContext";
 import { priceRanges, toys_items, unslugify } from "../assets/helper.js";
 import FilterCategory from "../Components/FilterCategory";
 import FilterColorCategory from "../Components/FilterColorCategory.jsx";
+import FilterActiveComponent from "../Components/FilterActiveComponent.jsx";
+import PriceRangeSlider from "../Components/PriceRangeSlider.jsx";
 
 const SpecificToyProducts = () => {
   const { url } = useParams();
@@ -111,19 +113,20 @@ const SpecificToyProducts = () => {
       const colorMatch =
         currentColorCategory.length === 0 ||
         currentColorCategory.includes(item.color);
-      const priceMatch =
-        currentPriceCategory.length === 0 ||
-        currentPriceCategory.some((range) => {
-          const price = item.price;
-          if (range === "200 to 600") return price >= 200 && price < 600;
-          if (range === "600 to 1500") return price >= 600 && price < 1500;
-          if (range === "1500 to 2000") return price >= 1500 && price < 2000;
-          if (range === "2000 to 3000") return price >= 2000 && price < 3000;
-          if (range === "3000 above") return price >= 3000;
-          return false;
-        });
+      // const priceMatch =
+      //   currentPriceCategory.length === 0 ||
+      //   currentPriceCategory.some((range) => {
+      //     const price = item.price;
+      //     if (range === "200 to 600") return price >= 200 && price < 600;
+      //     if (range === "600 to 1500") return price >= 600 && price < 1500;
+      //     if (range === "1500 to 2000") return price >= 1500 && price < 2000;
+      //     if (range === "2000 to 3000") return price >= 2000 && price < 3000;
+      //     if (range === "3000 above") return price >= 3000;
+      //     return false;
+      //   });
       return (
-        categoryMatch && ageMatch && materialMatch && colorMatch && priceMatch
+        categoryMatch && ageMatch && materialMatch && colorMatch
+        // && priceMatch
       );
     });
   }, [
@@ -148,7 +151,7 @@ const SpecificToyProducts = () => {
       <div className="w-full lg:px-12 px-5 mx-auto py-10 flex flex-col gap-14">
         <div className="flex gap-5 w-full">
           <div className="lg:w-1/5 lg:flex hidden flex-col gap-5">
-            <div
+            {/* <div
               onMouseLeave={() => sethoveredToyCategory(null)}
               className="border-gray-200 border-[2px] bg-white rounded-2xl p-4 flex flex-col gap-5"
             >
@@ -186,7 +189,15 @@ const SpecificToyProducts = () => {
                   );
                 })}
               </div>
-            </div>
+            </div> */}
+            <FilterActiveComponent
+              items={toyCategory}
+              headingTitle="Category"
+              hoveredItem={hoveredToyCategory}
+              setHoveredItem={sethoveredToyCategory}
+              selectedItem={currentToyCategory}
+              setSelectedItem={setCurrentToyCategory}
+            />
             <FilterCategory
               headingTitile={"Age Group"}
               items={ageCategory}
@@ -196,7 +207,7 @@ const SpecificToyProducts = () => {
               setSelectedItems={setCurrentAgeCategory}
             />
             <FilterCategory
-              headingTitile={"Meterial Used"}
+              headingTitile={"Material Used"}
               items={materialCategory}
               hoveredItem={hoveredMaterialCategory}
               setHoveredItem={setHoveredMaterialCategory}
@@ -227,17 +238,18 @@ const SpecificToyProducts = () => {
               selectedItems={currentSizeCategory}
               setSelectedItems={setCurrentSizeCategory}
             />
-            <FilterCategory
+            {/* <FilterCategory
               headingTitile={"Price"}
               items={priceRanges}
               hoveredItem={hoveredPriceCategory}
               setHoveredItem={setHoveredPriceCategory}
               selectedItems={currentPriceCategory}
               setSelectedItems={setCurrentPriceCategory}
-            />
+            /> */}
+            <PriceRangeSlider headingTitle="Price" min={0} max={500} />
           </div>
           <div
-            className={`fixed left-0 p-5 overflow-y-auto top-0 w-96 bg-white flex flex-col gap-2 lg:hidden h-full z-50 transition-transform duration-300 ${
+            className={`fixed left-0 p-5 overflow-y-auto top-0 sm:w-96 w-[80%] bg-white flex flex-col gap-2 lg:hidden h-full z-50 transition-transform duration-300 ${
               openFilter ? "translate-x-0" : "-translate-x-full"
             }`}
           >
@@ -247,7 +259,7 @@ const SpecificToyProducts = () => {
             >
               <X className="w-6 h-6 text-[#69778a]" />
             </div>
-            <div
+            {/* <div
               onMouseLeave={() => sethoveredToyCategory(null)}
               className="border-gray-200 border-[2px] bg-white rounded-2xl p-4 flex flex-col gap-5"
             >
@@ -285,7 +297,15 @@ const SpecificToyProducts = () => {
                   );
                 })}
               </div>
-            </div>
+            </div> */}
+            <FilterActiveComponent
+              items={toyCategory}
+              headingTitle="Category"
+              hoveredItem={hoveredToyCategory}
+              setHoveredItem={sethoveredToyCategory}
+              selectedItem={currentToyCategory}
+              setSelectedItem={setCurrentToyCategory}
+            />
             <FilterCategory
               openFilter={openFilter}
               headingTitile={"Age Group"}
@@ -306,7 +326,7 @@ const SpecificToyProducts = () => {
             />
             <FilterCategory
               openFilter={openFilter}
-              headingTitile={"Meterial Used"}
+              headingTitile={"Material Used"}
               items={materialCategory}
               hoveredItem={hoveredMaterialCategory}
               setHoveredItem={setHoveredMaterialCategory}
@@ -331,7 +351,7 @@ const SpecificToyProducts = () => {
               selectedItems={currentSizeCategory}
               setSelectedItems={setCurrentSizeCategory}
             />
-            <FilterCategory
+            {/* <FilterCategory
               openFilter={openFilter}
               headingTitile={"Price"}
               items={priceRanges}
@@ -339,7 +359,8 @@ const SpecificToyProducts = () => {
               setHoveredItem={setHoveredPriceCategory}
               selectedItems={currentPriceCategory}
               setSelectedItems={setCurrentPriceCategory}
-            />
+            /> */}
+            <PriceRangeSlider headingTitle="Price" min={0} max={500} />
           </div>
           <div className="lg:w-4/5 w-full flex flex-col gap-5">
             <div className="flex justify-between w-full items-center bg-white rounded-xl p-4">
@@ -446,13 +467,13 @@ const SpecificToyProducts = () => {
                         {toy.name}
                       </p>
                       <div className="flex gap-2 items-center">
-                        <p className="text-[#00bbae] text-[20px] leading-[30px] font-semibold">
+                        <p className="text-pink-600 text-[20px] leading-[30px] font-semibold">
                           ₹ {toy.price}
                         </p>
                         <p className="text-gray-700 text-[14px] leading-[30px] line-through font-semibold">
                           ₹ {toy.price + 100}
                         </p>
-                        <p className="text-yellow-500 text-[18px] leading-[30px] line-through font-semibold">
+                        <p className="text-red-500 text-[18px] leading-[30px] font-semibold">
                           30% OFF
                         </p>
                       </div>

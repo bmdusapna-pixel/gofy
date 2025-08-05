@@ -3,7 +3,7 @@ import { Trash2 } from "lucide-react";
 import { CartContext } from "../Context/CartContext";
 import { Link } from "react-router-dom";
 
-import EmptyCart from "../assets/emptyWishlist.png";
+import EmptyCart from "../assets/wishlist.png";
 
 const WishList = () => {
   const {
@@ -86,12 +86,12 @@ const WishList = () => {
               {/* <p className="text-[16px] font-medium text-black leading-[24px]">
                 No favourites items present
               </p> */}
-              <img src={EmptyCart} alt="" />
+              <img src={EmptyCart} alt="" className="w-full" />
               <Link
                 to="/"
                 className="rounded-xl w-40 text-[18px] leading-[24px] font-semibold text-white transition-colors duration-300 hover:bg-[#f88e0f] cursor-pointer px-3 py-4 bg-[#00bbae] flex gap-3 items-center justify-center"
               >
-                Return to shop
+                Shop now
               </Link>
             </div>
           )}

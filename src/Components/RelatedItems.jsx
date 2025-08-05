@@ -15,7 +15,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import product_list from "../assets/product-list";
 
-const RelatedItems = () => {
+const RelatedItems = ({ heading }) => {
   const addProductToCart = (product, event) => {
     event.preventDefault();
     console.log("Added to cart:", product.name);
@@ -28,7 +28,7 @@ const RelatedItems = () => {
   return (
     <div className="flex flex-col gap-5 w-full">
       <p className="text-[32px] md:text-[38px] leading-[48px] md:leading-[57px] text-[#212529] font-bold">
-        Related Products
+        {heading ? heading : "Related Products"}
       </p>
       <div className="w-full relative">
         <Swiper
@@ -88,7 +88,7 @@ const RelatedItems = () => {
                     </p> */}
                   </div>
                   <div className="flex gap-3 items-center">
-                    <p className="text-black text-[20px] leading-[30px] font-semibold">
+                    <p className="text-pink-600 text-[20px] leading-[30px] font-semibold">
                       ₹ {product.price}
                     </p>
                     <p className="text-gray-300 line-through text-[16px] leading-[30px] font-semibold">

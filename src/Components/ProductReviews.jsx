@@ -150,7 +150,7 @@ const ProductReviews = ({ items }) => {
           <p className="text-[18px] leading-[27px] text-black font-semibold">
             Add a review
           </p>
-          <p className="text-[16px] text-gray-500 leading-[24px] font-medium w-full">
+          <p className="text-[16px] text-red-500 leading-[24px] font-medium w-full">
             Your email address will not be published. Required fields are marked
             *
           </p>
@@ -186,6 +186,9 @@ const ProductReviews = ({ items }) => {
             value={reviewData.description}
             id=""
           ></textarea>
+          <label for="media-upload" class="custom-file-upload">
+            Upload image/video (optional)
+          </label>
           <input
             type="file"
             name="media"

@@ -109,14 +109,14 @@ body {
   }
 }
 
-@media (min-width: 1024px) and (max-width: 1250px) {
+/* @media (min-width: 1024px) and (max-width: 1250px) {
   .custom-grid-5 {
     grid-template-columns: repeat(5, minmax(0, 1fr));
     width: 60rem;
     height: 50vh;
     overflow-y: auto;
   }
-}
+} */
 
 @keyframes bounce-chevrons-y {
 
@@ -164,4 +164,29 @@ body {
 
 .animate-bounce-x {
   animation: bounce-chevrons-x 1s ease-in-out 2;
+}
+
+input[type="file"]::file-selector-button {
+  appearance: none;
+  background-color: transparent;
+  border: none;
+
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 24px;
+  padding: 4px 8px;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+input[type="file"]::file-selector-button:hover {
+  background-color: #f3f4f6;
+  border-color: #d1d5db;
+}
+
+input[type="file"]:focus-within::file-selector-button {
+  border-color: #00bbae;
+  outline: none;
 }

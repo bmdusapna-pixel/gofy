@@ -235,6 +235,14 @@ const ClothesDetails = () => {
             </div>
           </div>
           <div className="lg:w-1/2 w-full flex flex-col gap-3 2xl:gap-8 ">
+            <div className="flex gap-2 items-center">
+              <p className="text-[18px] leading-[24px] text-[#dc0000] font-semibold">
+                Sales end in:
+              </p>
+              <div className="border-[1px] border-[#dc0000] rounded-md pl-2">
+                <Countdown />
+              </div>
+            </div>
             <div className="flex w-full items-center">
               {Array.from({ length: Math.floor(toy.rating) }).map(
                 (_, index) => (
@@ -282,6 +290,14 @@ const ClothesDetails = () => {
               volutpat egestas. Mollis scelerisque a sem morbi sed donec eu. Dui
               platea scelerisque ut posuere. Sit posuere aliquet venenatis quam.
             </p> */}
+            <div className="flex gap-1 items-center">
+              <p className="text-[20px] leading-[30px] text-[#001430] line-through">
+                ₹56.00
+              </p>
+              <p className="text-[30px] leading-[40px] text-pink-600 font-semibold">
+                ₹56.00
+              </p>
+            </div>
             <div className="flex sm:flex-row flex-col w-full gap-3 sm:gap-10">
               <div className="flex flex-col gap-2 w-full">
                 <div className="flex justify-between items-center">
@@ -311,14 +327,6 @@ const ClothesDetails = () => {
               </div>
             </div>
             <div className="flex gap-3 items-center w-full flex-wrap">
-              <div className="flex gap-1 items-center">
-                <p className="text-[20px] leading-[30px] text-[#001430] line-through">
-                  ₹56.00
-                </p>
-                <p className="text-[30px] leading-[40px] text-pink-600 font-semibold">
-                  ₹56.00
-                </p>
-              </div>
               <div className="flex w-28 h-12 rounded-2xl border border-gray-200 overflow-hidden">
                 <div className="flex flex-col items-center justify-between bg-white w-1/2 border-r border-gray-200">
                   <div className="flex justify-center items-center cursor-pointer w-5 h-5">
@@ -456,14 +464,14 @@ const ClothesDetails = () => {
                 </button>
               </div>
             </div>
-            <div className="flex gap-2 items-center">
+            {/* <div className="flex gap-2 items-center">
               <p className="text-[18px] leading-[24px] text-[#dc0000] font-semibold">
                 Sales end in:
               </p>
-              <div className="border-[1px] border-[#dc0000] rounded-md">
+              <div className="border-[1px] border-[#dc0000] rounded-md pl-2">
                 <Countdown />
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
         {/* realated products */}
@@ -471,7 +479,7 @@ const ClothesDetails = () => {
           <p className="text-[32px] md:text-[38px] leading-[48px] md:leading-[57px] text-[#212529] font-bold">
             Related Products
           </p>
-          <div className="w-full overflow-x-hidden relative">
+          <div className="w-full relative">
             <Swiper
               modules={[Autoplay, Navigation]}
               autoplay={{ delay: 3000, disableOnInteraction: false }}
@@ -529,13 +537,13 @@ const ClothesDetails = () => {
                         </p> */}
                       </div>
                       <div className="flex gap-3 items-center">
-                        <p className="text-black text-[20px] leading-[30px] font-semibold">
+                        <p className="text-pink-600 text-[20px] leading-[30px] font-semibold">
                           ₹ {toy.price}
                         </p>
-                        <p className="text-gray-300 line-through text-[16px] leading-[30px] font-semibold">
+                        <p className="text-gray-500 line-through text-[16px] leading-[30px] font-semibold">
                           ₹ {toy.price + 100}
                         </p>
-                        <p className="text-[#f39924] text-[16px] leading-[30px] font-semibold">
+                        <p className="text-red-500 text-[16px] leading-[30px] font-semibold">
                           20% Off
                         </p>
                       </div>
@@ -566,11 +574,11 @@ const ClothesDetails = () => {
               ))}
             </Swiper>
             <ChevronLeft
-              className="swiper-button-prev-rp absolute left-0 top-30 transform -translate-y-1/2 z-10 bg-[#e9f9fc] text-black rounded-full hover:bg-[#f8f9fa] cursor-pointer h-10 w-10 opacity-25 hover:opacity-100 p-1"
+              className="swiper-button-prev-rp absolute -left-5 top-30 transform -translate-y-1/2 z-10 bg-[#e9f9fc] text-black rounded-full hover:bg-[#f8f9fa] cursor-pointer h-10 w-10 opacity-25 hover:opacity-100 p-1"
               style={{ boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)" }}
             />
             <ChevronRight
-              className="swiper-button-next-rp absolute right-0 top-30 transform -translate-y-1/2 z-10 bg-[#e9f9fc] text-black rounded-full hover:bg-[#f8f9fa] cursor-pointer h-10 w-10 opacity-25 hover:opacity-100 p-1"
+              className="swiper-button-next-rp absolute -right-5 top-30 transform -translate-y-1/2 z-10 bg-[#e9f9fc] text-black rounded-full hover:bg-[#f8f9fa] cursor-pointer h-10 w-10 opacity-25 hover:opacity-100 p-1"
               style={{ boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)" }}
             />
           </div>

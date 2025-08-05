@@ -3,6 +3,7 @@ import { Link, Route, Routes } from "react-router-dom";
 import Home from "./Pages/Home";
 import Products from "./Pages/Products";
 import ProductDetails from "./Pages/ProductDetails";
+import SuperDealsProduct from "./Pages/SuperDealsProduct";
 import Faq from "./Pages/Faq";
 import Contact from "./Pages/Contact";
 import Header from "./Components/Header";
@@ -10,7 +11,7 @@ import Footer from "./Components/Footer";
 import Cart from "./Components/Cart";
 import PrivacyPolicy from "./Pages/PrivacyPolicy";
 import { ArrowUp } from "lucide-react";
-import { IoLogoWhatsapp } from "react-icons/io";
+import { FaWhatsappSquare } from "react-icons/fa";
 import { CartContext } from "./Context/CartContext";
 import About from "./Pages/About";
 import TermsAndConditions from "./Pages/TermsAndConditions";
@@ -33,6 +34,8 @@ import ClothesDetails from "./Pages/ClothesDetails";
 import SpecificToyProducts from "./Pages/SpecificToyProducts";
 import SpecificClotheProducts from "./Pages/SpecificClotheProducts";
 import WhatsAppContact from "./Components/WhatsAppContact";
+import Trending from "./Pages/Trending";
+import Offers from "./Pages/Offers";
 
 const product = {
   name: "Outdoor Swing Set",
@@ -133,6 +136,9 @@ const App = () => {
             element={<TermsAndConditions />}
           />
           <Route path="/products/:category?/:slug?" element={<Products />} />
+          <Route path="/super-deals-product" element={<SuperDealsProduct />} />
+          <Route path="/trending" element={<Trending />} />
+          <Route path="/offer" element={<Offers />} />
           <Route path="/product-details/:url" element={<ProductDetails />} />
           <Route path="/products/toys" element={<Toys />} />
           <Route
@@ -196,13 +202,13 @@ const App = () => {
         show={isWhatsAppVisible}
         onClose={() => setIsWhatsAppVisible(false)}
       />
-      <div className="fixed bottom-22 z-50 right-5 w-14 h-14 rounded-full flex items-center justify-center cursor-pointer transition-transform duration-300 hover:scale-110">
+      <div className="fixed bottom-22 z-50 right-5 w-16 h-16 rounded-full flex items-center justify-center cursor-pointer transition-transform duration-300 hover:scale-110">
         <button
           onClick={() => setIsWhatsAppVisible(!isWhatsAppVisible)}
-          className={`w-full h-full flex items-center justify-center bg-white rounded-full shadow-lg hover:shadow-xl transition-shadow duration-300`}
+          className={`w-full h-full flex items-center justify-center bg-transparent rounded-md hover:shadow-xl transition-shadow duration-300`}
         >
-          <IoLogoWhatsapp
-            className={`w-12 h-12 text-green-600 duration-300 ${blinkingClasses}`}
+          <FaWhatsappSquare
+            className={`w-14 h-14 text-green-900 duration-300 ${blinkingClasses}`}
           />
         </button>
       </div>

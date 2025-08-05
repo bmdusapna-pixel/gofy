@@ -1,49 +1,42 @@
 import React, { useState, useEffect } from "react";
-import { Star, Loader, CheckCircle, XCircle } from "lucide-react";
-import LoginBanner from "../assets/login-banner.jpeg";
+import {
+  Star,
+  Loader,
+  CheckCircle,
+  XCircle,
+  MessageSquare,
+  Phone,
+} from "lucide-react";
+import LoginBanner from "../assets/signUp.jpeg";
 import LoginBannerMobile from "../assets/login-banner-mobile.jpeg";
 import { useNavigate, Link } from "react-router-dom";
 
 const SignUp = () => {
   const navigate = useNavigate();
 
-  // State to handle responsive banner image
   const [activeBanner, setActiveBanner] = useState(LoginBanner);
 
-  // State to hold the user's sign-up data
   const [signUpData, setSignUpData] = useState({
     name: "",
     phone: "",
     otp: "",
   });
 
-  // State to manage the UI flow
+  const [otpMethod, setOtpMethod] = useState("");
   const [currentStep, setCurrentStep] = useState(1);
   const [otpSent, setOtpSent] = useState(false);
   const [otpRequestLoading, setOtpRequestLoading] = useState(false);
   const [verificationLoading, setVerificationLoading] = useState(false);
 
-  // State for the user feedback message box
   const [message, setMessage] = useState(null);
-  const [messageType, setMessageType] = useState(""); // Can be 'success' or 'error'
+  const [messageType, setMessageType] = useState("");
 
-  /**
-   * Helper function to show a feedback message in the UI.
-   * @param {string} text - The message to display.
-   * @param {string} type - The type of message ('success' or 'error').
-   */
   const showMessage = (text, type) => {
     setMessage(text);
     setMessageType(type);
-    // Hide the message after 5 seconds
     setTimeout(() => setMessage(null), 5000);
   };
 
-  /**
-   * Handles changes to the form input fields.
-   * Restricts phone number input to 10 digits.
-   * @param {Event} event - The input change event.
-   */
   const inputChangeHandler = (event) => {
     const { name, value } = event.target;
     if (name === "phone") {
@@ -56,10 +49,6 @@ const SignUp = () => {
     }
   };
 
-  /**
-   * Validates the required fields for Step 1.
-   * @returns {boolean} - True if all fields are valid, false otherwise.
-   */
   const validateStep1 = () => {
     const { name, phone } = signUpData;
 
@@ -71,12 +60,13 @@ const SignUp = () => {
       showMessage("Please enter a valid 10-digit phone number.", "error");
       return false;
     }
+    if (!otpMethod) {
+      showMessage("Please select a method to receive your OTP.", "error");
+      return false;
+    }
     return true;
   };
 
-  /**
-   * Simulates an API call to request an OTP.
-   */
   const handleRequestOtp = async () => {
     if (signUpData.phone.length !== 10) {
       showMessage(
@@ -86,23 +76,21 @@ const SignUp = () => {
       return;
     }
     setOtpRequestLoading(true);
-    // Simulate API call for sending OTP
     await new Promise((resolve) => setTimeout(resolve, 2000));
     setOtpSent(true);
     setOtpRequestLoading(false);
-    showMessage(`OTP sent to +91${signUpData.phone}. (Simulated)`, "success");
+    showMessage(
+      `OTP sent to +91${signUpData.phone} via ${otpMethod}. (Simulated)`,
+      "success"
+    );
   };
 
-  /**
-   * Handles the main form submission for both steps.
-   * @param {Event} event - The form submission event.
-   */
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     if (currentStep === 1) {
       if (validateStep1()) {
-        await handleRequestOtp(); // Request OTP and then move to step 2
+        await handleRequestOtp();
         setCurrentStep(2);
       }
     } else if (currentStep === 2) {
@@ -111,7 +99,6 @@ const SignUp = () => {
         return;
       }
       setVerificationLoading(true);
-      // Simulate OTP verification (e.g., '123456' as a valid OTP)
       await new Promise((resolve) => setTimeout(resolve, 2000));
 
       if (signUpData.otp === "123456") {
@@ -119,10 +106,9 @@ const SignUp = () => {
           "Account created successfully and phone number verified!",
           "success"
         );
-        // Redirect to the root path after successful submission
         setTimeout(() => {
           navigate("/");
-        }, 1000); // Wait 1 second before redirecting to show success message
+        }, 1000);
       } else {
         showMessage("Invalid OTP. Please try again.", "error");
       }
@@ -130,10 +116,8 @@ const SignUp = () => {
     }
   };
 
-  // Effect to handle responsive banner image swapping
   useEffect(() => {
     const handleResize = () => {
-      // Set the mobile banner for screens smaller than 768px (md breakpoint)
       if (window.innerWidth < 768) {
         setActiveBanner(LoginBannerMobile);
       } else {
@@ -141,13 +125,9 @@ const SignUp = () => {
       }
     };
 
-    // Set the initial banner on mount
     handleResize();
-
-    // Add event listener for window resize
     window.addEventListener("resize", handleResize);
 
-    // Cleanup function to remove the event listener on unmount
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
@@ -162,14 +142,9 @@ const SignUp = () => {
             backgroundPosition: "center",
           }}
         >
-          {/* This div acts as the left half of the flex container on desktop */}
-          <div className="hidden md:flex md:w-1/2 items-center justify-center p-0 relative z-10">
-            {/* The backdrop blur creates a frosted glass effect */}
-          </div>
+          <div className="hidden md:flex md:w-1/2 items-center justify-center p-0 relative z-10"></div>
 
-          {/* Form Container */}
           <div className="relative z-10 w-full md:w-1/2 p-5 md:px-10 md:py-20 flex flex-col gap-5 bg-transparent bg-opacity-90 md:bg-opacity-80 rounded-b-2xl md:rounded-l-none md:rounded-r-2xl">
-            {/* The message box for user feedback */}
             {message && (
               <div
                 className={`p-4 rounded-xl flex items-start gap-3 text-sm border-2 ${
@@ -194,10 +169,8 @@ const SignUp = () => {
               onSubmit={handleSubmit}
               className="w-full flex flex-col gap-2 sm:gap-5"
             >
-              {/* Step 1: Account Details */}
               {currentStep === 1 && (
                 <>
-                  {/* Name Input */}
                   <div className="flex flex-col gap-1 w-full">
                     <div className="flex gap-2 items-center">
                       <p className="text-[16px] leading-[24px] font-semibold text-black">
@@ -220,7 +193,6 @@ const SignUp = () => {
                     />
                   </div>
 
-                  {/* Phone Number Input with +91 prefix */}
                   <div className="flex flex-col gap-1 w-full">
                     <div className="flex gap-2 items-center">
                       <p className="text-[16px] leading-[24px] font-semibold text-black">
@@ -248,10 +220,69 @@ const SignUp = () => {
                       />
                     </div>
                   </div>
+
+                  <div className="flex flex-col gap-2 mt-4">
+                    <p className="text-[16px] leading-[24px] font-semibold text-black">
+                      How would you like to receive the OTP?
+                    </p>
+                    <div className="flex gap-4">
+                      <button
+                        type="button"
+                        onClick={() => setOtpMethod("whatsapp")}
+                        className={`flex-1 flex items-center justify-start gap-3 px-4 py-2 rounded-md border-2 transition-all duration-200 ${
+                          otpMethod === "whatsapp"
+                            ? "border-[#25D366] bg-[#D4FCDD] shadow-md"
+                            : "border-gray-300 bg-white hover:bg-gray-50"
+                        }`}
+                      >
+                        <MessageSquare
+                          className={`w-6 h-6 ${
+                            otpMethod === "whatsapp"
+                              ? "text-[#25D366]"
+                              : "text-gray-500"
+                          }`}
+                        />
+                        <span
+                          className={`text-sm font-semibold ${
+                            otpMethod === "whatsapp"
+                              ? "text-[#25D366]"
+                              : "text-gray-700"
+                          }`}
+                        >
+                          WhatsApp
+                        </span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setOtpMethod("sms")}
+                        className={`flex-1 flex items-center justify-start gap-3 px-4 py-2 rounded-md border-2 transition-all duration-200 ${
+                          otpMethod === "sms"
+                            ? "border-[#00bbae] bg-[#E0FCF9] shadow-md"
+                            : "border-gray-300 bg-white hover:bg-gray-50"
+                        }`}
+                      >
+                        <Phone
+                          className={`w-6 h-6 ${
+                            otpMethod === "sms"
+                              ? "text-[#00bbae]"
+                              : "text-gray-500"
+                          }`}
+                        />
+                        <span
+                          className={`text-sm font-semibold ${
+                            otpMethod === "sms"
+                              ? "text-[#00bbae]"
+                              : "text-gray-700"
+                          }`}
+                        >
+                          SMS
+                        </span>
+                      </button>
+                    </div>
+                  </div>
                 </>
               )}
 
-              {/* Step 2: OTP Verification */}
               {currentStep === 2 && (
                 <>
                   <p className="text-[18px] leading-[27px] font-semibold text-black mb-2">
@@ -326,8 +357,7 @@ const SignUp = () => {
                   "Verify & Create Account"
                 )}
               </button>
-              {/* Navigation and Submit Buttons */}
-              <div className="flex sm:flex-row flex-col sm:gap-0 gap-3 justify-end w-full items-start sm:items-center pt-5">
+              <div className="flex sm:flex-row flex-col sm:gap-0 gap-3 justify-end w-full items-start sm:items-center">
                 <div className="flex gap-3 items-center">
                   <p className="text-[16px] leading-[24px] font-semibold text-black">
                     Already have an account?

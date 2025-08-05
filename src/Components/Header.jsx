@@ -35,12 +35,55 @@ const shop_collection = [
     _id: 1,
     label: "Toys",
     url: "/products/toys",
+    items: [
+      {
+        name: "Doll",
+        category: "toy",
+        _id: 1,
+      },
+      {
+        name: "Teddy Bear",
+        category: "toy",
+        _id: 2,
+      },
+      {
+        name: "Building Blocks",
+        category: "toy",
+        _id: 3,
+      },
+      {
+        name: "Toy Car",
+        category: "toy",
+        _id: 4,
+      },
+    ],
   },
   {
     _id: 2,
     label: "Clothes",
     url: "/products/clothes",
-    items: [],
+    items: [
+      {
+        name: "T-Shirt",
+        category: "clothes",
+        _id: 5,
+      },
+      {
+        name: "Jeans",
+        category: "clothes",
+        _id: 6,
+      },
+      {
+        name: "Jacket",
+        category: "clothes",
+        _id: 7,
+      },
+      {
+        name: "Dress",
+        category: "clothes",
+        _id: 8,
+      },
+    ],
   },
 ];
 
@@ -89,8 +132,8 @@ const IconComponents = {
 const FirstHeader = () => {
   return (
     <div className="w-full bg-[#dc3545]">
-      <div className="w-full lg:px-12 px-5 py-2 lg:py-0 lg:h-12 mx-auto flex lg:flex-row flex-col gap-2 items-center">
-        <div className="overflow-hidden w-full cursor-pointer">
+      <div className="w-full lg:px-12 px-5 py-2 lg:py-0 lg:h-12 mx-auto flex lg:flex-row flex-col gap-2 lg:items-center">
+        <div className="overflow-hidden w-full cursor-pointer order-1 lg:order-0">
           <p className="text-base font-medium text-white marquee">
             Free shipping worldwide for all orders over ₹599/-{" "}
             <Link to="/products" className="underline">
@@ -100,7 +143,7 @@ const FirstHeader = () => {
             India.
           </p>
         </div>
-        <div className="flex gap-3 items-center w-60">
+        <div className="flex gap-3 items-center w-60 order-0 lg:order-1">
           <div className="flex gap-1 items-center">
             <MapPin className="w-5 h-5 text-white" />
             <p className="text-base font-medium text-white">Delhi, India</p>
@@ -167,9 +210,7 @@ const SecondHeader = ({
 
   return (
     <div
-      className={`${
-        openSearchMobile ? "h-40" : "h-14"
-      } py-1 transition-all duration-300 w-full shadow-sm bg-white`}
+      className={`h-auto py-1 transition-all duration-300 w-full shadow-sm bg-white`}
     >
       <div className="w-full lg:px-12 px-5 mx-auto flex justify-between gap-2 items-center">
         <div className="flex items-center gap-2 w-full">
@@ -218,12 +259,12 @@ const SecondHeader = ({
             </div>
           </div>
         </div>
-        <div
+        {/* <div
           onClick={() => setOpenSearchMobile((prev) => !prev)}
           className="md:hidden flex w-10 h-10 items-center justify-center rounded-md bg-gray-200 cursor-pointer hover:bg-gray-300 duration-300 transition-colors"
         >
           <Search className="w-5 h-5 text-black" />
-        </div>
+        </div> */}
         <div className="bg-[#00bbae] hidden lg:flex gap-2 items-center rounded-full px-4 py-2 w-[200px] flex-none">
           <Phone className="w-5 h-5 text-white" />
           <div className="flex flex-col">
@@ -267,18 +308,16 @@ const SecondHeader = ({
           </div>
         </div>
       </div>
-      <div
-        className={`md:hidden flex flex-col items-center gap-3 w-sm rounded-md sm:w-xl ${
-          openSearchMobile
-            ? "max-h-20 z-50 opacity-100"
-            : "max-h-0 -z-0 opacity-0"
-        } bg-[#f7f7f7] relative top-3 left-1/2 -translate-x-1/2 lg:left-1/3 lg:translate-x-0 p-2`}
-      >
-        <input
-          type="text"
-          placeholder="Search products..."
-          className="w-full px-4 py-1 bg-transparent outline-none text-black font-medium text-base placeholder:text-gray-400"
-        />
+      <div className="lg:px-12 px-5">
+        <div
+          className={`md:hidden flex flex-col items-center gap-3 rounded-md w-full max-h-20 z-50 opacity-100 bg-[#f7f7f7] p-2 border border-gray-400`}
+        >
+          <input
+            type="text"
+            placeholder="Search products..."
+            className="w-full px-4 py-1 bg-transparent outline-none text-black font-medium text-base placeholder:text-gray-400"
+          />
+        </div>
       </div>
     </div>
   );
@@ -369,7 +408,7 @@ const ThirdHeader = ({ isMobileMenuOpen, setIsMobileMenuOpen }) => {
             </div>
             <div
               onMouseEnter={() => setItemHovered("shopByCollection")}
-              className="flex gap-1 items-center cursor-pointer text-black hover:text-[#00bbae] transition-transform duration-300 "
+              className="flex gap-1 items-center cursor-pointer text-black hover:text-[#00bbae] transition-transform duration-300 relative"
             >
               <p className="text-[16px] leading-[24px] font-semibold">
                 Shop By Collection
@@ -385,11 +424,9 @@ const ThirdHeader = ({ isMobileMenuOpen, setIsMobileMenuOpen }) => {
                   itemHovered === "shopByCollection" ? "rotate-180" : "rotate-0"
                 }`}
               />
-              {/* {
-                  itemHovered === "shopByCollection" && (
-                    <AnimatedDropdown items={shop_collection} />
-                  )
-                } */}
+              {itemHovered === "shopByCollection" && (
+                <AnimatedDropdown items={shop_collection} />
+              )}
             </div>
             <Link
               to="/new-arrivals"
@@ -437,7 +474,7 @@ const ThirdHeader = ({ isMobileMenuOpen, setIsMobileMenuOpen }) => {
           </div>
           <Link
             // tempary code
-            to="/products"
+            to="/super-deals-product"
             className="border border-gray-200 rounded-full bg-[#fce7ef] flex gap-0.5 items-center py-2 px-5"
           >
             <Flame className="w-5 h-5 text-[#dc3545]" fill="#dc3545" />
@@ -473,14 +510,20 @@ const ThirdHeader = ({ isMobileMenuOpen, setIsMobileMenuOpen }) => {
               />
             </div>
             <div className="flex flex-col gap-5 w-full relative h-full">
-              <p className="text-[16px] leading-[24px] text-black font-semibold">
+              <Link
+                to="/"
+                className="text-[16px] leading-[24px] text-black font-semibold"
+              >
                 Home
-              </p>
+              </Link>
               <div
-                onClick={() => navigatingPageInMobileTablet("shopByAge")}
+                // onClick={() => navigatingPageInMobileTablet("shopByAge")}
                 className="flex flex-col gap-5 cursor-pointer"
               >
-                <div className="flex justify-between w-full items-center">
+                <div
+                  onClick={() => navigatingPageInMobileTablet("shopByAge")}
+                  className="flex justify-between w-full items-center"
+                >
                   <p className="text-[16px] leading-[24px] text-black font-semibold">
                     Shop By Age
                   </p>
@@ -495,10 +538,15 @@ const ThirdHeader = ({ isMobileMenuOpen, setIsMobileMenuOpen }) => {
                 )}
               </div>
               <div
-                onClick={() => navigatingPageInMobileTablet("shopByCollection")}
+                // onClick={() => navigatingPageInMobileTablet("shopByCollection")}
                 className="flex flex-col gap-5 cursor-pointer"
               >
-                <div className="flex justify-between w-full items-center">
+                <div
+                  onClick={() =>
+                    navigatingPageInMobileTablet("shopByCollection")
+                  }
+                  className="flex justify-between w-full items-center"
+                >
                   <div className="flex gap-2 items-center">
                     <p className="text-[16px] leading-[24px] text-black font-semibold">
                       Shop By Collection
@@ -510,38 +558,47 @@ const ThirdHeader = ({ isMobileMenuOpen, setIsMobileMenuOpen }) => {
                   <ChevronDown className="w-5 h-5 text-black" />
                 </div>
                 {itemHovered === "shopByCollection" && (
-                  <DropDownMobileTablet items={productItems} />
+                  <DropDownMobileTablet items={shop_collection} />
                 )}
               </div>
               <div className="flex justify-between w-full items-center">
-                <div className="flex gap-2 items-center">
+                <Link to="/new-arrivals" className="flex gap-2 items-center">
                   <p className="text-[16px] leading-[24px] text-black font-semibold">
                     New Arrivals
                   </p>
                   <p className="text-[11px] leading-[11px] text-white bg-[#dc3545] p-1.5 rounded-md font-semibold">
                     HOT
                   </p>
-                </div>
-                <ChevronDown className="w-5 h-5 text-black" />
+                </Link>
+                {/* <ChevronDown className="w-5 h-5 text-black" /> */}
               </div>
-              <div className="flex justify-between w-full items-center">
+              <Link
+                to="trending"
+                className="flex justify-between w-full items-center"
+              >
                 <p className="text-[16px] leading-[24px] text-black font-semibold">
                   Trending
                 </p>
-                <ChevronDown className="w-5 h-5 text-black" />
-              </div>
-              <div className="flex justify-between w-full items-center">
+                {/* <ChevronDown className="w-5 h-5 text-black" /> */}
+              </Link>
+              <Link
+                to="/offers"
+                className="flex justify-between w-full items-center"
+              >
                 <p className="text-[16px] leading-[24px] text-black font-semibold">
                   Offer
                 </p>
-                <ChevronDown className="w-5 h-5 text-black" />
-              </div>
-              <div className="border border-gray-200 rounded-full bg-[#fce7ef] flex gap-0.5 items-center py-2 px-5">
+                {/* <ChevronDown className="w-5 h-5 text-black" /> */}
+              </Link>
+              <Link
+                to="/super-deals-product"
+                className="border border-gray-200 rounded-full bg-[#fce7ef] flex gap-0.5 items-center py-2 px-5"
+              >
                 <Flame className="w-5 h-5 text-[#dc3545]" fill="#dc3545" />
                 <p className="text-[16px] leading-[24px] text-[#dc3545] font-semibold">
                   Super Deals Product
                 </p>
-              </div>
+              </Link>
               <div className="flex gap-3 items-center mt-auto">
                 {footer_social.map((item) => {
                   const Icon = IconComponents[item.icon];

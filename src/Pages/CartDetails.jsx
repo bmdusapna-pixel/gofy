@@ -4,7 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { CartContext } from "../Context/CartContext";
 import { Link } from "react-router-dom";
 
-import EmptyCart from "../assets/empty-cart.jpg";
+import EmptyCart from "../assets/emptyCart.jpg";
 import RelatedItems from "../Components/RelatedItems";
 
 const CartDetails = () => {

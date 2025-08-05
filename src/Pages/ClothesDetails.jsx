@@ -229,6 +229,14 @@ const ClothesDetails = () => {
             </div>
           </div>
           <div className="lg:w-1/2 w-full flex flex-col gap-3 2xl:gap-8 ">
+            <div className="flex gap-2 items-center">
+              <p className="text-[18px] leading-[24px] text-[#dc0000] font-semibold">
+                Sales end in:
+              </p>
+              <div className="border-[1px] border-[#dc0000] rounded-md pl-2">
+                <Countdown />
+              </div>
+            </div>
             <div className="flex w-full items-center">
               {Array.from({ length: Math.floor(clothe.rating) }).map(
                 (_, index) => (
@@ -276,15 +284,51 @@ const ClothesDetails = () => {
               volutpat egestas. Mollis scelerisque a sem morbi sed donec eu. Dui
               platea scelerisque ut posuere. Sit posuere aliquet venenatis quam.
             </p> */}
+            <div className="flex gap-1 items-center">
+              <p className="text-[20px] leading-[30px] text-[#001430] line-through">
+                ₹56.00
+              </p>
+              <p className="text-[30px] leading-[40px] text-pink-600 font-semibold">
+                ₹56.00
+              </p>
+            </div>
+            <div className="flex sm:flex-row flex-col w-full gap-3 sm:gap-10">
+              <div className="flex flex-col gap-2 W-full">
+                <div className="flex justify-between items-center">
+                  <p className="text-[16px] leading-[24px] text-blank font-medium mr-5">
+                    Sizes
+                  </p>
+                  <p
+                    onClick={() => setOpenSizeChart(true)}
+                    className="text-[16px] leading-[24px] text-[#dc3545] transition-colors duration-300 hover:text-[#00bbae] hover:font-semibold cursor-pointer font-medium mr-5"
+                  >
+                    SIZE CHART
+                  </p>
+                </div>
+                <div className="w-full flex gap-2 flex-wrap">
+                  {sizes.map((item) => (
+                    <div
+                      onClick={() => setIsSizeSelected(item.size)}
+                      key={item._id}
+                      className="py-1 px-2 rounded-sm gap-3 bg-[#e9ecef] transition-colors duration-300 hover:text-white hover:bg-[#00BBAE] cursor-pointer flex items-center justify-center"
+                    >
+                      <p className="text-[14px] leading-[21px] font-medium">
+                        {item.size}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
             <div className="flex gap-3 items-center w-full flex-wrap">
-              <div className="flex gap-1 items-center">
+              {/* <div className="flex gap-1 items-center">
                 <p className="text-[20px] leading-[30px] text-[#001430] line-through">
                   ₹56.00
                 </p>
                 <p className="text-[30px] leading-[40px] text-pink-600 font-semibold">
                   ₹56.00
                 </p>
-              </div>
+              </div> */}
               <div className="flex w-28 h-12 rounded-2xl border border-gray-200 overflow-hidden">
                 <div className="flex flex-col items-center justify-between bg-white w-1/2 border-r border-gray-200">
                   <div className="flex justify-center items-center cursor-pointer w-5 h-5">
@@ -330,34 +374,6 @@ const ClothesDetails = () => {
                 className="cursor-pointer w-12 h-12 border border-gray-200 flex items-center justify-center rounded-2xl bg-white transition-colors hover:bg-[#00bbae] text-black hover:text-white"
               >
                 <Heart className="w-5 h-5" />
-              </div>
-            </div>
-            <div className="flex sm:flex-row flex-col w-full gap-3 sm:gap-10">
-              <div className="flex flex-col gap-2 W-full">
-                <div className="flex justify-between items-center">
-                  <p className="text-[16px] leading-[24px] text-blank font-medium mr-5">
-                    Sizes
-                  </p>
-                  <p
-                    onClick={() => setOpenSizeChart(true)}
-                    className="text-[16px] leading-[24px] text-[#dc3545] transition-colors duration-300 hover:text-[#00bbae] hover:font-semibold cursor-pointer font-medium mr-5"
-                  >
-                    SIZE CHART
-                  </p>
-                </div>
-                <div className="w-full flex gap-2 flex-wrap">
-                  {sizes.map((item) => (
-                    <div
-                      onClick={() => setIsSizeSelected(item.size)}
-                      key={item._id}
-                      className="py-1 px-2 rounded-sm gap-3 bg-[#e9ecef] transition-colors duration-300 hover:text-white hover:bg-[#00BBAE] cursor-pointer flex items-center justify-center"
-                    >
-                      <p className="text-[14px] leading-[21px] font-medium">
-                        {item.size}
-                      </p>
-                    </div>
-                  ))}
-                </div>
               </div>
             </div>
             <div className="flex flex-col gap-4 px-4 py-3">
@@ -453,14 +469,14 @@ const ClothesDetails = () => {
                 </button>
               </div>
             </div>
-            <div className="flex gap-2 items-center">
+            {/* <div className="flex gap-2 items-center">
               <p className="text-[18px] leading-[24px] text-[#dc0000] font-semibold">
                 Sales end in:
               </p>
-              <div className="border-[1px] border-[#dc0000] rounded-md">
+              <div className="border-[1px] border-[#dc0000] rounded-md pl-2">
                 <Countdown />
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
         {/* realated products */}
@@ -468,13 +484,13 @@ const ClothesDetails = () => {
           <p className="text-[32px] md:text-[38px] leading-[48px] md:leading-[57px] text-[#212529] font-bold">
             Related Products
           </p>
-          <div className="w-full overflow-x-hidden relative">
+          <div className="w-full relative">
             <Swiper
               modules={[Autoplay, Navigation]}
               autoplay={{ delay: 3000, disableOnInteraction: false }}
               navigation={{
-                nextEl: ".swiper-button-next",
-                prevEl: ".swiper-button-prev",
+                nextEl: ".swiper-button-next-rp",
+                prevEl: ".swiper-button-prev-rp",
               }}
               breakpoints={{
                 0: { slidesPerView: 1, spaceBetween: 20 },
@@ -486,54 +502,59 @@ const ClothesDetails = () => {
               loop={true}
               grabCursor={true}
             >
-              {clothe_items.map((chlothe) => (
-                <SwiperSlide key={chlothe._id}>
+              {clothe_items.map((toy) => (
+                <SwiperSlide key={toy._id}>
                   <Link
-                    to={`/products/clothes/${chlothe.url}`}
+                    to={`/products/toys/${toy.url}`}
                     className="w-full border flex md:flex-row flex-col gap-3 xl:gap-5 border-gray-200 rounded-md p-2"
                   >
                     <div className="w-full h-60 lg:w-1/2 bg-[#FFC0CB] rounded-md flex items-center justify-center relative">
                       <img
-                        src={chlothe.images[0]}
+                        src={toy.images[0]}
                         alt=""
                         className="object-contain"
                       />
-                      <p className="absolute top-0 left-0 bg-[#dc3545] rounded-tl-md rounded-br-md text-white text-[14px] leading-[20px] px-3 py-0.5">
+                      {/* <p className="absolute top-0 left-0 bg-[#dc3545] rounded-tl-md rounded-br-md text-white text-[14px] leading-[20px] px-3 py-0.5">
                         -23%
-                      </p>
+                      </p> */}
                     </div>
                     <div className="flex flex-col gap-1 py-5 w-full lg:w-1/2 lg:px-0 px-2">
                       <p className="text-[#212529] text-[16px] leading-[24px] opacity-75">
-                        {chlothe.sub_category}
+                        {toy.sub_category}
                       </p>
                       <p className="text-[20px] leading-[30px] text-[#212529] font-bold">
-                        {chlothe?.name}
+                        {toy?.name}
                       </p>
                       <div className="flex lg:flex-row md:flex-col flex-row w-full items-center">
                         <div className="flex gap-1 items-center">
-                          {Array.from({
-                            length: Math.floor(chlothe.rating),
-                          }).map((_, index) => (
-                            <Star
-                              key={index}
-                              className="w-5 h-5 text-[white]"
-                              fill="#f88e0f"
-                            />
-                          ))}
+                          {Array.from({ length: Math.floor(toy.rating) }).map(
+                            (_, index) => (
+                              <Star
+                                key={index}
+                                className="w-5 h-5 text-[white]"
+                                fill="#f88e0f"
+                              />
+                            )
+                          )}
                         </div>
-                        <p className="text-gray-500 text-base leading-[16px]">
-                          ({chlothe.review} Reviews)
+                        {/* <p className="text-gray-500 text-base leading-[16px]">
+                          ({toy.review} Reviews)
+                        </p> */}
+                      </div>
+                      <div className="flex gap-3 items-center">
+                        <p className="text-pink-600 text-[20px] leading-[30px] font-semibold">
+                          ₹ {toy.price}
+                        </p>
+                        <p className="text-gray-500 line-through text-[16px] leading-[30px] font-semibold">
+                          ₹ {toy.price + 100}
+                        </p>
+                        <p className="text-red-500 text-[16px] leading-[30px] font-semibold">
+                          20% Off
                         </p>
                       </div>
-                      <p className="text-black text-[20px] leading-[30px] font-semibold">
-                        ₹ {chlothe.price}
-                      </p>
-                      <p className="text-gray-600 text-[16px] line-through leading-[30px] font-semibold">
-                        ₹ {chlothe.price}
-                      </p>
-                      <div className="flex md:flex-col lg:flex-row flex-row gap-5 md:gap-2 lg:gap-5 items-center">
+                      <div className="flex md:flex-col lg:flex-row flex-row gap-5 md:gap-2 lg:gap-5 items-center mt-auto">
                         <div
-                          onClick={(event) => addProductToCart(chlothe, event)}
+                          onClick={(event) => addProductToCart(toy, event)}
                           className="rounded-full transition-colors duration-300 hover:bg-[#f88e0f] cursor-pointer px-4 py-2 bg-[#00bbae] flex gap-3 items-center justify-center"
                         >
                           <ShoppingBasket className="w-5 h-5 text-white" />
@@ -544,7 +565,7 @@ const ClothesDetails = () => {
                         <div className="flex gap-5">
                           <div
                             onClick={(event) =>
-                              addFavouriteItemsWishList(chlothe, event)
+                              addFavouriteItemsWishList(toy, event)
                             }
                             className="cursor-pointer w-10 border border-gray-200 h-10 flex items-center justify-center rounded-full bg-white transition-colors hover:bg-[#00bbae] text-gray-500 hover:text-white"
                           >
@@ -558,11 +579,11 @@ const ClothesDetails = () => {
               ))}
             </Swiper>
             <ChevronLeft
-              className="swiper-button-prev absolute left-0 top-40 transform -translate-y-1/2 z-10 bg-[#e9f9fc] text-black rounded-full hover:bg-[#f8f9fa] cursor-pointer"
+              className="swiper-button-prev-rp absolute -left-5 top-30 transform -translate-y-1/2 z-10 bg-[#e9f9fc] text-black rounded-full hover:bg-[#f8f9fa] cursor-pointer h-10 w-10 opacity-25 hover:opacity-100 p-1"
               style={{ boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)" }}
             />
             <ChevronRight
-              className="swiper-button-next absolute right-0 top-40 transform -translate-y-1/2 z-10 bg-[#e9f9fc] text-black rounded-full hover:bg-[#f8f9fa] cursor-pointer"
+              className="swiper-button-next-rp absolute -right-5 top-30 transform -translate-y-1/2 z-10 bg-[#e9f9fc] text-black rounded-full hover:bg-[#f8f9fa] cursor-pointer h-10 w-10 opacity-25 hover:opacity-100 p-1"
               style={{ boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)" }}
             />
           </div>
