@@ -150,7 +150,7 @@ const ProductReviews = ({ items }) => {
           <p className="text-[18px] leading-[27px] text-black font-semibold">
             Add a review
           </p>
-          <p className="text-[16px] text-red-500 leading-[24px] font-medium w-full">
+          <p className="text-[16px] text-red-600 leading-[24px] font-medium w-full">
             Your email address will not be published. Required fields are marked
             *
           </p>

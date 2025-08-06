@@ -1,7 +1,18 @@
 import { Plus } from "lucide-react";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import BulkBanner from "../assets/bulkBanner.png";
+import SearchInput from "../Components/SearchInput";
+import { groupedCombined } from "../assets/helper.js";
 
 const BulkOrder = () => {
+  const [productItems, setProductItems] = useState([]);
+  useEffect(() => {
+    const productsData = groupedCombined;
+    setProductItems(productsData);
+  }, []);
+  const allItems = productItems.map((item) => item.items);
+  const names = allItems.flatMap((group) => group.map((item) => item.name));
+
   const [productDetails, setProductDetails] = useState([
     {
       _id: Date.now(),
@@ -33,6 +44,9 @@ const BulkOrder = () => {
   return (
     <div className="w-full h-full sm:px-0 px-5 py-10 bg-[#f8f9fa]">
       <div className="max-w-4xl mx-auto flex flex-col gap-8">
+        <div className="flex flex-col gap-5 w-full bg-white rounded-2xl overflow-hidden">
+          <img src={BulkBanner} alt="" />
+        </div>
         <div className="flex flex-col gap-5 w-full p-5 sm:p-8 bg-white rounded-2xl">
           <p className="text-[30px] leading-[40px] font-semibold text-black">
             Contact Information
@@ -93,7 +107,7 @@ const BulkOrder = () => {
               key={product._id}
               className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full"
             >
-              <input
+              {/* <input
                 type="text"
                 placeholder="Product Name"
                 className="transition-colors duration-300 text-[18px] leading-[27px] w-full px-4 py-2 border border-gray-200 focus:border-[#00bbae] outline-none rounded-md"
@@ -101,7 +115,8 @@ const BulkOrder = () => {
                 onChange={(e) =>
                   handleInputChange(index, "name", e.target.value)
                 }
-              />
+              /> */}
+              <SearchInput items={names} />
               <input
                 type="number"
                 placeholder="Quantity"

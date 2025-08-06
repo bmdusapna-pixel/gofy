@@ -7,6 +7,7 @@ import I4 from "../assets/4.png";
 import I5 from "../assets/5.png";
 import I6 from "../assets/6.png";
 import I7 from "../assets/7.png";
+import I8 from "../assets/8.png";
 // import ProductsCollection from "./ProductsCollection";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -56,7 +57,7 @@ const age_category_array = [
   },
   {
     _id: 8,
-    image: I7,
+    image: I8,
     age_difference: "10-12 years",
     url: "age/twelve-to-fourteen",
   },

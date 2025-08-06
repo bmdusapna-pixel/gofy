@@ -8,7 +8,10 @@ import {
   Twitter,
   Youtube,
 } from "lucide-react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faInstagram, faWhatsapp } from "@fortawesome/free-brands-svg-icons";
 import { IoLogoWhatsapp } from "react-icons/io";
+import { FaPinterest } from "react-icons/fa";
 import logo from "../assets/logo.webp";
 import footer_background from "../assets/footer-background.svg";
 import footer_boy from "../assets/footer-boy.svg";
@@ -17,12 +20,15 @@ import { Link } from "react-router-dom";
 
 const IconComponents = {
   Facebook,
-  Linkedin,
-  Twitter,
-  Mail,
+  FaPinterest,
   Youtube,
-  IoLogoWhatsapp,
 };
+
+const FaIconsComp = { faInstagram, faWhatsapp };
+const FaFooterSocial = [
+  { _id: 1, icon: "faInstagram", url: "/" },
+  { _id: 2, icon: "faWhatsapp", url: "/" },
+];
 
 const footer_links = [
   {
@@ -46,19 +52,19 @@ const footer_links = [
     url: "/",
   },
   {
-    _id: 5,
-    title: "Contact Us",
-    url: "/contact",
-  },
-  {
     _id: 6,
     title: "Bulk Order",
     url: "/bulk-order",
   },
   {
-    _id: 7,
+    _id: 6,
     title: "About Us",
     url: "/about",
+  },
+  {
+    _id: 7,
+    title: "Contact Us",
+    url: "/contact",
   },
   {
     _id: 8,
@@ -90,21 +96,11 @@ const footer_social = [
   },
   {
     _id: 2,
-    icon: "Linkedin",
-    url: "/",
-  },
-  {
-    _id: 3,
-    icon: "Twitter",
+    icon: "FaPinterest",
     url: "/",
   },
   {
     _id: 4,
-    icon: "Mail",
-    url: "/",
-  },
-  {
-    _id: 5,
     icon: "Youtube",
     url: "/",
   },
@@ -128,8 +124,8 @@ const Footer = () => {
   // };
 
   const length = footer_links?.length;
-  const firstHalf = footer_links.slice(0, Math.ceil(length / 2));
-  const secondHalf = footer_links.slice(Math.ceil(length / 2), length);
+  const firstHalf = footer_links.slice(0, 5);
+  const secondHalf = footer_links.slice(5, length);
 
   return (
     <div className="w-full bg-[#f8f9fa]">
@@ -159,6 +155,19 @@ const Footer = () => {
                     className="w-12 h-12 flex items-center justify-center cursor-pointer transition-colors duration-300 hover:bg-[#00bbae] text-black hover:text-white bg-[#e9ecef] p-1 rounded-full"
                   >
                     <Icon className="w-5 h-5" />
+                  </a>
+                );
+              })}
+              {FaFooterSocial.map((item) => {
+                const Icon = FaIconsComp[item.icon];
+                return (
+                  <a
+                    href={item.url}
+                    target="_blank"
+                    key={item._id}
+                    className="w-12 h-12 flex items-center justify-center cursor-pointer transition-colors duration-300 hover:bg-[#00bbae] text-black hover:text-white bg-[#e9ecef] p-1 rounded-full"
+                  >
+                    <FontAwesomeIcon icon={Icon} />
                   </a>
                 );
               })}

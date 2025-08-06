@@ -494,7 +494,7 @@ const SpecificClotheProducts = () => {
                           <p className="text-gray-700 text-[14px] leading-[30px] line-through font-semibold">
                             ₹ {clothe.price + 100}
                           </p>
-                          <p className="text-red-500 text-[18px] leading-[30px] font-semibold">
+                          <p className="text-red-600 text-[18px] leading-[30px] font-semibold">
                             30% OFF
                           </p>
                         </div>
