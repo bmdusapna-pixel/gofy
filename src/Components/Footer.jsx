@@ -53,37 +53,42 @@ const footer_links = [
     url: "/",
   },
   {
-    _id: 6,
+    _id: 5,
     title: "Bulk Order",
     url: "/bulk-order",
   },
   {
     _id: 6,
+    title: "FAQ's",
+    url: "/faq",
+  },
+  {
+    _id: 7,
     title: "About Us",
     url: "/about",
   },
   {
-    _id: 7,
+    _id: 8,
     title: "Contact Us",
     url: "/contact",
   },
   {
-    _id: 8,
+    _id: 9,
     title: "Privacy Policy",
     url: "/privacy-policy",
   },
   {
-    _id: 9,
+    _id: 10,
     title: "Refund and Returns",
     url: "/refund-returns",
   },
   {
-    _id: 10,
+    _id: 11,
     title: "Blog",
     url: "/blog",
   },
   {
-    _id: 11,
+    _id: 12,
     title: "Terms and Conditions",
     url: "/terms-and-conditions",
   },
@@ -107,8 +112,8 @@ const Footer = () => {
   // };
 
   const length = footer_links?.length;
-  const firstHalf = footer_links.slice(0, 5);
-  const secondHalf = footer_links.slice(5, length);
+  const firstHalf = footer_links.slice(0, 6);
+  const secondHalf = footer_links.slice(6, length);
 
   return (
     <div className="w-full bg-[#f8f9fa]">

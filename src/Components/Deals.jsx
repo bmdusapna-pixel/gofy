@@ -197,8 +197,11 @@ const Deals = () => {
                         <p className="text-pink-600 text-[22px] leading-[30px] font-semibold">
                           ₹ {product.price}
                         </p>
-                        <p className="text-gray-400 text-[16px] line-through leading-[30px] font-semibold">
+                        <p className="text-gray-800 text-[16px] line-through leading-[30px] font-semibold">
                           ₹ {product.price + 100}
+                        </p>
+                        <p className="text-red-600 text-[16px] leading-[30px] font-semibold">
+                          30% OFF
                         </p>
                       </div>
                       <div className="max-w-[150px] mt-4">
@@ -336,8 +339,11 @@ const Deals = () => {
                                 <p className="text-pink-600 text-[22px] leading-[30px] font-semibold">
                                   ₹ {trending.price}
                                 </p>
-                                <p className="text-gray-400 text-[18px] leading-[27px] font-normal line-through">
+                                <p className="text-gray-900 text-[16px] leading-[27px] font-normal line-through">
                                   ₹ {trending.price + 100}
+                                </p>
+                                <p className="text-red-600 text-[18px] leading-[27px] font-normal">
+                                  30% OFF
                                 </p>
                               </div>
                             </div>

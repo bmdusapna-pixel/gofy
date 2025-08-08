@@ -53,15 +53,8 @@ const ScrollToTop = () => {
 };
 
 const AnimatedDropdown = ({ items }) => {
-  const size = (length) => {
-    if (length === 8) return `w-7xl grid-cols-8`;
-    if (length === 7) return `w-6xl grid-cols-7`;
-    if (length === 6) return `w-6xl grid-cols-6`;
-    if (length === 5) return `w-4xl grid-cols-5`;
-    if (length === 4) return `w-4xl grid-cols-4`;
-    if (length === 3) return `w-3xl grid-cols-3`;
-    if (length === 2) return `w-[350px] grid-cols-2`;
-  };
+  const [hoveredIndex, setHoveredIndex] = React.useState(null);
+
   return (
     <AnimatePresence>
       <motion.div
@@ -69,42 +62,66 @@ const AnimatedDropdown = ({ items }) => {
         animate={{ y: 0, opacity: 1 }}
         exit={{ y: 6, opacity: 0 }}
         transition={{ type: "tween", duration: 0.5, ease: "easeInOut" }}
-        className={`absolute top-7 left-0 border-[1px] border-gray-400 bg-white rounded-md z-50 grid ${size(
-          items.length
-        )}`}
+        className="absolute top-7 left-0 border border-gray-400 bg-white rounded-md z-50 flex"
       >
-        {items?.map((item, index) => (
-          <div key={index} className="flex gap-3 flex-col w-full p-1.5">
-            <Link
-              to={`/products/${item.url}`}
-              className="text-[18px] px-2 leading-[27px] text-[#DC3545] font-bold"
+        {/* Left column: headings */}
+        <div className="flex flex-col min-w-[250px] border-r border-gray-300">
+          {items?.map((item, index) => (
+            <div
+              key={index}
+              className="relative px-4 py-2 hover:bg-gray-100 cursor-pointer"
+              onMouseEnter={() => setHoveredIndex(index)}
+              onMouseLeave={() => setHoveredIndex(null)}
             >
-              {item.label}
-            </Link>
-            <div className="flex flex-col gap-0.5 w-full items-center justify-center">
-              {item?.items?.map((product) => (
-                <Link
-                  to={
-                    product.category === "toy"
-                      ? `/products/toys/item/${slugify(product.name)}`
-                      : `/products/clothes/item/${slugify(product.name)}`
-                  }
-                  className="relative overflow-hidden group cursor-pointer w-full px-3 py-1 rounded-md text-[#001430] hover:text-green-700 transition-colors duration-500 items-start justify-center"
-                  key={product._id}
-                >
-                  <span className="absolute top-0 left-0 w-full h-0 z-[-1] transition-all duration-500 group-hover:h-full" />
-                  <p className="text-[16px] leading-[24px] font-semibold flex items-center whitespace-nowrap">
-                    {/* <MoveRight className="h-4 w-4 hidden group-hover:block -ml-2" />{" "} */}
-                    <span className="translate-x-1 group-hover:translate-x-0 transition-transform duration-300">
-                      {product.name}
-                    </span>{" "}
-                    <MoveRight className="h-4 w-4 hidden group-hover:block ml-1" />
-                  </p>
-                </Link>
-              ))}
+              <Link
+                to={`/products/${item.url}`}
+                className="text-[18px] leading-[27px] text-[#DC3545] font-bold block"
+              >
+                {item.label}
+              </Link>
+
+              {/* Right-hand submenu */}
+              <AnimatePresence>
+                {hoveredIndex === index && (
+                  <motion.div
+                    initial={{ x: 20, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    exit={{ x: 10, opacity: 0 }}
+                    transition={{
+                      type: "tween",
+                      duration: 0.3,
+                      ease: "easeInOut",
+                    }}
+                    className="absolute top-0 left-full border border-gray-300 bg-white rounded-md shadow-lg min-w-[250px] p-3"
+                  >
+                    <div className="flex flex-col gap-1">
+                      {item?.items?.map((product) => (
+                        <Link
+                          to={
+                            product.category === "toy"
+                              ? `/products/toys/item/${slugify(product.name)}`
+                              : `/products/clothes/item/${slugify(
+                                  product.name
+                                )}`
+                          }
+                          className="relative overflow-hidden group cursor-pointer px-3 py-1 rounded-md text-[#001430] hover:text-green-700 transition-colors duration-500"
+                          key={product._id}
+                        >
+                          <p className="text-[16px] leading-[24px] font-semibold whitespace-nowrap flex items-center">
+                            <span className="translate-x-1 group-hover:translate-x-0 transition-transform duration-300">
+                              {product.name}
+                            </span>
+                            <MoveRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ml-1" />
+                          </p>
+                        </Link>
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </motion.div>
     </AnimatePresence>
   );

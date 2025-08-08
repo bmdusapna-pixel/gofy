@@ -31,7 +31,7 @@ const PriceRangeSlider = ({ headingTitle, min, max }) => {
   };
 
   return (
-    <div className="border border-gray-200 rounded-2xl bg-white flex flex-col">
+    <div className="border border-gray-200 rounded-xl bg-white flex flex-col">
       <div
         className="p-4 flex justify-between items-center cursor-pointer"
         onClick={handleToggle}
@@ -40,7 +40,7 @@ const PriceRangeSlider = ({ headingTitle, min, max }) => {
           <p className="text-[18px] leading-[27px] font-semibold text-black">
             {headingTitle}
           </p>
-          <hr className="w-14 rounded-2xl bg-[#f88e0f] h-1 border-none" />
+          {/* <hr className="w-14 rounded-2xl bg-[#f88e0f] h-1 border-none" /> */}
         </div>
         <ChevronDown
           className={`h-6 w-6 text-gray-500 transform transition-transform duration-300 ${

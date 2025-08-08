@@ -11,7 +11,7 @@ import Footer from "./Components/Footer";
 import Cart from "./Components/Cart";
 import PrivacyPolicy from "./Pages/PrivacyPolicy";
 import { ArrowUp } from "lucide-react";
-import { FaWhatsappSquare } from "react-icons/fa";
+import { FaWhatsappSquare, FaWhatsapp } from "react-icons/fa";
 import { CartContext } from "./Context/CartContext";
 import About from "./Pages/About";
 import TermsAndConditions from "./Pages/TermsAndConditions";
@@ -202,14 +202,15 @@ const App = () => {
         show={isWhatsAppVisible}
         onClose={() => setIsWhatsAppVisible(false)}
       />
-      <div className="fixed bottom-22 z-50 right-5 w-16 h-16 rounded-full flex items-center justify-center cursor-pointer transition-transform duration-300 hover:scale-110">
+      <div className="fixed bottom-22 z-50 right-5 w-14 h-14 rounded-full flex items-center justify-center cursor-pointer transition-transform duration-300 hover:scale-110">
         <button
           onClick={() => setIsWhatsAppVisible(!isWhatsAppVisible)}
-          className={`w-full h-full flex items-center justify-center bg-transparent rounded-md transition-shadow duration-300`}
+          className={`w-full h-full flex items-center justify-center bg-green-500 rounded-md transition-shadow duration-300 ${blinkingClasses}`}
         >
-          <FaWhatsappSquare
+          {/* <FaWhatsappSquare
             className={`w-14 h-14 text-green-500 duration-300 ${blinkingClasses}`}
-          />
+          /> */}
+          <FaWhatsapp className={`w-12 h-12 text-white duration-300`} />
         </button>
       </div>
       {isShowTopButton && (

@@ -118,7 +118,7 @@ const FirstHeader = () => {
             India.
           </p>
         </div>
-        <div className="flex gap-3 items-center w-60 order-0 lg:order-1">
+        {/* <div className="flex gap-3 items-center w-60 order-0 lg:order-1">
           <div className="flex gap-1 items-center">
             <MapPin className="w-5 h-5 text-white" />
             <p className="text-base font-medium text-white">Delhi, India</p>
@@ -126,7 +126,7 @@ const FirstHeader = () => {
           <Link to="/faq" className="text-base font-medium text-white">
             FAQ's
           </Link>
-        </div>
+        </div> */}
       </div>
     </div>
   );
@@ -193,7 +193,16 @@ const SecondHeader = ({
           <Link to="/" className="w-32">
             <img src={logo} alt="" className="w-full" />
           </Link>
-          <div className="md:flex flex-1 hidden max-w-3xl border-[1px] border-gray-400 focus-within:border-[#00bbae] outline-none rounded-md">
+          <div className="w-40">
+            <h3 className="font-bold text-[14px] font-sans">
+              Delivery in 8 minutes
+            </h3>
+            <div className="flex gap-1 items-center">
+              <MapPin className="w-5 h-5" />
+              <p className="text-base font-medium">Delhi, India</p>
+            </div>
+          </div>
+          <div className="lg:flex flex-1 hidden max-w-3xl border-[1px] border-gray-400 focus-within:border-[#00bbae] outline-none rounded-md">
             <div
               className="w-full flex items-center bg-gray-50 rounded-md"
               ref={categoryRef}
@@ -293,7 +302,7 @@ const SecondHeader = ({
       </div>
       <div className="lg:px-12 px-5">
         <div
-          className={`md:hidden flex flex-col items-center gap-3 rounded-md w-full max-h-20 z-50 opacity-100 bg-[#f7f7f7] p-2 border border-gray-400`}
+          className={`lg:hidden flex flex-col items-center gap-3 rounded-md w-full max-h-20 z-50 opacity-100 bg-[#f7f7f7] p-2 border border-gray-400`}
         >
           <input
             type="text"
@@ -375,7 +384,7 @@ const ThirdHeader = ({ isMobileMenuOpen, setIsMobileMenuOpen }) => {
             </Link>
             <div
               onMouseEnter={() => setItemHovered("shopByAge")}
-              className="flex gap-1 items-center text-black font-semibold transition-colors duration-300 hover:text-[#00bbae]"
+              className="flex gap-1 items-center text-black font-semibold transition-colors duration-300 hover:text-[#00bbae] relative"
             >
               <p className="text-[16px] leading-[24px] font-semibold cursor-pointer">
                 Shop By Age
@@ -479,7 +488,7 @@ const ThirdHeader = ({ isMobileMenuOpen, setIsMobileMenuOpen }) => {
             <p className="text-[16px] leading-[24px]">Browse Categories</p>
           </div> */}
           <div
-            className={`w-full sm:w-96 h-full overflow-y-scroll bg-white fixed top-0 left-0 z-50 shadow-lg flex flex-col py-10 px-6 gap-5 transition-transform duration-300 ${
+            className={`w-[80%] h-full overflow-y-scroll bg-white fixed top-0 left-0 z-50 shadow-lg flex flex-col py-10 px-6 gap-5 transition-transform duration-300 ${
               isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
             }`}
           >

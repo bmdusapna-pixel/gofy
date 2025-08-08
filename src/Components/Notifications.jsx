@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { X } from "lucide-react";
+import NoNotificationImage from "../assets/no-notifications.png";
 
 const Notifications = ({ show, onClose }) => {
-  const notifications = [
+  const [notifications, setNotifications] = useState([
     {
       id: 1,
       message: "Your order #1234 has been shipped!",
@@ -23,15 +24,15 @@ const Notifications = ({ show, onClose }) => {
       message: "Don't miss out! Flash sale ends tonight.",
       timestamp: "5 days ago",
     },
-  ];
+  ]);
 
   const clearAllNotifications = () => {
-    console.log("All notifications cleared.");
+    setNotifications([]);
   };
 
   return (
     <div
-      className={`fixed right-0 top-0 w-full sm:w-[450px] bg-white lg:w-96 h-full sm:h-screen z-50 transition-transform duration-300 ${
+      className={`fixed right-0 top-0 w-[80%] sm:w-[450px] bg-white lg:w-96 h-full sm:h-screen z-50 transition-transform duration-300 ${
         show ? "translate-x-0" : "translate-x-full"
       }`}
     >
@@ -82,8 +83,13 @@ const Notifications = ({ show, onClose }) => {
                 </div>
               ))
             ) : (
-              <div className="p-5 text-center text-gray-500 font-semibold">
-                No new notifications.
+              <div className="flex flex-col items-center justify-center p-5 text-center text-gray-500 font-semibold">
+                <img
+                  src={NoNotificationImage}
+                  alt="No notifications"
+                  className="w-full h-auto mb-4"
+                />
+                <p>No new notifications.</p>
               </div>
             )}
           </div>

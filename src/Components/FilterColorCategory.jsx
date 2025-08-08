@@ -26,7 +26,7 @@ const FilterColorCategory = ({
   };
 
   return (
-    <div className="border border-gray-200 rounded-2xl bg-white flex flex-col">
+    <div className="border border-gray-200 rounded-xl bg-white flex flex-col">
       {/* The header is now clickable to toggle the content's visibility */}
       <div
         className="p-4 flex justify-between items-center cursor-pointer"
@@ -36,7 +36,7 @@ const FilterColorCategory = ({
           <p className="text-[18px] leading-[27px] font-semibold text-black">
             {headingTitile}
           </p>
-          <hr className="w-14 rounded-2xl bg-[#f88e0f] h-1 border-none" />
+          {/* <hr className="w-14 rounded-2xl bg-[#f88e0f] h-1 border-none" /> */}
         </div>
         {/* Chevron icon rotates to indicate open/closed state */}
         <ChevronDown

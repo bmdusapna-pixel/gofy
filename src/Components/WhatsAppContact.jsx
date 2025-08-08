@@ -59,18 +59,18 @@ const WhatsAppContact = ({ show, onClose }) => {
               alt="WhatsApp Icon"
               className="h-10 w-10 mr-2"
             />
-            <h1 className="text-2xl font-bold">WhatsApp Supporta</h1>
+            <h1 className="text-2xl font-bold">WhatsApp Support</h1>
           </div>
         </div>
-        <div className="p-4 bg-green-50 rounded-b-md">
+        <div className="px-4 py-5 bg-green-50 rounded-b-md">
           <h1 className="text-2xl text-gray-900 font-bold">👋 Hi there!</h1>
           <div className="rounded-md">
             <p className="text-gray-900 mb-3">
               Need help? Let's chat on WhatsApp.
             </p>
 
-            <div className="flex items-center bg-gray-50 border border-gray-400 rounded-md mb-2">
-              <div className="flex items-center p-3 border-r border-gray-400 text-black">
+            <div className="flex items-center bg-gray-50 border border-gray-300 rounded-md mb-3">
+              <div className="flex items-center p-3 border-r border-gray-300 text-black">
                 <span role="img" aria-label="India Flag" className="mr-2">
                   🇮🇳
                 </span>
@@ -85,7 +85,7 @@ const WhatsAppContact = ({ show, onClose }) => {
                 maxLength={10}
               />
             </div>
-            <p className="text-gray-600 mb-2">We'll reply instantly!</p>
+            <p className="text-gray-600 mb-3">We'll reply instantly!</p>
 
             <button
               onClick={handleSendText}
