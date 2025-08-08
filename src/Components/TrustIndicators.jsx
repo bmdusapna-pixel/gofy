@@ -1,7 +1,7 @@
 import React from "react";
 import Origninal from "../assets/original.png";
 import Quality from "../assets/quality.png";
-import SecurePayment from "../assets/secure-payment.jpg";
+import SecurePayment from "../assets/secure-payment.png";
 
 const TrustIndicators = () => {
   const features = [

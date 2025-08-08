@@ -302,7 +302,7 @@ const Deals = () => {
                             <img
                               src={trending.images[0]}
                               alt=""
-                              className="h-60 object-cover"
+                              className="h-60 object-contain"
                             />
                             {/* <div className="absolute top-44 w-48">
                                                         <Countdown />
