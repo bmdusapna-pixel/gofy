@@ -165,7 +165,7 @@ const ProductsCollectionBelow = ({ color }) => {
                         <p className="text-[14px] leading-[24px] line-through font-semibold text-[#212529]">
                           ₹ 2000
                         </p>
-                        <p className="text-[16px] leading-[24px] font-semibold text-[#f39924]">
+                        <p className="text-[16px] leading-[24px] font-semibold text-red-600">
                           30% OFF
                         </p>
                       </div>

@@ -205,10 +205,10 @@ const App = () => {
       <div className="fixed bottom-22 z-50 right-5 w-16 h-16 rounded-full flex items-center justify-center cursor-pointer transition-transform duration-300 hover:scale-110">
         <button
           onClick={() => setIsWhatsAppVisible(!isWhatsAppVisible)}
-          className={`w-full h-full flex items-center justify-center bg-transparent rounded-md hover:shadow-xl transition-shadow duration-300`}
+          className={`w-full h-full flex items-center justify-center bg-transparent rounded-md transition-shadow duration-300`}
         >
           <FaWhatsappSquare
-            className={`w-14 h-14 text-green-900 duration-300 ${blinkingClasses}`}
+            className={`w-14 h-14 text-green-500 duration-300 ${blinkingClasses}`}
           />
         </button>
       </div>

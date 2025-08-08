@@ -94,7 +94,7 @@ const RelatedItems = ({ heading }) => {
                     <p className="text-gray-300 line-through text-[16px] leading-[30px] font-semibold">
                       ₹ {product.price + 100}
                     </p>
-                    <p className="text-[#f39924] text-[16px] leading-[30px] font-semibold">
+                    <p className="text-red-600 text-[16px] leading-[30px] font-semibold">
                       {(
                         100 -
                         (product.price / (product.price + 100)) * 100

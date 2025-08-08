@@ -42,17 +42,17 @@ const TermsAndConditions = () => {
 
   return (
     <div>
-      <div className="flex flex-col items-center">
+      {/* <div className="flex flex-col items-center">
         <img
           src={TermBanner}
           alt="term banner"
           className="w-full object-cover mb-8"
         />
-      </div>
+      </div> */}
       <div className="w-full h-full py-10 bg-[#f8f9fa]">
         <div className="w-full mx-auto flex flex-col gap-8 px-5 lg:px-12">
           <p className="text-[32px] md:text-[38px] leading-[48px] md:leading-[57px] text-black font-semibold">
-            Terms & Conditions – Gofy Kids Mall (Model Town)
+            Terms and Conditions
           </p>
           {termsData.map((item, index) => (
             <div className="flex flex-col gap-1 w-full" key={index}>

@@ -4,7 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { CartContext } from "../Context/CartContext";
 import { Link } from "react-router-dom";
 
-import EmptyCart from "../assets/emptyCart.jpg";
+import EmptyCart from "../assets/emptyCart.png";
 import RelatedItems from "../Components/RelatedItems";
 
 const CartDetails = () => {
@@ -243,7 +243,11 @@ const CartDetails = () => {
         </div>
       </div>
       <div className="w-full lg:px-12 px-5 mx-auto flex lg:flex-row flex-col gap-5">
-        <RelatedItems />
+        <RelatedItems
+          heading={
+            cartItems.length > 0 ? "Related Products" : "Specily for You"
+          }
+        />
       </div>
     </div>
   );

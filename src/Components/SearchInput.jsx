@@ -2,37 +2,68 @@ import React, { useState } from "react";
 
 const SearchInput = ({ items }) => {
   const [search, setSearch] = useState("");
-  const [filter, setFilter] = useState(items);
+  const [filteredItems, setFilteredItems] = useState(items);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+
   const handleChange = (e) => {
-    setSearch(e.target.value);
-    setFilter(
-      items.filter((i) => i.toLowerCase().includes(search.toLowerCase()))
-    );
+    const inputValue = e.target.value;
+    setSearch(inputValue);
+
+    const newFiltered = inputValue
+      ? items.filter((item) =>
+          item.toLowerCase().includes(inputValue.toLowerCase())
+        )
+      : items;
+    setFilteredItems(newFiltered);
+    setShowSuggestions(true);
   };
+
+  const handleFocus = () => {
+    setShowSuggestions(true);
+    if (search === "") {
+      setFilteredItems(items);
+    }
+  };
+
+  const handleBlur = () => {
+    setTimeout(() => {
+      setShowSuggestions(false);
+    }, 100);
+  };
+
+  const handleItemClick = (item) => {
+    setSearch(item);
+    setShowSuggestions(false);
+  };
+
   return (
     <div className="relative">
       <input
         type="text"
         value={search}
         onChange={handleChange}
+        onFocus={handleFocus}
+        onBlur={handleBlur}
         placeholder="Product Name"
         className="transition-colors duration-300 text-[18px] leading-[27px] w-full px-4 py-2 border border-gray-200 focus:border-[#00bbae] outline-none rounded-md"
       />
-      <ul
-        className={`absolute top-full left-0 bg-white w-full rounded-md ${
-          search &&
-          !filter.includes(search) &&
-          "px-4 py-2  border border-gray-200 focus:border-[#00bbae]"
-        } space-y-1 z-[3] max-h-[300px] overflow-y-auto`}
-      >
-        {search &&
-          !filter.includes(search) &&
-          filter?.map((item) => (
-            <li className="hover:bg-gray-100" onClick={() => setSearch(item)}>
-              {item}
-            </li>
-          ))}
-      </ul>
+      {showSuggestions && (
+        <ul className="absolute top-full left-0 bg-white w-full rounded-md px-4 py-2 border border-gray-200 focus:border-[#00bbae] space-y-1 z-[3] max-h-[300px] overflow-y-auto">
+          {filteredItems.length > 0 ? (
+            filteredItems.map((item, index) => (
+              <li
+                key={index}
+                className="hover:bg-gray-100 cursor-pointer p-1 rounded-md"
+                onClick={() => handleItemClick(item)}
+              >
+                {item}
+              </li>
+            ))
+          ) : (
+            <li className="text-gray-500">No matching items</li>
+          )}
+        </ul>
+      )}
     </div>
   );
 };

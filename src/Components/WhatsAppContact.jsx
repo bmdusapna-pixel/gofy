@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { IoSend } from "react-icons/io5";
+import { IoSend, IoShieldCheckmarkOutline } from "react-icons/io5";
+import { TbMessageCircleFilled } from "react-icons/tb";
 
 const WhatsAppContact = ({ show, onClose }) => {
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -28,10 +29,7 @@ const WhatsAppContact = ({ show, onClose }) => {
   }
 
   return (
-    <div
-      className="fixed right-5 bottom-40 w-[350px] h-auto bg-gray-800 rounded-lg shadow-lg text-white z-50"
-      style={{ background: "linear-gradient(to bottom, #1a2a2a, #3a3a3a)" }}
-    >
+    <div className="fixed right-5 bottom-40 w-[350px] h-auto bg-linear-45 from-green-400 to-green-900 rounded-lg shadow-lg text-white z-50">
       <div className="relative">
         <div className="p-4">
           <button
@@ -55,47 +53,51 @@ const WhatsAppContact = ({ show, onClose }) => {
             </svg>
           </button>
 
-          <div className="flex items-center mb-6">
+          <div className="flex items-center">
             <img
               src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"
               alt="WhatsApp Icon"
               className="h-10 w-10 mr-2"
             />
-            <h1 className="text-2xl font-bold">Hi there 👋</h1>
+            <h1 className="text-2xl font-bold">WhatsApp Supporta</h1>
           </div>
-
-          <p className="text-gray-300 mb-8">
-            We are here to help. Chat with us on WhatsApp for any queries.
-          </p>
         </div>
-        <div className="p-4 bg-white rounded-b-md">
-          <div className="bg-white p-4 rounded-md -mt-[50px]">
-            <p className="text-gray-900 mb-2">Hey, how can we help you?</p>
+        <div className="p-4 bg-green-50 rounded-b-md">
+          <h1 className="text-2xl text-gray-900 font-bold">👋 Hi there!</h1>
+          <div className="rounded-md">
+            <p className="text-gray-900 mb-3">
+              Need help? Let's chat on WhatsApp.
+            </p>
 
-            <div className="flex items-center bg-gray-300 rounded-md mb-6">
+            <div className="flex items-center bg-gray-50 border border-gray-400 rounded-md mb-2">
               <div className="flex items-center p-3 border-r border-gray-400 text-black">
                 <span role="img" aria-label="India Flag" className="mr-2">
                   🇮🇳
                 </span>
-                <span>{countryCode}</span>
+                {/* <span>{countryCode}</span> */}
               </div>
               <input
                 type="tel"
-                className="flex-grow bg-transparent p-3 outline-none text-black placeholder-gray-400"
+                className="flex-grow bg-transparent p-3 outline-none text-black placeholder-gray-500"
                 value={phoneNumber}
                 onChange={handlePhoneNumberChange}
                 placeholder="Enter Your number"
                 maxLength={10}
               />
             </div>
+            <p className="text-gray-600 mb-2">We'll reply instantly!</p>
 
             <button
               onClick={handleSendText}
               className="w-full bg-green-900 hover:bg-green-800 text-white font-semibold py-3 px-4 rounded-md flex items-center justify-center transition duration-300"
             >
-              <IoSend className="h-5 w-5 mr-2" />
-              Send Us a Text
+              <TbMessageCircleFilled className="h-5 w-5 mr-2" />
+              Start WhatsApp Chat
             </button>
+          </div>
+          <div className="flex gap-1 p-4">
+            <IoShieldCheckmarkOutline className="h-5 w-5 mr-2 text-green-900" />
+            <p className="text-gray-600">100% safe & private conversation</p>
           </div>
         </div>
       </div>

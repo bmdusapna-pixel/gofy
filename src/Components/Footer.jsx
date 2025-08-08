@@ -1,15 +1,13 @@
 import React, { useState } from "react";
-import {
-  ArrowRight,
-  Facebook,
-  Linkedin,
-  Mail,
-  MapPin,
-  Twitter,
-  Youtube,
-} from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faInstagram, faWhatsapp } from "@fortawesome/free-brands-svg-icons";
+import {
+  faInstagram,
+  faXTwitter,
+  faFacebookF,
+  faYoutube,
+  faPinterest,
+} from "@fortawesome/free-brands-svg-icons";
 import { IoLogoWhatsapp } from "react-icons/io";
 import { FaPinterest } from "react-icons/fa";
 import logo from "../assets/logo.webp";
@@ -18,16 +16,19 @@ import footer_boy from "../assets/footer-boy.svg";
 import footer_girl from "../assets/footer-girl.svg";
 import { Link } from "react-router-dom";
 
-const IconComponents = {
-  Facebook,
-  FaPinterest,
-  Youtube,
+const FaIconsComp = {
+  faFacebookF,
+  faInstagram,
+  faXTwitter,
+  faPinterest,
+  faYoutube,
 };
-
-const FaIconsComp = { faInstagram, faWhatsapp };
 const FaFooterSocial = [
-  { _id: 1, icon: "faInstagram", url: "/" },
-  { _id: 2, icon: "faWhatsapp", url: "/" },
+  { _id: 1, icon: "faFacebookF", url: "/" },
+  { _id: 2, icon: "faInstagram", url: "/" },
+  { _id: 3, icon: "faXTwitter", url: "/" },
+  { _id: 4, icon: "faPinterest", url: "/" },
+  { _id: 5, icon: "faYoutube", url: "/" },
 ];
 
 const footer_links = [
@@ -88,24 +89,6 @@ const footer_links = [
   },
 ];
 
-const footer_social = [
-  {
-    _id: 1,
-    icon: "Facebook",
-    url: "/",
-  },
-  {
-    _id: 2,
-    icon: "FaPinterest",
-    url: "/",
-  },
-  {
-    _id: 4,
-    icon: "Youtube",
-    url: "/",
-  },
-];
-
 const Footer = () => {
   // const [email, setEmail] = useState("");
   const [whatsappNumber, setWhatsappNumber] = useState("");
@@ -145,19 +128,6 @@ const Footer = () => {
               </p>
             </div> */}
             <div className="flex gap-3 items-center">
-              {footer_social.map((item) => {
-                const Icon = IconComponents[item.icon];
-                return (
-                  <a
-                    href={item.url}
-                    target="_blank"
-                    key={item._id}
-                    className="w-12 h-12 flex items-center justify-center cursor-pointer transition-colors duration-300 hover:bg-[#00bbae] text-black hover:text-white bg-[#e9ecef] p-1 rounded-full"
-                  >
-                    <Icon className="w-5 h-5" />
-                  </a>
-                );
-              })}
               {FaFooterSocial.map((item) => {
                 const Icon = FaIconsComp[item.icon];
                 return (

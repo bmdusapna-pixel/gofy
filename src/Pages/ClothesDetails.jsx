@@ -3,6 +3,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Clock,
+  Truck,
   Copy,
   Facebook,
   Heart,
@@ -17,6 +18,14 @@ import {
   Twitter,
   User2Icon,
 } from "lucide-react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faInstagram,
+  faXTwitter,
+  faFacebookF,
+  faWhatsapp,
+} from "@fortawesome/free-brands-svg-icons";
+import { faShare } from "@fortawesome/free-solid-svg-icons";
 import { Countdown } from "../Components/AnimatedDropdown";
 import { CartContext } from "../Context/CartContext";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -28,6 +37,10 @@ import { Link, useParams } from "react-router-dom";
 import { clothe_items } from "../assets/helper.js";
 import SizeChart from "../Components/SizeChart.jsx";
 import ProductReviews from "../Components/ProductReviews.jsx";
+import ExpandableParagraph from "../Components/ExpandableParagraph.jsx";
+import useScrollToSection from "../hooks/useScrollToSection.jsx";
+import ShareCopyButton from "../Components/ShareCopyButton.jsx";
+import TrustIndicators from "../Components/TrustIndicators.jsx";
 
 const clotheReview = {
   id: "some-id",
@@ -115,8 +128,38 @@ const sizes = [
 ];
 
 const ClothesDetails = () => {
+  const [refDis, slideToDis] = useScrollToSection();
   const swiperRef = useRef(null);
   const { url } = useParams();
+  const FaIconsComp = {
+    faFacebookF,
+    faInstagram,
+    faXTwitter,
+    faWhatsapp,
+  };
+  const currentUrl = encodeURIComponent(window.location.href);
+  const FaShareLink = [
+    {
+      _id: 1,
+      icon: "faFacebookF",
+      url: `https://www.facebook.com/sharer/sharer.php?u=${currentUrl}`,
+    },
+    {
+      _id: 2,
+      icon: "faInstagram",
+      url: "https://www.instagram.com/",
+    },
+    {
+      _id: 3,
+      icon: "faXTwitter",
+      url: `https://twitter.com/intent/tweet?url=${currentUrl}`,
+    },
+    {
+      _id: 4,
+      icon: "faWhatsapp",
+      url: `https://wa.me/?text=${currentUrl}`,
+    },
+  ];
   const {
     isMobileMenuOpen,
     setIsMobileMenuOpen,
@@ -237,7 +280,7 @@ const ClothesDetails = () => {
                 <Countdown />
               </div>
             </div>
-            <div className="flex w-full items-center">
+            {/* <div className="flex w-full items-center">
               {Array.from({ length: Math.floor(clothe.rating) }).map(
                 (_, index) => (
                   <Star
@@ -250,7 +293,7 @@ const ClothesDetails = () => {
               <p className="text-gray-500 text-base leading-[16px]">
                 ({clothe.review} Customer Reviews)
               </p>
-            </div>
+            </div> */}
             <p className="text-[32px] md:text-[38px] leading-[48px] md:leading-[57px] font-semibold">
               {clothe.name}
             </p>
@@ -259,38 +302,45 @@ const ClothesDetails = () => {
                 Share:
               </p>
               <div className="flex items-center gap-2 w-full">
-                <div className="w-8 h-8 rounded-md bg-white text-gray-400 transition-colors hover:text-white hover:bg-[#00bbae] cursor-pointer flex items-center justify-center">
+                {/* <div className="w-8 h-8 rounded-md bg-white text-gray-400 transition-colors hover:text-white hover:bg-[#00bbae] cursor-pointer flex items-center justify-center">
                   <Facebook className="w-4 h-4" />
-                </div>
-                <div className="w-8 h-8 rounded-md bg-white text-gray-400 transition-colors hover:text-white hover:bg-[#00bbae] cursor-pointer flex items-center justify-center">
-                  <Twitter className="w-4 h-4" />
-                </div>
-                <div className="w-8 h-8 rounded-md bg-white text-gray-400 transition-colors hover:text-white hover:bg-[#00bbae] cursor-pointer flex items-center justify-center">
-                  <Linkedin className="w-4 h-4" />
-                </div>
-                <div className="w-8 h-8 rounded-md bg-white text-gray-400 transition-colors hover:text-white hover:bg-[#00bbae] cursor-pointer flex items-center justify-center">
-                  <Facebook className="w-4 h-4" />
-                </div>
-                <div className="w-8 h-8 rounded-md bg-white text-gray-400 transition-colors hover:text-white hover:bg-[#00bbae] cursor-pointer flex items-center justify-center">
-                  <Facebook className="w-4 h-4" />
-                </div>
-                <div className="w-8 h-8 rounded-md bg-white text-gray-400 transition-colors hover:text-white hover:bg-[#00bbae] cursor-pointer flex items-center justify-center">
-                  <Facebook className="w-4 h-4" />
-                </div>
+                </div> */}
+                {FaShareLink.map((item) => {
+                  const Icon = FaIconsComp[item.icon];
+                  return (
+                    <a
+                      href={item.url}
+                      target="_blank"
+                      key={item._id}
+                      className="w-8 h-8 rounded-md bg-white text-gray-400 transition-colors hover:text-white hover:bg-[#00bbae] cursor-pointer flex items-center justify-center"
+                    >
+                      <FontAwesomeIcon className="w-4 h-4" icon={Icon} />
+                    </a>
+                  );
+                })}
+                <ShareCopyButton />
               </div>
             </div>
-            {/* <p className="text-[#69778a] text-[16px] leading-[24px]">
-              Lorem ipsum dolor sit amet consectetur. Nunc sit morbi turpis sed
-              volutpat egestas. Mollis scelerisque a sem morbi sed donec eu. Dui
-              platea scelerisque ut posuere. Sit posuere aliquet venenatis quam.
-            </p> */}
-            <div className="flex gap-1 items-center">
-              <p className="text-[20px] leading-[30px] text-[#001430] line-through">
-                ₹56.00
+            <div className="flex gap-3">
+              <p className="text-[#69778a] text-[16px] leading-[24px]">
+                Lorem ipsum dolor sit amet consectetur. Dui elit hac massa nulla
+                nibh neque.
+                <span
+                  className="whitespace-nowrap ml-3 text-blue-500"
+                  onClick={slideToDis}
+                >
+                  See more
+                </span>
               </p>
+            </div>
+            <div className="flex gap-3 items-center">
               <p className="text-[30px] leading-[40px] text-pink-600 font-semibold">
                 ₹56.00
               </p>
+              <p className="text-[20px] leading-[30px] text-[#001430] line-through">
+                ₹56.00
+              </p>
+              <p className="text-[22px] leading-[30px] text-red-600">30% OFF</p>
             </div>
             <div className="flex sm:flex-row flex-col w-full gap-3 sm:gap-10">
               <div className="flex flex-col gap-2 W-full">
@@ -477,6 +527,7 @@ const ClothesDetails = () => {
                 <Countdown />
               </div>
             </div> */}
+            <TrustIndicators />
           </div>
         </div>
         {/* realated products */}
@@ -548,7 +599,7 @@ const ClothesDetails = () => {
                         <p className="text-gray-500 line-through text-[16px] leading-[30px] font-semibold">
                           ₹ {toy.price + 100}
                         </p>
-                        <p className="text-red-500 text-[16px] leading-[30px] font-semibold">
+                        <p className="text-red-600 text-[16px] leading-[30px] font-semibold">
                           20% Off
                         </p>
                       </div>
@@ -608,8 +659,9 @@ const ClothesDetails = () => {
           </div>
           <div className="w-full border border-gray-200 rounded-2xl p-6 bg-white">
             {currentMenu === "Product Description" && (
-              <p className="sm:text-[16px] sm:leading-[24px] text-[14px] leading-[21px] font-medium text-black">
-                Lorem ipsum dolor sit amet consectetur. Dui elit hac massa nulla
+              <ExpandableParagraph
+                ref={refDis}
+                text="Lorem ipsum dolor sit amet consectetur. Dui elit hac massa nulla
                 nibh neque. Id risus feugiat turpis amet odio in. Tellus
                 convallis et viverra mattis senectus urna risus velit. Maecenas
                 augue viverra quam euismod convallis id aliquet et. Morbi a
@@ -631,11 +683,11 @@ const ClothesDetails = () => {
                 auctor purus amet. Gravida proin diam fermentum amet diam eget
                 viverra. Netus dui nullam arcu duis amet sed adipiscing nisl
                 nisi. Nulla auctor hac quisque bibendum suspendisse blandit enim
-                pellentesque ornare. Ornare ac scelerisque.
-              </p>
+                pellentesque ornare. Ornare ac scelerisque."
+              />
             )}
             {currentMenu === "Product Specification" && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 space-y-2 lg:space-y-1 w-full">
+              <div className="space-y-2 lg:space-y-1 w-full">
                 <ToyDetailRow
                   label="Items Included in the Package"
                   value="1 Toy"
@@ -652,14 +704,20 @@ const ClothesDetails = () => {
             )}
             {currentMenu === "Shipping & Returns" && (
               <div className="flex flex-col gap-2">
-                <ToyDetailRow
-                  label="Estimated Order Processing Time:"
-                  value="24 to 48 hours"
-                />
-                <ToyDetailRow
-                  label="Estimated Delivery Time: Metros:"
-                  value="3 - 4 days, Rest of India: 5 -10 days"
-                />
+                <p className="flex gap-1 items-center">
+                  <Clock className="w-5 h-5 text-[#00bbae]" />
+                  <ToyDetailRow
+                    label="Estimated Order Processing Time:"
+                    value="24 to 48 hours"
+                  />
+                </p>
+                <p className="flex gap-1 items-center">
+                  <Truck className="w-5 h-5 text-[#00bbae]" />
+                  <ToyDetailRow
+                    label="Estimated Delivery Time: Metros:"
+                    value="3 - 4 days, Rest of India: 5 -10 days"
+                  />
+                </p>
                 <p className="sm:text-[16px] sm:leading-[24px] text-[14px] leading-[21px] font-medium text-black">
                   Customers can return their order within 14 days after an order
                   has been delivered. We have a reverse pick up facility for
@@ -670,7 +728,7 @@ const ClothesDetails = () => {
               </div>
             )}
             {currentMenu === "Wash Care" && (
-              <div className="grid sm:grid-cols-2 grid-cols-1 lg:grid-cols-3 gap-2">
+              <div>
                 <p className="sm:text-[16px] sm:leading-[24px] text-[14px] leading-[21px] font-medium text-black">
                   Machine wash..
                 </p>

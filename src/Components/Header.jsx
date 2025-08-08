@@ -10,15 +10,16 @@ import {
   ShoppingCart,
   User,
   X,
+  Bell,
 } from "lucide-react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  FaFacebook,
-  FaPinterest,
-  FaTwitter,
-  FaEnvelope,
-  FaYoutube,
-  FaWhatsapp,
-} from "react-icons/fa";
+  faInstagram,
+  faXTwitter,
+  faFacebookF,
+  faYoutube,
+  faPinterest,
+} from "@fortawesome/free-brands-svg-icons";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import logo from "../assets/logo.webp";
 import {
@@ -28,6 +29,7 @@ import {
   SearchProducts,
 } from "./AnimatedDropdown";
 import { CartContext } from "../Context/CartContext";
+import Notifications from "./Notifications.jsx";
 import { groupedCombined } from "../assets/helper.js";
 
 const shop_collection = [
@@ -87,47 +89,20 @@ const shop_collection = [
   },
 ];
 
-const footer_social = [
-  {
-    _id: 1,
-    icon: "Facebook",
-    url: "/",
-  },
-  {
-    _id: 2,
-    icon: "Pinterest",
-    url: "/",
-  },
-  {
-    _id: 3,
-    icon: "Twitter",
-    url: "/",
-  },
-  {
-    _id: 4,
-    icon: "Mail",
-    url: "/",
-  },
-  {
-    _id: 5,
-    icon: "Youtube",
-    url: "/",
-  },
-  {
-    _id: 6,
-    icon: "Whatsapp",
-    url: "/",
-  },
-];
-
-const IconComponents = {
-  Facebook: FaFacebook,
-  Pinterest: FaPinterest,
-  Twitter: FaTwitter,
-  Mail: FaEnvelope,
-  Youtube: FaYoutube,
-  Whatsapp: FaWhatsapp,
+const FaIconsComp = {
+  faFacebookF,
+  faInstagram,
+  faXTwitter,
+  faPinterest,
+  faYoutube,
 };
+const FaFooterSocial = [
+  { _id: 1, icon: "faFacebookF", url: "/" },
+  { _id: 2, icon: "faInstagram", url: "/" },
+  { _id: 3, icon: "faXTwitter", url: "/" },
+  { _id: 4, icon: "faPinterest", url: "/" },
+  { _id: 5, icon: "faYoutube", url: "/" },
+];
 
 const FirstHeader = () => {
   return (
@@ -171,6 +146,7 @@ const SecondHeader = ({
   const navigate = useNavigate();
   const [searchProduct, setSearchProduct] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [showNotification, setShowNotification] = useState(false);
 
   const chechkingOut = () => {
     if (cartItems.length === 0) {
@@ -276,6 +252,13 @@ const SecondHeader = ({
               +91 234 786 8907
             </a>
           </div>
+        </div>
+        <div className="px-1">
+          <Bell onClick={() => setShowNotification(!showNotification)} />
+          <Notifications
+            show={showNotification}
+            onClose={() => setShowNotification(false)}
+          />
         </div>
         <div className="flex gap-4 sm:gap-6 items-center">
           <Link to="/wishList" className="relative cursor-pointer">
@@ -600,23 +583,16 @@ const ThirdHeader = ({ isMobileMenuOpen, setIsMobileMenuOpen }) => {
                 </p>
               </Link>
               <div className="flex gap-3 items-center mt-auto">
-                {footer_social.map((item) => {
-                  const Icon = IconComponents[item.icon];
-                  if (!Icon) {
-                    console.warn(
-                      `Icon component for "${item.icon}" not found.`
-                    );
-                    return null;
-                  }
+                {FaFooterSocial.map((item) => {
+                  const Icon = FaIconsComp[item.icon];
                   return (
                     <a
                       href={item.url}
                       target="_blank"
-                      rel="noopener noreferrer"
                       key={item._id}
                       className="w-12 h-12 flex items-center justify-center cursor-pointer transition-colors duration-300 hover:bg-[#00bbae] text-black hover:text-white bg-[#e9ecef] p-1 rounded-full"
                     >
-                      <Icon className="w-5 h-5" />
+                      <FontAwesomeIcon icon={Icon} />
                     </a>
                   );
                 })}
