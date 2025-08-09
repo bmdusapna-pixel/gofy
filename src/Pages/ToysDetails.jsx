@@ -242,7 +242,7 @@ const ClothesDetails = () => {
   return (
     <div className="w-full bg-[#f9f9f9]">
       {openSizeChart && <div className="fixed inset-0 bg-black/50 z-40"></div>}
-      <div className="w-full lg:px-12 px-5 mx-auto py-10 flex flex-col gap-20">
+      <div className="w-full lg:px-12 px-5 mx-auto py-10 flex flex-col gap-5">
         <div className="flex lg:flex-row flex-col gap-5 w-full">
           <div className="lg:w-1/2 w-full flex lg:flex-row flex-col-reverse gap-5">
             <div className="flex lg:flex-col flex-row gap-2 w-full lg:w-24 h-full lg:h-24">
@@ -256,25 +256,27 @@ const ClothesDetails = () => {
                 </div>
               ))}
             </div>
-            <div className="bg-[#e9f9fc] border border-gray-200 rounded-2xl w-full lg:w-4/5">
-              <Swiper
-                onSwiper={(swiper) => {
-                  swiperRef.current = swiper;
-                }}
-                modules={[Autoplay]}
-                autoplay={{ delay: 3000, disableOnInteraction: false }}
-                slidesPerView={1}
-              >
-                {toy.images.map((item, index) => (
-                  <SwiperSlide key={index}>
-                    <img
-                      src={item}
-                      className="w-full object-cover"
-                      alt={`Product image ${index + 1}`}
-                    />
-                  </SwiperSlide>
-                ))}
-              </Swiper>
+            <div className="w-full lg:w-4/5">
+              <div className="bg-[#e9f9fc] border border-gray-200 rounded-2xl">
+                <Swiper
+                  onSwiper={(swiper) => {
+                    swiperRef.current = swiper;
+                  }}
+                  modules={[Autoplay]}
+                  autoplay={{ delay: 3000, disableOnInteraction: false }}
+                  slidesPerView={1}
+                >
+                  {toy.images.map((item, index) => (
+                    <SwiperSlide key={index}>
+                      <img
+                        src={item}
+                        className="w-full object-cover"
+                        alt={`Product image ${index + 1}`}
+                      />
+                    </SwiperSlide>
+                  ))}
+                </Swiper>
+              </div>
             </div>
           </div>
           <div className="lg:w-1/2 w-full flex flex-col gap-3 2xl:gap-8 ">
