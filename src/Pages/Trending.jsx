@@ -18,6 +18,9 @@ import {
 } from "../assets/helper";
 import SuperBanner from "../assets/superBanner.png";
 import PriceRangeSlider from "../Components/PriceRangeSlider.jsx";
+import FilterActiveComponent from "../Components/FilterActiveComponent.jsx";
+import FilterCategory from "../Components/FilterCategory";
+import FilterColorCategory from "../Components/FilterColorCategory.jsx";
 
 const SuperDeals = () => {
   const { category, slug } = useParams();
@@ -25,6 +28,28 @@ const SuperDeals = () => {
   const [productHovered, setProductHoverd] = useState(null);
   const { addToCart, addFavouriteItems } = useContext(CartContext);
   const [openFilter, setOpenFilter] = useState(false);
+  const [hoveredClotheCategory, setHoveredClotheCategory] = useState(null);
+  const [currentClotheCategory, setCurrentClotheCategory] = useState("");
+  const [clotheCategory, setClotheCategory] = useState([]);
+  const [genderCategory, setGenderCategory] = useState([]);
+  const [sleevesCategory, setSleevesCategory] = useState([]);
+  const [ageCategory, setAgeCategory] = useState([]);
+  const [materialCategory, setMaterialCategory] = useState([]);
+  const [colorCategory, setColorCategory] = useState([]);
+  const [sizeCategory, setSizeCategory] = useState([]);
+  const [hoveredAgeCategory, setHoveredAgeCategory] = useState(null);
+  const [currentAgeCategory, setCurrentAgeCategory] = useState([]);
+  const [hoveredMaterialCategory, setHoveredMaterialCategory] = useState(null);
+  const [currentMaterialCategory, setCurrentMaterialCategory] = useState([]);
+  const [hoveredGenderCategory, setHoveredGenderCategory] = useState(null);
+  const [currentGenderCategory, setCurrentGenderCategory] = useState("");
+  const [hoveredSleevesCategory, setHoveredSleevesCategory] = useState(null);
+  const [currentSleevesCategory, setCurrentSleevesCategory] = useState("");
+  const [hoveredColorCategory, setHoveredColorCategory] = useState(null);
+  const [currentColorCategory, setCurrenColorCategory] = useState([]);
+  const [hoveredSizeCategory, setHoveredSizeCategory] = useState(null);
+  const [currentSizeCategory, setCurrentSizeCategory] = useState([]);
+  const [currentPriceCategory, setCurrentPriceCategory] = useState([]);
 
   useEffect(() => {
     let items = [];
@@ -75,6 +100,69 @@ const SuperDeals = () => {
     event.preventDefault();
     addFavouriteItems(product);
   };
+  useEffect(() => {
+    const extractUnique = (items, key, label = key) => {
+      const seen = new Set();
+      return items.reduce((acc, item) => {
+        const value = item[key];
+        if (value && !seen.has(value)) {
+          seen.add(value);
+          acc.push({
+            _id: item._id,
+            title: value,
+            sub_category: item.sub_category,
+          });
+        }
+        return acc;
+      }, []);
+    };
+
+    const extractUniqueSizes = (items) => {
+      const seen = new Set();
+      const sizeArray = [];
+      let idCounter = 1;
+      items.forEach((item) => {
+        if (item.size && Array.isArray(item.size)) {
+          item.size.forEach((sizeValue) => {
+            if (!seen.has(sizeValue)) {
+              seen.add(sizeValue);
+              sizeArray.push({ _id: idCounter++, title: sizeValue });
+            }
+          });
+        }
+      });
+      return sizeArray;
+    };
+
+    const genderOptions = [
+      { _id: 1, title: "Girls", sub_category: "Girls" },
+      { _id: 2, title: "Boys", sub_category: "Boys" },
+    ];
+
+    const sleevesOptions = [
+      { _id: 1, title: "Half Sleeves" },
+      { _id: 2, title: "Full Sleeves" },
+      { _id: 3, title: "Without Sleeves" },
+    ];
+    setClotheCategory(extractUnique(clothe_items, "sub_category"));
+    setGenderCategory(genderOptions);
+    setSleevesCategory(sleevesOptions);
+    setAgeCategory(extractUnique(clothe_items, "age_group"));
+    setMaterialCategory(extractUnique(clothe_items, "material"));
+    setColorCategory(extractUnique(clothe_items, "color"));
+    setSizeCategory(extractUniqueSizes(clothe_items));
+  }, []);
+
+  const clearAllFilters = () => {
+    setCurrentClotheCategory(""); // Add this line to clear clothe category
+    setCurrentAgeCategory([]);
+    setCurrentMaterialCategory([]);
+    setCurrenColorCategory([]);
+    setCurrentSizeCategory([]);
+    setCurrentPriceCategory([]);
+    setCurrentGenderCategory(""); // Add this line
+    setCurrentSleevesCategory(""); // Add this line
+  };
 
   return (
     <div className="w-full bg-[#f9f9f9]">
@@ -85,8 +173,64 @@ const SuperDeals = () => {
           className="object-cover h-full w-full"
         />
       </div>
-      <div className="flex gap-5 w-full">
+      <div className="flex gap-5 w-full lg:px-12 px-5 mx-auto py-10">
         <div className="lg:w-1/5 lg:flex hidden flex-col gap-5">
+          <FilterActiveComponent
+            items={clotheCategory}
+            headingTitle="Category"
+            hoveredItem={hoveredClotheCategory}
+            setHoveredItem={setHoveredClotheCategory}
+            selectedItem={currentClotheCategory}
+            setSelectedItem={setCurrentClotheCategory}
+          />
+          <FilterCategory
+            headingTitile={"Age Group"}
+            items={ageCategory}
+            hoveredItem={hoveredAgeCategory}
+            setHoveredItem={setHoveredAgeCategory}
+            selectedItems={currentAgeCategory}
+            setSelectedItems={setCurrentAgeCategory}
+          />
+          <FilterCategory
+            headingTitile={"Material Used"}
+            items={materialCategory}
+            hoveredItem={hoveredMaterialCategory}
+            setHoveredItem={setHoveredMaterialCategory}
+            selectedItems={currentMaterialCategory}
+            setSelectedItems={setCurrentMaterialCategory}
+          />
+          <FilterCategory
+            headingTitile={"Gender"}
+            items={genderCategory}
+            hoveredItem={hoveredGenderCategory}
+            setHoveredItem={setHoveredGenderCategory}
+            selectedItems={currentGenderCategory}
+            setSelectedItems={setCurrentGenderCategory}
+          />
+          <FilterCategory
+            headingTitile={"Sleeves"}
+            items={sleevesCategory}
+            hoveredItem={hoveredSleevesCategory}
+            setHoveredItem={setHoveredSleevesCategory}
+            selectedItems={currentSleevesCategory}
+            setSelectedItems={setCurrentSleevesCategory}
+          />
+          <FilterColorCategory
+            headingTitile={"Colors"}
+            items={colorCategory}
+            hoveredItem={hoveredColorCategory}
+            setHoveredItem={setHoveredColorCategory}
+            selectedItems={currentColorCategory}
+            setSelectedItems={setCurrenColorCategory}
+          />
+          <FilterCategory
+            headingTitile={"Size"}
+            items={sizeCategory}
+            hoveredItem={hoveredSizeCategory}
+            setHoveredItem={setHoveredSizeCategory}
+            selectedItems={currentSizeCategory}
+            setSelectedItems={setCurrentSizeCategory}
+          />
           <PriceRangeSlider headingTitle="Price" min={0} max={500} />
         </div>
         <div
@@ -100,9 +244,65 @@ const SuperDeals = () => {
           >
             <X className="w-6 h-6 text-[#69778a]" />
           </div>
+          <FilterActiveComponent
+            items={clotheCategory}
+            headingTitle="Category"
+            hoveredItem={hoveredClotheCategory}
+            setHoveredItem={setHoveredClotheCategory}
+            selectedItem={currentClotheCategory}
+            setSelectedItem={setCurrentClotheCategory}
+          />
+          <FilterCategory
+            headingTitile={"Age Group"}
+            items={ageCategory}
+            hoveredItem={hoveredAgeCategory}
+            setHoveredItem={setHoveredAgeCategory}
+            selectedItems={currentAgeCategory}
+            setSelectedItems={setCurrentAgeCategory}
+          />
+          <FilterCategory
+            headingTitile={"Material Used"}
+            items={materialCategory}
+            hoveredItem={hoveredMaterialCategory}
+            setHoveredItem={setHoveredMaterialCategory}
+            selectedItems={currentMaterialCategory}
+            setSelectedItems={setCurrentMaterialCategory}
+          />
+          <FilterCategory
+            headingTitile={"Gender"}
+            items={genderCategory}
+            hoveredItem={hoveredGenderCategory}
+            setHoveredItem={setHoveredGenderCategory}
+            selectedItems={currentGenderCategory}
+            setSelectedItems={setCurrentGenderCategory}
+          />
+          <FilterCategory
+            headingTitile={"Sleeves"}
+            items={sleevesCategory}
+            hoveredItem={hoveredSleevesCategory}
+            setHoveredItem={setHoveredSleevesCategory}
+            selectedItems={currentSleevesCategory}
+            setSelectedItems={setCurrentSleevesCategory}
+          />
+          <FilterColorCategory
+            headingTitile={"Colors"}
+            items={colorCategory}
+            hoveredItem={hoveredColorCategory}
+            setHoveredItem={setHoveredColorCategory}
+            selectedItems={currentColorCategory}
+            setSelectedItems={setCurrenColorCategory}
+          />
+          <FilterCategory
+            headingTitile={"Size"}
+            items={sizeCategory}
+            hoveredItem={hoveredSizeCategory}
+            setHoveredItem={setHoveredSizeCategory}
+            selectedItems={currentSizeCategory}
+            setSelectedItems={setCurrentSizeCategory}
+          />
           <PriceRangeSlider headingTitle="Price" min={0} max={500} />
         </div>
-        <div className="w-full lg:px-12 px-5 mx-auto py-10">
+        <div className="lg:w-4/5 w-full">
           <div className="flex gap-5 w-full">
             <div className="w-full flex flex-col gap-5">
               <div className="flex justify-between w-full items-center bg-white rounded-xl p-4">
@@ -110,7 +310,13 @@ const SuperDeals = () => {
                   Showing all {productItems.length} result
                   {productItems.length !== 1 ? "s" : ""}
                 </p>
-                <div className="flex gap-5 items-center">
+                <div className="flex gap-5 lg:justify-start justify-between lg:w-auto w-full items-center">
+                  <p
+                    onClick={clearAllFilters}
+                    className="text-[18px] leading-[27px] text-black font-semibold transition-colors duration-300 hover:text-[#00bbae] cursor-pointer"
+                  >
+                    Clear All Filters
+                  </p>
                   <select
                     className="border border-[#69778a] rounded-md p-2 text-[#69778a] text-[16px] leading-[24px] font-semibold appearance-none bg-white cursor-pointer"
                     defaultValue=""
@@ -121,6 +327,12 @@ const SuperDeals = () => {
                     <option value="popularity">Popularity</option>
                     <option value="newest">Newest</option>
                   </select>
+                  <div
+                    onClick={() => setOpenFilter((prev) => !prev)}
+                    className="w-10 cursor-pointer hover:bg-gray-100 bg-transparent lg:hidden flex items-center justify-center h-10 border border-[#69778a] p-1 rounded-md"
+                  >
+                    <Menu className="w-6 h-6 text-[#69778a]" />
+                  </div>
                 </div>
               </div>
               <div className="w-full grid lg:grid-cols-4 md:grid-cols-3 grid-cols-1 sm:grid-cols-2 gap-3">
