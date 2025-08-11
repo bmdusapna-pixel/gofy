@@ -188,9 +188,9 @@ const SecondHeader = ({
     <div
       className={`h-auto py-1 transition-all duration-300 w-full shadow-sm bg-white`}
     >
-      <div className="w-full lg:px-12 px-5 mx-auto flex justify-between gap-2 items-center">
+      <div className="w-full lg:px-12 px-5 mx-auto flex justify-between gap-2 items-center h-16">
         <div className="flex items-center gap-2 w-full">
-          <Link to="/" className="w-32">
+          <Link to="/" className="w-32 hidden md:block">
             <img src={logo} alt="" className="w-full" />
           </Link>
           <div className="w-40">
