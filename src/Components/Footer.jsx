@@ -34,13 +34,13 @@ const FaFooterSocial = [
 const footer_links = [
   {
     _id: 1,
-    title: "Clothe Collections",
-    url: "/",
+    title: "Cloth Collections",
+    url: "/products",
   },
   {
     _id: 2,
     title: "Toys Collections",
-    url: "/",
+    url: "/products",
   },
   {
     _id: 3,

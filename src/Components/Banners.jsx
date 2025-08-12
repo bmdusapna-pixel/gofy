@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import {
-  DollarSign,
+  IndianRupee,
   Percent,
   Truck,
   Headphones,
@@ -22,7 +22,7 @@ const banners_first = [
     subtitle: "Back guarantee under 7 days",
     card_bg_color: "#FEF3E2",
     icon_bg_color: "#FB923C",
-    icon: "DollarSign",
+    icon: "IndianRupee",
   },
   {
     _id: 2,
@@ -96,7 +96,7 @@ const banners_second = [
 ];
 
 const iconMap = {
-  DollarSign,
+  IndianRupee,
   Percent,
   Truck,
   Headphones,

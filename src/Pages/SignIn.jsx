@@ -5,8 +5,8 @@ import {
   CheckCircle,
   XCircle,
   MessageSquare,
-  Phone,
 } from "lucide-react";
+import { FaWhatsapp } from "react-icons/fa";
 import LoginBanner from "../assets/login-banner.jpeg";
 import LoginBannerMobile from "../assets/login-banner-mobile.jpeg";
 import { useNavigate, Link } from "react-router-dom";
@@ -181,7 +181,7 @@ const SignIn = () => {
                             : "border-gray-300 bg-white hover:bg-gray-50"
                         }`}
                       >
-                        <MessageSquare
+                        <FaWhatsapp
                           className={`w-6 h-6 ${
                             otpMethod === "whatsapp"
                               ? "text-[#25D366]"
@@ -207,7 +207,7 @@ const SignIn = () => {
                             : "border-gray-300 bg-white hover:bg-gray-50"
                         }`}
                       >
-                        <Phone
+                        <MessageSquare
                           className={`w-6 h-6 ${
                             otpMethod === "sms"
                               ? "text-[#00bbae]"
