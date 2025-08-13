@@ -1,5 +1,5 @@
 import React from "react";
-import childPlay from "../assets/about_01.jpg";
+import childPlay from "../assets/about_01.jpeg";
 
 const AboutContent = () => {
   const aboutSections = [

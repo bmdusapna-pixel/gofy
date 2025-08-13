@@ -109,6 +109,18 @@ body {
   }
 }
 
+@keyframes zoom-in-out {
+
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.05);
+  }
+}
+
 /* @media (min-width: 1024px) and (max-width: 1250px) {
   .custom-grid-5 {
     grid-template-columns: repeat(5, minmax(0, 1fr));

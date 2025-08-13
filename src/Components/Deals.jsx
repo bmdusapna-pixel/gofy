@@ -323,8 +323,17 @@ const Deals = () => {
                               }).map((_, index) => (
                                 <Star
                                   key={index}
-                                  className="w-6 h-6 text-white"
+                                  className="w-4 h-4 text-[#f88e0f]"
                                   fill="#f88e0f"
+                                />
+                              ))}
+                              {Array.from({
+                                length: 5 - Math.floor(trending.rating),
+                              }).map((_, index) => (
+                                <Star
+                                  key={index}
+                                  className="w-4 h-4 text-[#f88e0f]"
+                                  fill="#f8f9fa"
                                 />
                               ))}
                               {/* <p className="text-gray-500 text-base leading-[16px] ml-2">

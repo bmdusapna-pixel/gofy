@@ -5,7 +5,20 @@ const useScrollToSection = () => {
 
   const scrollTo = () => {
     if (ref.current) {
-      ref.current.scrollIntoView({ behavior: "smooth", block: "center" });
+      const element = ref.current;
+      const elementTop = element.getBoundingClientRect().top;
+      const scrollY = window.scrollY || window.pageYOffset;
+
+      const centerY =
+        elementTop +
+        scrollY -
+        window.innerHeight / 2 +
+        element.offsetHeight / 2;
+
+      window.scrollTo({
+        top: centerY - 200,
+        behavior: "smooth",
+      });
     }
   };
 

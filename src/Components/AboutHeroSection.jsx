@@ -13,7 +13,7 @@ const AboutHeroSection = () => {
       {/* Left Image Section */}
       <div className="relative flex justify-center w-full lg:w-1/2">
         <img
-          className="rounded-full object-cover w-full max-w-[350px] md:max-w-[80%] shadow-lg"
+          className="rounded-full object-cover w-full max-w-[350px] md:max-w-[80%] shadow-lg animate-[zoom-in-out_5s_ease-in-out_infinite]"
           src={AboutIng}
           alt="children playing"
         />

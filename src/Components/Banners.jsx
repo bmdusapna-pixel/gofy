@@ -27,7 +27,7 @@ const banners_first = [
   {
     _id: 2,
     title: "Member Discount",
-    subtitle: "On every order over $2000",
+    subtitle: "On every order over ₹2000",
     card_bg_color: "#E0E7FF",
     icon_bg_color: "#3B82F6",
     icon: "Percent",
