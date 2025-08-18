@@ -8,6 +8,8 @@ import FilterColorCategory from "../Components/FilterColorCategory.jsx";
 import FilterActiveComponent from "../Components/FilterActiveComponent.jsx";
 import PriceRangeSlider from "../Components/PriceRangeSlider.jsx";
 
+import SuperBanner from "../assets/superBanner.png";
+
 const SpecificToyProducts = () => {
   const { url } = useParams();
   const [productHovered, setProductHoverd] = useState(null);
@@ -148,6 +150,13 @@ const SpecificToyProducts = () => {
 
   return (
     <div className="w-full bg-[#f9f9f9]">
+      <div className="w-full h-[350px]">
+        <img
+          src={SuperBanner}
+          alt="super banner"
+          className="object-cover h-full w-full"
+        />
+      </div>
       <div className="w-full lg:px-12 px-5 mx-auto py-10 flex flex-col gap-14">
         <div className="flex gap-5 w-full">
           <div className="lg:w-1/5 lg:flex hidden flex-col gap-5">

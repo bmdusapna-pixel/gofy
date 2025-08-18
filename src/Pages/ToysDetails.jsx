@@ -41,6 +41,7 @@ import ExpandableParagraph from "../Components/ExpandableParagraph.jsx";
 import useScrollToSection from "../hooks/useScrollToSection.jsx";
 import ShareCopyButton from "../Components/ShareCopyButton.jsx";
 import TrustIndicators from "../Components/TrustIndicators.jsx";
+import ColorFilter from "../Components/ColorFilter.jsx";
 
 const toysReview = {
   id: "some-id",
@@ -378,6 +379,7 @@ const ClothesDetails = () => {
                 </div>
               </div>
             </div>
+            <ColorFilter />
             <div className="flex gap-3 items-center w-full flex-wrap">
               <div className="flex w-28 h-12 rounded-2xl border border-gray-200 overflow-hidden">
                 <div className="flex flex-col items-center justify-between bg-white w-1/2 border-r border-gray-200">
