@@ -1,5 +1,5 @@
 import React, { createContext, useEffect, useState } from "react";
-
+import { useNavigate } from "react-router-dom";
 const CartContext = createContext();
 
 const CartContextProvider = ({ children }) => {
@@ -9,6 +9,9 @@ const CartContextProvider = ({ children }) => {
   const [isQuickBuyClicked, setIsQuickBuyClicked] = useState(null);
   const [formSubmit, setFormSubmit] = useState(false);
   const [isForgotPasswordOpen, setIsForgotPasswordOpen] = useState(true);
+
+  // New state to manage the bulk order modal
+  const [isBulkOrderModalOpen, setIsBulkOrderModalOpen] = useState(false);
 
   const [totalFavouriteItems, setTotalFavouriteItems] = useState(() => {
     const stored = localStorage.getItem("totalFavouriteItems");
@@ -35,6 +38,13 @@ const CartContextProvider = ({ children }) => {
     return stored ? Number(JSON.parse(stored)) : 0;
   });
 
+  const navigate = useNavigate();
+
+  // Function to handle the bulk order alert, which now opens the modal
+  const handleBulkOrderAlert = () => {
+    setIsBulkOrderModalOpen(true);
+  };
+
   // adding product to the cart
   const addToCart = (product) => {
     const existingItemIndex = cartItems.findIndex(
@@ -43,6 +53,9 @@ const CartContextProvider = ({ children }) => {
     if (existingItemIndex !== -1) {
       const updatedCart = cartItems.map((item, index) => {
         if (index === existingItemIndex) {
+          if (item.quantity + 1 > 5) {
+            handleBulkOrderAlert();
+          }
           return {
             ...item,
             quantity: item.quantity + 1,
@@ -78,6 +91,9 @@ const CartContextProvider = ({ children }) => {
           const quantityDiff = quantity - item.quantity;
           setTotalItems((prev) => prev + quantityDiff);
           setTotalPrice((prev) => prev + product.price * quantityDiff);
+          if (quantity > 5) {
+            handleBulkOrderAlert();
+          }
           return {
             ...item,
             quantity: quantity,
@@ -87,6 +103,9 @@ const CartContextProvider = ({ children }) => {
       });
       setCartItems(updatedCart);
     } else {
+      if (quantity > 5) {
+        handleBulkOrderAlert();
+      }
       const newCartItem = {
         _id: product._id,
         name: product.name,
@@ -125,6 +144,9 @@ const CartContextProvider = ({ children }) => {
   const increaseQuantityFromCart = (product) => {
     const updatedCart = cartItems.map((item) => {
       if (item._id === product._id) {
+        if (item.quantity + 1 > 5) {
+          handleBulkOrderAlert();
+        }
         setTotalItems((prev) => prev + 1);
         setTotalPrice((prev) => prev + product.price);
         return { ...item, quantity: item.quantity + 1 };
@@ -246,6 +268,8 @@ const CartContextProvider = ({ children }) => {
     removeFavouriteItemsWishList,
     isForgotPasswordOpen,
     setIsForgotPasswordOpen,
+    isBulkOrderModalOpen, // new value
+    setIsBulkOrderModalOpen, // new value
   };
 
   return (

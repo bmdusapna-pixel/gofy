@@ -14,6 +14,7 @@ const product_list = [
     price: 499,
     product_type: "Doll",
     url: "cute-baby-doll",
+    stocks: 0,
   },
   {
     _id: 2,
@@ -30,6 +31,7 @@ const product_list = [
     price: 899,
     product_type: "Car",
     url: "remote-control-car",
+    stocks: 10,
   },
   {
     _id: 3,
@@ -46,6 +48,7 @@ const product_list = [
     price: 299,
     product_type: "Puzzle",
     url: "animal-puzzle-set",
+    stocks: 1,
   },
   {
     _id: 4,
@@ -62,6 +65,7 @@ const product_list = [
     price: 199,
     product_type: "Book",
     url: "storybook-for-kids",
+    stocks: 20,
   },
   {
     _id: 5,
@@ -78,6 +82,7 @@ const product_list = [
     price: 349,
     product_type: "Toy Figure",
     url: "action-toy-figure",
+    stocks: 0,
   },
   {
     _id: 6,
@@ -94,6 +99,7 @@ const product_list = [
     price: 799,
     product_type: "Rockers & Rides",
     url: "rocking-horse",
+    stocks: 8,
   },
   {
     _id: 7,
@@ -110,6 +116,7 @@ const product_list = [
     price: 1199,
     product_type: "Outdoor Toy",
     url: "outdoor-swing-set",
+    stocks: 4,
   },
   {
     _id: 8,
@@ -126,6 +133,7 @@ const product_list = [
     price: 399,
     product_type: "Educational Toy",
     url: "alphabet-learning-blocks",
+    stocks: 10,
   },
   {
     _id: 9,
@@ -142,6 +150,7 @@ const product_list = [
     price: 259,
     product_type: "Vehicle Toy",
     url: "mini-toy-truck",
+    stocks: 0,
   },
   {
     _id: 10,
@@ -158,6 +167,7 @@ const product_list = [
     price: 1050,
     product_type: "Indoor Play",
     url: "indoor-ball-pit",
+    stocks: 30,
   },
 ];
 

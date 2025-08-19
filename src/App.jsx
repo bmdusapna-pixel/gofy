@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { Link, Route, Routes } from "react-router-dom";
+import { Link, Route, Routes, useNavigate } from "react-router-dom";
 import Home from "./Pages/Home";
 import Products from "./Pages/Products";
 import ProductDetails from "./Pages/ProductDetails";
@@ -36,6 +36,7 @@ import SpecificClotheProducts from "./Pages/SpecificClotheProducts";
 import WhatsAppContact from "./Components/WhatsAppContact";
 import Trending from "./Pages/Trending";
 import Offers from "./Pages/Offers";
+import BulkOrderModal from "./Components/BulkOrderModal"; // Import the new modal component
 
 const product = {
   name: "Outdoor Swing Set",
@@ -62,9 +63,12 @@ const App = () => {
     openCart,
     setOpenCart,
     totalItems,
+    isBulkOrderModalOpen, // New state from context
+    setIsBulkOrderModalOpen, // New setter from context
   } = useContext(CartContext);
   const [isWhatsAppVisible, setIsWhatsAppVisible] = useState(false);
   const cartRef = useRef(null);
+  const navigate = useNavigate(); // Get the navigate function here
 
   const [isBlinking, setIsBlinking] = useState(false);
 
@@ -90,7 +94,7 @@ const App = () => {
   };
 
   useEffect(() => {
-    if (openCart || isMobileMenuOpen) {
+    if (openCart || isMobileMenuOpen || isBulkOrderModalOpen) {
       document.body.classList.add("overflow-hidden");
     } else {
       document.body.classList.remove("overflow-hidden");
@@ -98,7 +102,7 @@ const App = () => {
     return () => {
       document.body.classList.remove("overflow-hidden");
     };
-  }, [openCart, isMobileMenuOpen]);
+  }, [openCart, isMobileMenuOpen, isBulkOrderModalOpen]); // Add new state to dependencies
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -116,8 +120,19 @@ const App = () => {
     };
   }, [openCart]);
 
+  // Handle the modal's confirm and close actions
+  const handleBulkOrderConfirm = () => {
+    setIsBulkOrderModalOpen(false);
+    navigate("/bulk-order");
+  };
+
+  const handleBulkOrderCancel = () => {
+    setIsBulkOrderModalOpen(false);
+  };
+
   return (
     <div>
+      {/* Existing overlays */}
       {isMobileMenuOpen && (
         <div className="fixed inset-0 bg-black/20 z-10"></div>
       )}
@@ -168,6 +183,15 @@ const App = () => {
           <Route path="/blog-details" element={<BlogDetails />} />
         </Routes>
       </div>
+
+      {/* Render the new modal. Its visibility is now controlled by the context. */}
+      <BulkOrderModal
+        isOpen={isBulkOrderModalOpen}
+        onClose={handleBulkOrderCancel}
+        onConfirm={handleBulkOrderConfirm}
+      />
+
+      {/* The existing code for the floating card, WhatsApp button, and footer */}
       <div
         className="w-72 transition-transform duration-500 ease-in-out rounded-md h-32 fixed left-10 z-40 bottom-5 bg-white"
         style={{
@@ -207,9 +231,6 @@ const App = () => {
           onClick={() => setIsWhatsAppVisible(!isWhatsAppVisible)}
           className={`w-full h-full flex items-center justify-center bg-green-500 rounded-md transition-shadow duration-300 ${blinkingClasses}`}
         >
-          {/* <FaWhatsappSquare
-            className={`w-14 h-14 text-green-500 duration-300 ${blinkingClasses}`}
-          /> */}
           <FaWhatsapp className={`w-12 h-12 text-white duration-300`} />
         </button>
       </div>

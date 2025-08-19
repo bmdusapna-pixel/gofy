@@ -200,7 +200,12 @@ const ProductDetails = () => {
     <div className="w-full bg-[#f9f9f9]">
       <div className="w-full lg:px-12 px-5 mx-auto py-10 flex flex-col gap-5">
         <div className="flex lg:flex-row flex-col gap-10 w-full">
-          <div className="lg:w-1/2 w-full flex lg:flex-row flex-col-reverse gap-5">
+          <div className="lg:w-1/2 w-full flex lg:flex-row flex-col-reverse gap-5 relative">
+            {product.stocks === 0 && (
+              <p className="absolute top-5 right-5 bg-red-400 ribbon-flip pl-5 pr-2 text-white">
+                Sold Out
+              </p>
+            )}
             <div className="flex lg:flex-col flex-row gap-2 w-full lg:w-24 h-full lg:h-24">
               {product.images.map((item, index) => (
                 <div
@@ -250,9 +255,11 @@ const ProductDetails = () => {
                 ({product.review} Customer Reviews)
               </p>
             </div> */}
-            <p className="text-[32px] md:text-[38px] leading-[48px] md:leading-[57px] font-semibold">
-              {product.name}
-            </p>
+            <div>
+              <p className="text-[32px] md:text-[38px] leading-[48px] md:leading-[57px] font-semibold">
+                {product.name}
+              </p>
+            </div>
             <div className="flex gap-2 items-center">
               <p className="text-black font-semibold text-[16px] leading-[24px]">
                 Share:

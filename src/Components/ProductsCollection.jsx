@@ -77,6 +77,11 @@ const ProductsCollection = ({ color }) => {
                     onMouseLeave={() => setHoveredId(null)}
                   >
                     <div className="flex relative">
+                      {product.stocks === 0 && (
+                        <p className="absolute top-0 -left-3 bg-red-400 ribbon pl-2 pr-5 text-white">
+                          Sold Out
+                        </p>
+                      )}
                       {/* <p className="absolute -top-3 -left-2 text-white bg-pink-600 px-1 py-1 rounded-sm text-[14px] leading-[21px] font-semibold">
                         80%
                       </p> */}

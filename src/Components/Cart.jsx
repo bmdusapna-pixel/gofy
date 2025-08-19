@@ -1,7 +1,15 @@
-import React, { useContext } from "react";
+import React, { useState, useContext } from "react";
 import { CartContext } from "../Context/CartContext";
-import { Minus, Plus, X } from "lucide-react";
+import { Minus, Plus, X, Copy, Tag } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+
+const coupon_data = [
+  {
+    _id: 1,
+    description: "Flat 10% Off on Orders Above ₹1999/-",
+    code: "FLAT10",
+  },
+];
 
 const Cart = () => {
   const navigate = useNavigate();
@@ -16,6 +24,19 @@ const Cart = () => {
     totalPrice,
     emptyCart,
   } = useContext(CartContext);
+  const [copiedCode, setCopiedCode] = useState(null);
+
+  const handleCopy = async (code) => {
+    try {
+      await navigator.clipboard.writeText(code);
+      setCopiedCode(code); // Set the code that was just copied
+      setTimeout(() => setCopiedCode(null), 2000); // Clear "Copied!" message after 2 seconds
+    } catch (err) {
+      console.error("Failed to copy text: ", err);
+      // Fallback for older browsers or if permission is denied
+      alert(`Failed to copy "${code}". Please copy manually.`);
+    }
+  };
 
   const navigateToCart = () => {
     setOpenCart(false);
@@ -132,24 +153,106 @@ const Cart = () => {
                 Apply
               </button>
             </div>
-            <div className="w-full flex-col gap-3 flex">
+            <div className="flex flex-col gap-0 md:max-w-[500px]">
+              {" "}
+              {coupon_data.map((coupon) => (
+                <div
+                  className="flex flex-col sm:flex-row items-start sm:items-center justify-between
+                                   px-3 pb-2 rounded-lg transition-all duration-200 ease-in-out
+                                   hover:bg-gray-50 border-b border-gray-100 last:border-b-0"
+                  key={coupon._id}
+                >
+                  <div className="flex items-center gap-3 mb-2 sm:mb-0">
+                    {" "}
+                    <div className="w-5 h-5 flex-shrink-0 text-green-600">
+                      {" "}
+                      <Tag className="w-full h-full" strokeWidth={2} />{" "}
+                    </div>
+                    <p className="text-base leading-relaxed text-gray-700 font-medium">
+                      {" "}
+                      {coupon.description}
+                    </p>
+                  </div>
+
+                  <button
+                    onClick={() => handleCopy(coupon.code)}
+                    className="group relative flex items-center justify-center gap-2
+                                     px-4 py-2 bg-blue-50 text-blue-700 text-sm font-semibold
+                                     rounded-full transition-all duration-200 ease-in-out
+                                     hover:bg-blue-100 hover:shadow-md active:scale-95
+                                     focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50
+                                     min-w-[120px] h-9" // Ensures consistent width/height
+                  >
+                    <span
+                      className={`transition-opacity duration-200 ${
+                        copiedCode === coupon.code
+                          ? "opacity-0 absolute"
+                          : "opacity-100"
+                      }`}
+                    >
+                      {coupon.code}
+                    </span>
+                    <span
+                      className={`absolute transition-opacity duration-200 flex items-center gap-1
+                                            ${
+                                              copiedCode === coupon.code
+                                                ? "opacity-100"
+                                                : "opacity-0"
+                                            }`}
+                    >
+                      Copied!{" "}
+                      <Copy className="w-4 h-4 text-blue-700" strokeWidth={2} />
+                    </span>
+                    {!copiedCode && (
+                      <Copy
+                        className="w-4 h-4 text-blue-700 opacity-80 group-hover:opacity-100 transition-opacity duration-200"
+                        strokeWidth={2}
+                      />
+                    )}
+                  </button>
+                </div>
+              ))}
+            </div>
+            <div className="w-full flex-col gap-3 flex overflow-y-auto max-h-[100px]">
+              {/* Subtotal */}
               <div className="flex justify-between items-center w-full">
-                <p className="text-[20px] leading-[30px] text-[#212121] font-semibold">
+                <p className="text-[18px] leading-[25px] text-[#212121] font-semibold">
                   Subtotal
                 </p>
                 <p className="text-[16px] leading-[24px] text-[#212121]">
                   ₹ {totalPrice}
                 </p>
               </div>
+
+              {/* Discount (static) */}
               <div className="flex justify-between items-center w-full">
-                <p className="text-[20px] leading-[30px] text-black font-semibold">
+                <p className="text-[18px] leading-[25px] text-[#212121] font-semibold">
+                  Discount
+                </p>
+                <p className="text-[16px] leading-[24px] text-[#d9534f]">
+                  - ₹ 100
+                </p>
+              </div>
+              <div className="flex justify-between items-center w-full">
+                <p className="text-[18px] leading-[25px] text-[#212121] font-semibold">
+                  Coupon Discount
+                </p>
+                <p className="text-[16px] leading-[24px] text-[#d9534f]">
+                  - ₹ 10
+                </p>
+              </div>
+
+              {/* Total */}
+              <div className="flex justify-between items-center w-full">
+                <p className="text-[18px] leading-[25px] text-black font-semibold">
                   Total
                 </p>
                 <p className="text-[18px] leading-[27px] text-black font-semibold">
-                  ₹ {totalPrice}
+                  ₹ {totalPrice - 100}
                 </p>
               </div>
             </div>
+
             <button
               type="button"
               onClick={navigateToCart}

@@ -7,23 +7,24 @@ body {
 
 @keyframes marquee {
   0% {
-    transform: translateX(100%);
+    transform: translateX(10%);
   }
 
   100% {
-    transform: translateX(-100%);
+    transform: translateX(-70%);
   }
 }
 
 .marquee {
-  display: inline-block;
+  display: flex;
   white-space: nowrap;
-  animation: marquee 15s linear infinite;
+  animation: marquee 10s linear infinite;
 }
 
 .marquee:hover {
   animation-play-state: paused;
 }
+
 
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
@@ -201,4 +202,12 @@ input[type="file"]::file-selector-button:hover {
 input[type="file"]:focus-within::file-selector-button {
   border-color: #00bbae;
   outline: none;
+}
+
+.ribbon {
+  clip-path: polygon(100% 0%, 85% 50%, 100% 100%, 0 100%, 0% 50%, 0 0);
+}
+
+.ribbon-flip {
+  clip-path: polygon(100% 0, 100% 50%, 100% 100%, 0% 100%, 15% 51%, 0% 0%);
 }

@@ -27,9 +27,14 @@ const RelatedItems = ({ heading }) => {
   };
   return (
     <div className="flex flex-col gap-5 w-full">
-      <p className="text-[32px] md:text-[38px] leading-[48px] md:leading-[57px] text-[#212529] font-bold">
-        {heading ? heading : "Related Products"}
-      </p>
+      <div className="flex items-center justify-between">
+        <p className="text-[30px] md:text-[38px] leading-[48px] md:leading-[57px] text-[#212529] font-bold">
+          {heading ? heading : "Related Products"}
+        </p>
+        <Link to="/products" className="md:text-[18px] text-red-600">
+          See all Products
+        </Link>
+      </div>
       <div className="w-full relative">
         <Swiper
           modules={[Autoplay, Navigation]}

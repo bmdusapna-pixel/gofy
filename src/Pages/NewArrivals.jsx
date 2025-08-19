@@ -164,7 +164,7 @@ const Products = () => {
                       <p className="text-black text-[16px] leading-[24px] transition-colors duration-300 hover:text-[#00bbae] font-semibold">
                         {product.name}
                       </p>
-                      <p className="text-[#00bbae] text-[16px] leading-[24px] font-semibold">
+                      <p className="text-pink-600 text-[16px] leading-[24px] font-semibold">
                         ₹ {product.price}
                       </p>
                     </div>

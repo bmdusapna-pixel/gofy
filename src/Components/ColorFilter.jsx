@@ -17,7 +17,7 @@ export default function ColorFilter() {
         <button
           key={color.value}
           onClick={() => setSelectedColor(color.value)}
-          className={`w-10 h-10 rounded-full border-2 transition-all duration-200 
+          className={`w-6 h-6 rounded-full border-2 transition-all duration-200 
             ${
               selectedColor === color.value
                 ? "border-gray-800 scale-110"

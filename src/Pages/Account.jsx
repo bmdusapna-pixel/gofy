@@ -1,13 +1,16 @@
 import React, { useContext, useState } from "react";
-import { Loader, Map, Package, User, LogOut } from "lucide-react";
+import { Loader, Map, Package, User, LogOut, Coins } from "lucide-react";
 import { CartContext } from "../Context/CartContext";
 import { useNavigate } from "react-router-dom";
+import Orders from "../Components/Orders.jsx";
+import Points from "../Components/Points.jsx";
 
 const IconComponents = {
   User,
   Map,
   Package,
   LogOut,
+  Coins,
 };
 
 const account_items = [
@@ -31,6 +34,12 @@ const account_items = [
   },
   {
     _id: 4,
+    icon: "Coins",
+    link: "points",
+    title: "Gofy Point",
+  },
+  {
+    _id: 5,
     icon: "LogOut",
     link: "logout",
     title: "LogOut",
@@ -46,6 +55,7 @@ const Account = () => {
 
   const [profileData, setProfileData] = useState({
     name: "",
+    email: "",
     phone: "",
   });
 
@@ -134,8 +144,8 @@ const Account = () => {
   };
 
   return (
-    <div className="w-full h-full py-10 bg-[#f8f9fa] font-sans">
-      <div className="max-w-5xl mx-auto lg:px-0 px-5">
+    <div className="w-full h-full py-10 bg-[#f8f9fa]">
+      <div className="max-w-7xl mx-auto px-5">
         <div className="w-full flex gap-10 flex-col lg:flex-row">
           <div className="w-full lg:w-1/3 bg-[#e9ecef] shadow-sm rounded-2xl flex flex-col">
             <div className="flex gap-5 w-full p-3 items-center">
@@ -157,8 +167,6 @@ const Account = () => {
                     onClick={() => {
                       if (item.link === "logout") {
                         handleLogout();
-                      } else if (item.link === "orders") {
-                        navigate("/orders");
                       } else {
                         setActiveItem(item.link);
                       }
@@ -166,15 +174,15 @@ const Account = () => {
                     key={item._id}
                     className={`flex ${
                       item._id === account_items.length
-                        ? "rounded-b-2xl shadow-none mt-24 lg:mt-auto"
+                        ? "rounded-b-2xl shadow-none lg:mt-auto"
                         : "rounded-none"
-                    } px-3 py-1.5 gap-2 w-full items-center transition-colors duration-300 text-black bg-transparent hover:bg-white hover:text-[#00bbae] cursor-pointer
+                    } px-3 py-1.5 gap-2 w-full items-center transition-colors duration-300 text-black bg-transparent hover:bg-white hover:text-[#00bbae] cursor-pointer group
                     ${
                       activeItem === item.link ? "bg-white text-[#00bbae]" : ""
                     }`}
                   >
                     <div className="w-8 h-8 flex items-center justify-center">
-                      <Icon className="w-5 h-5" />
+                      <Icon className="w-5 h-5 text-red-600 group-hover:text-[#00bbae]" />
                     </div>
                     <p className="tex-[16px] font-semibold leading-[24px]">
                       {item.title}
@@ -202,6 +210,20 @@ const Account = () => {
                     className="transition-colors text-[18px] leading-[27px] duration-300 w-full px-4 py-1 border border-gray-200 focus:border-[#00bbae] outline-none rounded-md"
                     placeholder="Name"
                     autoComplete="name"
+                  />
+                </div>
+                <div className="flex flex-col gap-1 w-full">
+                  <p className="text-[16px] leading-[24px] font-semibold text-black">
+                    Email Address
+                  </p>
+                  <input
+                    name="email"
+                    value={profileData.email}
+                    onChange={profileInputChangeHandler}
+                    type="email"
+                    className="transition-colors text-[18px] leading-[27px] duration-300 w-full px-4 py-1 border border-gray-200 focus:border-[#00bbae] outline-none rounded-md"
+                    placeholder="Email"
+                    autoComplete="email"
                   />
                 </div>
                 <div className="flex flex-col gap-1 w-full">
@@ -385,16 +407,8 @@ const Account = () => {
               </form>
             )}
 
-            {activeItem === "orders" && (
-              <div className="flex flex-col gap-5 w-full">
-                <p className="text-[18px] leading-[24px] font-semibold text-black">
-                  My Orders
-                </p>
-                <div className="bg-gray-100 p-4 rounded-md text-gray-700">
-                  <p>No orders found. Start shopping now!</p>
-                </div>
-              </div>
-            )}
+            {activeItem === "orders" && <Orders />}
+            {activeItem === "points" && <Points />}
           </div>
         </div>
       </div>

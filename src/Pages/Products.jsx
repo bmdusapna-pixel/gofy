@@ -164,7 +164,7 @@ const Products = () => {
                       <p className="text-black text-[16px] leading-[24px] transition-colors duration-300 hover:text-[#00bbae] font-semibold">
                         {product.name}
                       </p>
-                      <p className="text-[#00bbae] text-[16px] leading-[24px] font-semibold">
+                      <p className="text-pink-600 text-[16px] leading-[24px] font-semibold">
                         ₹ {product.price}
                       </p>
                     </div>
@@ -238,6 +238,11 @@ const Products = () => {
                   className="w-full cursor-pointer border border-gray-200 rounded-md p-3 shadow-sm hover:shadow-xl bg-white flex flex-col gap-2 lg:gap-3 transition-shadow duration-300 group"
                 >
                   <div className="w-full bg-[#f9f9f9] rounded-md relative h-52">
+                    {product.stocks === 0 && (
+                      <p className="absolute top-0 -left-3 bg-red-400 ribbon pl-2 pr-5 text-white">
+                        Sold Out
+                      </p>
+                    )}
                     <img
                       src={product.images[0]}
                       alt={product.name}
