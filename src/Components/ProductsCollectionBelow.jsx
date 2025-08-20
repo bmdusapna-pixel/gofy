@@ -167,7 +167,7 @@ const ProductsCollectionBelow = ({ color }) => {
                         <p className="text-[24px] leading-[27px] font-semibold text-pink-600">
                           ₹{product.price}
                         </p>
-                        <p className="text-[14px] leading-[24px] line-through font-semibold text-[#212529]">
+                        <p className="text-[14px] leading-[24px] line-through font-semibold text-gray-500">
                           ₹ 2000
                         </p>
                         <p className="text-[16px] leading-[24px] font-semibold text-red-600">

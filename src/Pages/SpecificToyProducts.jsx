@@ -479,7 +479,7 @@ const SpecificToyProducts = () => {
                         <p className="text-pink-600 text-[20px] leading-[30px] font-semibold">
                           ₹ {toy.price}
                         </p>
-                        <p className="text-gray-700 text-[14px] leading-[30px] line-through font-semibold">
+                        <p className="text-gray-500 text-[14px] leading-[30px] line-through font-semibold">
                           ₹ {toy.price + 100}
                         </p>
                         <p className="text-red-600 text-[18px] leading-[30px] font-semibold">

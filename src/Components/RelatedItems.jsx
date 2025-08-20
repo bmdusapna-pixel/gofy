@@ -78,7 +78,7 @@ const RelatedItems = ({ heading }) => {
                   </p>
                   <div className="flex lg:flex-row md:flex-col flex-row w-full items-center">
                     <div className="flex gap-1 items-center">
-                      {Array.from({ length: Math.floor(product.rating) }).map(
+                      {/* {Array.from({ length: Math.floor(product.rating) }).map(
                         (_, index) => (
                           <Star
                             key={index}
@@ -86,7 +86,25 @@ const RelatedItems = ({ heading }) => {
                             fill="#f88e0f"
                           />
                         )
-                      )}
+                      )} */}
+                      {Array.from({
+                        length: Math.floor(product.rating),
+                      }).map((_, index) => (
+                        <Star
+                          key={index}
+                          className="w-4 h-4 text-[#f88e0f]"
+                          fill="#f88e0f"
+                        />
+                      ))}
+                      {Array.from({
+                        length: 5 - Math.floor(product.rating),
+                      }).map((_, index) => (
+                        <Star
+                          key={index}
+                          className="w-4 h-4 text-[#f88e0f]"
+                          fill="#f8f9fa"
+                        />
+                      ))}
                     </div>
                     {/* <p className="text-gray-500 text-base leading-[16px]">
                       ({product.review} Reviews)
@@ -96,7 +114,7 @@ const RelatedItems = ({ heading }) => {
                     <p className="text-pink-600 text-[20px] leading-[30px] font-semibold">
                       ₹ {product.price}
                     </p>
-                    <p className="text-gray-300 line-through text-[16px] leading-[30px] font-semibold">
+                    <p className="text-gray-500 line-through text-[16px] leading-[30px] font-semibold">
                       ₹ {product.price + 100}
                     </p>
                     <p className="text-red-600 text-[16px] leading-[30px] font-semibold">

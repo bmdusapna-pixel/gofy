@@ -78,7 +78,7 @@ const SignIn = () => {
 
     if (loginData.otp === "123456") {
       showMessage("Login successful!", "success");
-      navigate("/");
+      navigate("/account");
     } else {
       showMessage("Invalid OTP. Please try again.", "error");
     }
@@ -102,7 +102,7 @@ const SignIn = () => {
   }, []);
 
   return (
-    <div className="w-full h-full py-10 bg-[#f8f9fa] font-sans">
+    <div className="w-full h-full py-10 bg-[#f8f9fa]">
       <div className="max-w-[1120px] mx-auto px-5">
         <div
           className="w-full flex flex-col md:flex-row rounded-2xl shadow-lg overflow-hidden relative"
@@ -181,13 +181,15 @@ const SignIn = () => {
                             : "border-gray-300 bg-white hover:bg-gray-50"
                         }`}
                       >
-                        <FaWhatsapp
-                          className={`w-6 h-6 ${
-                            otpMethod === "whatsapp"
-                              ? "text-[#25D366]"
-                              : "text-gray-500"
-                          }`}
-                        />
+                        <div className="bg-[#25D366] flex justify-center items-center h-7 w-7 rounded-full">
+                          <FaWhatsapp
+                            className={`w-5 h-5 ${
+                              otpMethod === "whatsapp"
+                                ? "text-white"
+                                : "text-white"
+                            }`}
+                          />
+                        </div>
                         <span
                           className={`text-sm font-semibold ${
                             otpMethod === "whatsapp"
@@ -207,13 +209,13 @@ const SignIn = () => {
                             : "border-gray-300 bg-white hover:bg-gray-50"
                         }`}
                       >
-                        <MessageSquare
-                          className={`w-6 h-6 ${
-                            otpMethod === "sms"
-                              ? "text-[#00bbae]"
-                              : "text-gray-500"
-                          }`}
-                        />
+                        <div className="bg-[#00bbae] flex justify-center items-center h-7 w-7 rounded-full">
+                          <MessageSquare
+                            className={`w-5 h-5 ${
+                              otpMethod === "sms" ? "text-white" : "text-white"
+                            }`}
+                          />
+                        </div>
                         <span
                           className={`text-sm font-semibold ${
                             otpMethod === "sms"

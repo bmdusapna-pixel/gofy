@@ -110,22 +110,16 @@ const FirstHeader = () => {
       <div className="w-full lg:px-12 px-5 py-2 lg:py-0 lg:h-12 mx-auto flex lg:flex-row flex-col gap-2 lg:items-center">
         <div className="overflow-hidden w-full cursor-pointer order-1 lg:order-0">
           <div className="marquee flex gap-[160px]">
-            <p className="text-base font-medium text-white">
-              Free shipping worldwide for all orders over ₹599/-{" "}
-              <Link to="/products" className="underline">
-                Shop Now
-              </Link>{" "}
-              Hello, Welcome to Gofy! Enjoy exclusive deals & free delivery
-              across India.
-            </p>
-            <p className="text-base font-medium text-white">
-              Free shipping worldwide for all orders over ₹599/-{" "}
-              <Link to="/products" className="underline">
-                Shop Now
-              </Link>{" "}
-              Hello, Welcome to Gofy! Enjoy exclusive deals & free delivery
-              across India.
-            </p>
+            {Array.from({ length: 10 }).map(() => (
+              <p className="text-base font-medium text-white">
+                Free shipping worldwide for all orders over ₹599/-{" "}
+                <Link to="/products" className="underline">
+                  Shop Now
+                </Link>{" "}
+                Hello, Welcome to Gofy! Enjoy exclusive deals & free delivery
+                across India.
+              </p>
+            ))}
           </div>
         </div>
       </div>

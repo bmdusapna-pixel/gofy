@@ -194,13 +194,13 @@ const Deals = () => {
                         </p>
                       </div> */}
                       <div className="flex gap-2 items-center">
-                        <p className="text-pink-600 text-[22px] leading-[30px] font-semibold">
+                        <p className="text-pink-600 text-[22px] leading-[30px] font-semibold whitespace-nowrap">
                           ₹ {product.price}
                         </p>
-                        <p className="text-gray-800 text-[16px] line-through leading-[30px] font-semibold">
+                        <p className="text-gray-500 text-[16px] line-through leading-[30px] font-semibold whitespace-nowrap">
                           ₹ {product.price + 100}
                         </p>
-                        <p className="text-red-600 text-[16px] leading-[30px] font-semibold">
+                        <p className="text-red-600 text-[16px] leading-[30px] font-semibold whitespace-nowrap">
                           30% OFF
                         </p>
                       </div>
@@ -345,13 +345,13 @@ const Deals = () => {
                             </p>
                             <div className="flex sm:flex-row flex-col lg:flex-col sm:justify-between justify-start w-full">
                               <div className="flex gap-2 items-center">
-                                <p className="text-pink-600 text-[22px] leading-[30px] font-semibold">
+                                <p className="text-pink-600 text-[22px] leading-[30px] font-semibold whitespace-nowrap">
                                   ₹ {trending.price}
                                 </p>
-                                <p className="text-gray-900 text-[16px] leading-[27px] font-normal line-through">
+                                <p className="text-gray-500 text-[16px] leading-[27px] font-normal line-through whitespace-nowrap">
                                   ₹ {trending.price + 100}
                                 </p>
-                                <p className="text-red-600 text-[18px] leading-[27px] font-normal">
+                                <p className="text-red-600 text-[18px] leading-[27px] font-normal whitespace-nowrap">
                                   30% OFF
                                 </p>
                               </div>

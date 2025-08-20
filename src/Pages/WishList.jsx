@@ -60,7 +60,10 @@ const WishList = () => {
                         {item.name}
                       </div>
                       <div className="flex-[0.2] text-[#001430] font-semibold text-center text-[16px]">
-                        ₹ {item.price}
+                        <span className="text-[14px] text-gray-600 line-through">
+                          ₹ {item.price - 100}
+                        </span>
+                        <br />₹ {item.price}
                       </div>
                       <div
                         onClick={() => addToCart(item)}
@@ -89,9 +92,9 @@ const WishList = () => {
               <img src={EmptyCart} alt="" className="w-full" />
               <Link
                 to="/"
-                className="rounded-xl w-40 text-[18px] leading-[24px] font-semibold text-white transition-colors duration-300 hover:bg-[#f88e0f] cursor-pointer px-3 py-4 bg-[#00bbae] flex gap-3 items-center justify-center"
+                className="rounded-xl w-45 text-[18px] leading-[24px] font-semibold text-white transition-colors duration-300 hover:bg-[#f88e0f] cursor-pointer px-3 py-4 bg-[#00bbae] flex gap-3 items-center justify-center"
               >
-                Shop now
+                Continue Shopping
               </Link>
             </div>
           )}

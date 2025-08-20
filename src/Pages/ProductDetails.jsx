@@ -259,6 +259,12 @@ const ProductDetails = () => {
               <p className="text-[32px] md:text-[38px] leading-[48px] md:leading-[57px] font-semibold">
                 {product.name}
               </p>
+              <p
+                className="text-[14px] text-red-600 animate-blink"
+                style={{ animation: "blink 1s step-end infinite" }}
+              >
+                Only 4 items left!
+              </p>
             </div>
             <div className="flex gap-2 items-center">
               <p className="text-black font-semibold text-[16px] leading-[24px]">
@@ -300,7 +306,7 @@ const ProductDetails = () => {
               <p className="text-[30px] leading-[40px]  text-pink-600 font-semibold">
                 ₹56.00
               </p>
-              <p className="text-[20px] leading-[30px] text-[#001430] line-through">
+              <p className="text-[20px] leading-[30px] text-gray-500 line-through">
                 ₹56.00
               </p>
               <p className="text-[22px] leading-[30px] text-red-600">30% OFF</p>

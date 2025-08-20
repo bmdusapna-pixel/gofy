@@ -214,20 +214,20 @@ const Cart = () => {
               ))}
             </div>
             <div className="w-full flex-col gap-3 flex overflow-y-auto max-h-[100px]">
-              {/* Subtotal */}
+              {/* Total MRP */}
               <div className="flex justify-between items-center w-full">
                 <p className="text-[18px] leading-[25px] text-[#212121] font-semibold">
-                  Subtotal
+                  Total MRP
                 </p>
                 <p className="text-[16px] leading-[24px] text-[#212121]">
                   ₹ {totalPrice}
                 </p>
               </div>
 
-              {/* Discount (static) */}
+              {/* Discount on MRP (static) */}
               <div className="flex justify-between items-center w-full">
                 <p className="text-[18px] leading-[25px] text-[#212121] font-semibold">
-                  Discount
+                  Discount on MRP
                 </p>
                 <p className="text-[16px] leading-[24px] text-[#d9534f]">
                   - ₹ 100
@@ -242,10 +242,10 @@ const Cart = () => {
                 </p>
               </div>
 
-              {/* Total */}
+              {/* Total Amount */}
               <div className="flex justify-between items-center w-full">
                 <p className="text-[18px] leading-[25px] text-black font-semibold">
-                  Total
+                  Total Amount
                 </p>
                 <p className="text-[18px] leading-[27px] text-black font-semibold">
                   ₹ {totalPrice - 100}

@@ -297,8 +297,14 @@ const ClothesDetails = () => {
                 ({clothe.review} Customer Reviews)
               </p>
             </div> */}
-            <p className="text-[32px] md:text-[38px] leading-[48px] md:leading-[57px] font-semibold">
+            <p className="text-[32px] md:text-[38px] leading-[38px] md:leading-[47px] font-semibold">
               {clothe.name}
+            </p>
+            <p
+              className="text-[14px] text-red-600 animate-blink"
+              style={{ animation: "blink 1s step-end infinite" }}
+            >
+              Only 4 items left!
             </p>
             <div className="flex gap-2 items-center">
               <p className="text-black font-semibold text-[16px] leading-[24px]">
@@ -340,7 +346,7 @@ const ClothesDetails = () => {
               <p className="text-[30px] leading-[40px] text-pink-600 font-semibold">
                 ₹56.00
               </p>
-              <p className="text-[20px] leading-[30px] text-[#001430] line-through">
+              <p className="text-[20px] leading-[30px] text-gray-500 line-through">
                 ₹56.00
               </p>
               <p className="text-[22px] leading-[30px] text-red-600">30% OFF</p>
@@ -582,7 +588,7 @@ const ClothesDetails = () => {
                       </p>
                       <div className="flex lg:flex-row md:flex-col flex-row w-full items-center">
                         <div className="flex gap-1 items-center">
-                          {Array.from({ length: Math.floor(toy.rating) }).map(
+                          {/* {Array.from({ length: Math.floor(toy.rating) }).map(
                             (_, index) => (
                               <Star
                                 key={index}
@@ -590,7 +596,25 @@ const ClothesDetails = () => {
                                 fill="#f88e0f"
                               />
                             )
-                          )}
+                          )} */}
+                          {Array.from({
+                            length: Math.floor(toy.rating),
+                          }).map((_, index) => (
+                            <Star
+                              key={index}
+                              className="w-4 h-4 text-[#f88e0f]"
+                              fill="#f88e0f"
+                            />
+                          ))}
+                          {Array.from({
+                            length: 5 - Math.floor(toy.rating),
+                          }).map((_, index) => (
+                            <Star
+                              key={index}
+                              className="w-4 h-4 text-[#f88e0f]"
+                              fill="#f8f9fa"
+                            />
+                          ))}
                         </div>
                         {/* <p className="text-gray-500 text-base leading-[16px]">
                           ({toy.review} Reviews)

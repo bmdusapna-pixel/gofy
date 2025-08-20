@@ -42,6 +42,7 @@ import useScrollToSection from "../hooks/useScrollToSection.jsx";
 import ShareCopyButton from "../Components/ShareCopyButton.jsx";
 import TrustIndicators from "../Components/TrustIndicators.jsx";
 import ColorFilter from "../Components/ColorFilter.jsx";
+import ImageGallery from "../Components/ImageGallery.jsx";
 
 const toysReview = {
   id: "some-id",
@@ -245,40 +246,43 @@ const ClothesDetails = () => {
       {openSizeChart && <div className="fixed inset-0 bg-black/50 z-40"></div>}
       <div className="w-full lg:px-12 px-5 mx-auto py-10 flex flex-col gap-5">
         <div className="flex lg:flex-row flex-col gap-5 w-full">
-          <div className="lg:w-1/2 w-full flex lg:flex-row flex-col-reverse gap-5">
-            <div className="flex lg:flex-col flex-row gap-2 w-full lg:w-24 h-full lg:h-24">
-              {toy.images.map((item, index) => (
-                <div
-                  onClick={() => handleThumbnailClick(index)}
-                  className="w-full cursor-pointer bg-white rounded-2xl border border-gray-200"
-                  key={index}
-                >
-                  <img src={item} className="w-full" alt={item.name} />
-                </div>
-              ))}
-            </div>
-            <div className="w-full lg:w-4/5">
-              <div className="bg-[#e9f9fc] border border-gray-200 rounded-2xl">
-                <Swiper
-                  onSwiper={(swiper) => {
-                    swiperRef.current = swiper;
-                  }}
-                  modules={[Autoplay]}
-                  autoplay={{ delay: 3000, disableOnInteraction: false }}
-                  slidesPerView={1}
-                >
-                  {toy.images.map((item, index) => (
-                    <SwiperSlide key={index}>
-                      <img
-                        src={item}
-                        className="w-full object-cover"
-                        alt={`Product image ${index + 1}`}
-                      />
-                    </SwiperSlide>
-                  ))}
-                </Swiper>
+          <div className="lg:w-1/2 w-full">
+            {/* <div className="w-full flex lg:flex-row flex-col-reverse gap-5">
+              <div className="flex lg:flex-col flex-row gap-2 w-full lg:w-24 h-full lg:h-24">
+                {toy.images.map((item, index) => (
+                  <div
+                    onClick={() => handleThumbnailClick(index)}
+                    className="w-full cursor-pointer bg-white rounded-2xl border border-gray-200"
+                    key={index}
+                  >
+                    <img src={item} className="w-full" alt={item.name} />
+                  </div>
+                ))}
               </div>
-            </div>
+              <div className="w-full lg:w-4/5">
+                <div className="bg-[#e9f9fc] border border-gray-200 rounded-2xl">
+                  <Swiper
+                    onSwiper={(swiper) => {
+                      swiperRef.current = swiper;
+                    }}
+                    modules={[Autoplay]}
+                    autoplay={{ delay: 3000, disableOnInteraction: false }}
+                    slidesPerView={1}
+                  >
+                    {toy.images.map((item, index) => (
+                      <SwiperSlide key={index}>
+                        <img
+                          src={item}
+                          className="w-full object-cover"
+                          alt={`Product image ${index + 1}`}
+                        />
+                      </SwiperSlide>
+                    ))}
+                  </Swiper>
+                </div>
+              </div>
+            </div> */}
+            <ImageGallery images={toy.images} />
           </div>
           <div className="lg:w-1/2 w-full flex flex-col gap-3 2xl:gap-8 ">
             <div className="flex gap-2 items-center">
@@ -303,8 +307,14 @@ const ClothesDetails = () => {
                 ({toy.review} Customer Reviews)
               </p>
             </div> */}
-            <p className="text-[32px] md:text-[38px] leading-[48px] md:leading-[57px] font-semibold">
+            <p className="text-[32px] md:text-[38px] leading-[38px] md:leading-[47px] font-semibold">
               {toy.name}
+            </p>
+            <p
+              className="text-[14px] text-red-600 animate-blink"
+              style={{ animation: "blink 1s step-end infinite" }}
+            >
+              Only 4 items left!
             </p>
             <div className="flex gap-2 items-center">
               <p className="text-black font-semibold text-[16px] leading-[24px]">
@@ -346,7 +356,7 @@ const ClothesDetails = () => {
               <p className="text-[30px] leading-[40px] text-pink-600 font-semibold">
                 ₹56.00
               </p>
-              <p className="text-[20px] leading-[30px] text-[#001430] line-through">
+              <p className="text-[20px] leading-[30px] text-gray-500 line-through">
                 ₹56.00
               </p>
               <p className="text-[22px] leading-[30px] text-red-600">30% OFF</p>
@@ -577,7 +587,7 @@ const ClothesDetails = () => {
                       </p>
                       <div className="flex lg:flex-row md:flex-col flex-row w-full items-center">
                         <div className="flex gap-1 items-center">
-                          {Array.from({ length: Math.floor(toy.rating) }).map(
+                          {/* {Array.from({ length: Math.floor(toy.rating) }).map(
                             (_, index) => (
                               <Star
                                 key={index}
@@ -585,7 +595,25 @@ const ClothesDetails = () => {
                                 fill="#f88e0f"
                               />
                             )
-                          )}
+                          )} */}
+                          {Array.from({
+                            length: Math.floor(toy.rating),
+                          }).map((_, index) => (
+                            <Star
+                              key={index}
+                              className="w-4 h-4 text-[#f88e0f]"
+                              fill="#f88e0f"
+                            />
+                          ))}
+                          {Array.from({
+                            length: 5 - Math.floor(toy.rating),
+                          }).map((_, index) => (
+                            <Star
+                              key={index}
+                              className="w-4 h-4 text-[#f88e0f]"
+                              fill="#f8f9fa"
+                            />
+                          ))}
                         </div>
                         {/* <p className="text-gray-500 text-base leading-[16px]">
                           ({toy.review} Reviews)

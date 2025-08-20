@@ -1,19 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 
 const SearchInput = ({ items }) => {
   const [search, setSearch] = useState("");
   const [filteredItems, setFilteredItems] = useState(items);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const inputRef = useRef(null);
 
   const handleChange = (e) => {
     const inputValue = e.target.value;
     setSearch(inputValue);
-
-    const newFiltered = inputValue
-      ? items.filter((item) =>
-          item.toLowerCase().includes(inputValue.toLowerCase())
-        )
-      : items;
+    const newFiltered = items.filter((item) =>
+      item.toLowerCase().includes(inputValue.toLowerCase())
+    );
     setFilteredItems(newFiltered);
     setShowSuggestions(true);
   };
@@ -25,19 +23,25 @@ const SearchInput = ({ items }) => {
     }
   };
 
-  const handleBlur = () => {
-    setTimeout(() => {
-      setShowSuggestions(false);
-    }, 100);
-  };
-
   const handleItemClick = (item) => {
     setSearch(item);
     setShowSuggestions(false);
   };
 
+  const handleBlur = (e) => {
+    if (
+      e.relatedTarget &&
+      e.relatedTarget.parentNode === inputRef.current.nextSibling
+    ) {
+      return;
+    }
+    setTimeout(() => {
+      setShowSuggestions(false);
+    }, 100);
+  };
+
   return (
-    <div className="relative">
+    <div className="relative" ref={inputRef}>
       <input
         type="text"
         value={search}

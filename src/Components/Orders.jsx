@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import SubmitReview from "./SubmitReview.jsx";
+import Invoice from "./Invoice.jsx"; // Import the new Invoice component
 import {
   ShoppingBag,
   Download,
@@ -12,6 +13,7 @@ import {
 
 const Orders = () => {
   const [selectedOrder, setSelectedOrder] = useState(null);
+  const [showInvoiceModal, setShowInvoiceModal] = useState(false); // New state for controlling invoice modal visibility
 
   const orders = [
     {
@@ -120,6 +122,7 @@ const Orders = () => {
 
   const handleOrderView = (order) => {
     setSelectedOrder(order);
+    setShowInvoiceModal(false); // Close invoice modal if open when viewing new order
   };
 
   const getStatusProgress = (status) => {
@@ -141,6 +144,18 @@ const Orders = () => {
     Processing: "Order Placed",
     Shipped: "Shipped",
     Delivered: "Delivered",
+  };
+
+  const handleReorder = () => {
+    // Logic to handle reordering the product
+    console.log("Reordering:", selectedOrder.details.product);
+    // In a real application, you'd likely redirect to a product page or add to cart
+    alert("Reorder functionality coming soon!");
+  };
+
+  const handleDownloadInvoice = () => {
+    // Set state to true to show the invoice modal
+    setShowInvoiceModal(true);
   };
 
   const renderOrderDetails = () => {
@@ -264,18 +279,18 @@ const Orders = () => {
               </div>
             </div>
             <div className="text-right">
-              <h3 className="font-semibold mb-2">Total</h3>
+              <h3 className="font-semibold mb-2">Total MRP</h3>
             </div>
           </div>
 
           <hr className=" text-gray-200 " />
 
           <div className="flex justify-between items-center">
-            <span className="font-semibold">Subtotal:</span>
+            <span className="font-semibold">Total MRP:</span>
             <span className="font-semibold">₹{subtotal.toFixed(2)}</span>
           </div>
           <div className="flex justify-between items-center text-green-600">
-            <span className="font-semibold">Discount:</span>
+            <span className="font-semibold">Discount on MRP:</span>
             <span className="font-semibold">
               - ₹{selectedOrder.discount.toFixed(2)}
             </span>
@@ -299,12 +314,27 @@ const Orders = () => {
           </div>
           <hr className=" text-gray-200 " />
           <div className="flex justify-between items-center text-lg font-bold">
-            <span>Total:</span>
+            <span>Total Amount:</span>
             <span>₹{selectedOrder.total.toFixed(2)}</span>
           </div>
         </div>
         {isDelivered && (
           <>
+            <hr className="text-gray-200 my-4" />
+            <div className="flex flex-col sm:flex-row gap-4">
+              <button
+                onClick={handleReorder}
+                className="bg-[#00bbae] hover:bg-[#02a499] text-white font-medium py-2 px-4 rounded-lg flex-1 transition-colors flex items-center justify-center gap-2"
+              >
+                <ShoppingBag size={20} /> Order Again
+              </button>
+              <button
+                onClick={handleDownloadInvoice} // This will now show the modal
+                className="border border-gray-300 text-gray-700 hover:bg-gray-100 font-medium py-2 px-4 rounded-lg flex-1 transition-colors flex items-center justify-center gap-2"
+              >
+                <Download size={20} /> Download Invoice
+              </button>
+            </div>
             <hr className="text-gray-200 my-4" />
             <SubmitReview />
           </>
@@ -393,10 +423,10 @@ const Orders = () => {
   );
 
   return (
-    <div className="flex gap-8">
-      <div className="flex-1">
+    <div>
+      <div>
         {
-          <div className="space-y-6">
+          <div>
             {selectedOrder ? (
               <div>
                 <button
@@ -427,6 +457,22 @@ const Orders = () => {
             )}
           </div>
         }
+
+        {/* Invoice Modal - Conditionally rendered */}
+        {showInvoiceModal && selectedOrder && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+            <div className="bg-white rounded-lg p-6 max-w-2xl w-full relative overflow-y-auto max-h-[90vh]">
+              <button
+                onClick={() => setShowInvoiceModal(false)}
+                className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 text-2xl"
+                aria-label="Close invoice"
+              >
+                &times;
+              </button>
+              <Invoice orderDetails={selectedOrder} />
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

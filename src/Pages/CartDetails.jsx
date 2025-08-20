@@ -120,10 +120,10 @@ const CartDetails = () => {
                       {item.name}
                     </p>
                     <p className="text-[16px] leading-[24px] text-[#001430] font-medium w-[80px] text-center">
-                      <span className="text-[14px] text-red-600 line-through">
+                      <span className="text-[14px] text-gray-600 line-through">
                         ₹ {item.price}
-                      </span>{" "}
-                      ₹ {item.price}
+                      </span>
+                      <br />₹ {item.price}
                     </p>
                     <div className="hidden sm:flex items-center justify-center gap-1 px-2 border border-gray-200 rounded-md w-[120px]">
                       <div
@@ -319,23 +319,23 @@ const CartDetails = () => {
           </div>
           <div className="w-full md:p-10 p-5 flex flex-col gap-3 bg-white rounded-2xl">
             <p className="text-[25px] leading-[42px] font-semibold text-black">
-              Cart totals
+              Price Details ({cartItems.length} items)
             </p>
             <div className="w-full flex-col gap-3 flex">
-              {/* Subtotal */}
+              {/* Total MRP */}
               <div className="flex justify-between items-center w-full">
                 <p className="text-[18px] leading-[27px] font-medium text-[#69778a]">
-                  Subtotal
+                  Total MRP
                 </p>
                 <p className="text-[18px] leading-[27px] font-medium text-[#212121]">
                   ₹ {totalPrice}
                 </p>
               </div>
 
-              {/* Discount (static) */}
+              {/* Discount on MRP (static) */}
               <div className="flex justify-between items-center w-full">
                 <p className="text-[18px] leading-[27px] font-medium text-[#69778a]">
-                  Discount
+                  Discount on MRP
                 </p>
                 <p className="text-[18px] leading-[27px] font-medium text-[#d9534f]">
                   - ₹ 100
@@ -370,10 +370,10 @@ const CartDetails = () => {
                 </p>
               </div>
 
-              {/* Total */}
+              {/* Total Amount */}
               <div className="flex justify-between items-center w-full">
                 <p className="text-[20px] leading-[30px] font-semibold text-black">
-                  Total
+                  Total Amount
                 </p>
                 <p className="text-[20px] leading-[30px] font-semibold text-black">
                   ₹ {totalPrice - 100 + (totalPrice >= 500 ? 0 : 50)}

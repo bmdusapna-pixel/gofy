@@ -38,6 +38,14 @@ const BulkOrderModal = ({ isOpen, onClose, onConfirm }) => {
               Cancel
             </button>
           </div>
+          <div className="mt-4">
+            <a
+              href="https://wa.me/1234567890?text=Hello%2C%20I%20would%20like%20to%20chat%20with%20you%20on%20WhatsApp"
+              target="_blank"
+            >
+              Or chat with us on WhatsApp
+            </a>
+          </div>
         </div>
       </div>
     </div>
