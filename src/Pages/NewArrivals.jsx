@@ -213,7 +213,7 @@ const Products = () => {
                   <option value="">Filter</option>
                   <option value="price-asc">Price: Low to High</option>
                   <option value="price-desc">Price: High to Low</option>
-                  <option value="popularity">Popularity</option>
+                  <option value="best-seller">Best Seller</option>
                   <option value="newest">Newest</option>
                 </select>
                 <div

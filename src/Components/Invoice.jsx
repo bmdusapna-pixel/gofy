@@ -26,7 +26,7 @@ const Invoice = ({ orderDetails }) => {
   };
 
   return (
-    <div className="p-6 bg-white rounded-lg shadow-md max-w-2xl mx-auto my-8 font-sans">
+    <div className="p-6 bg-white rounded-lg shadow-md max-w-2xl mx-auto my-8">
       <div className="flex justify-between items-center mb-6 border-b pb-4">
         <h1 className="text-3xl font-bold text-gray-800">Invoice</h1>
         <div className="flex items-center gap-4">

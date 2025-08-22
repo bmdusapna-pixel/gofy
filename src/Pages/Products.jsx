@@ -11,6 +11,10 @@ import {
 import { Link, useParams } from "react-router-dom";
 import { CartContext } from "../Context/CartContext";
 import FilterActiveComponent from "../Components/FilterActiveComponent.jsx";
+import FilterCategory from "../Components/FilterCategory";
+import FilterColorCategory from "../Components/FilterColorCategory.jsx";
+import PriceRangeSlider from "../Components/PriceRangeSlider.jsx";
+import RatingFilter from "../Components/RatingFilter.jsx";
 import {
   clothe_items,
   slugToAgeGroup,
@@ -38,6 +42,79 @@ const Products = () => {
   const [productHovered, setProductHoverd] = useState(null);
   const { addToCart, addFavouriteItems } = useContext(CartContext);
   const [openFilter, setOpenFilter] = useState(false);
+  const [ageCategory, setAgeCategory] = useState([]);
+  const [hoveredAgeCategory, setHoveredAgeCategory] = useState(null);
+  const [currentAgeCategory, setCurrentAgeCategory] = useState([]);
+  const [materialCategory, setMaterialCategory] = useState([]);
+  const [hoveredMaterialCategory, setHoveredMaterialCategory] = useState(null);
+  const [currentMaterialCategory, setCurrentMaterialCategory] = useState([]);
+  const [colorCategory, setColorCategory] = useState([]);
+  const [hoveredColorCategory, setHoveredColorCategory] = useState(null);
+  const [currentColorCategory, setCurrenColorCategory] = useState([]);
+  const [sizeCategory, setSizeCategory] = useState([]);
+  const [hoveredSizeCategory, setHoveredSizeCategory] = useState(null);
+  const [currentSizeCategory, setCurrentSizeCategory] = useState([]);
+  const [hoveredPriceCategory, setHoveredPriceCategory] = useState(null);
+  const [currentPriceCategory, setCurrentPriceCategory] = useState([]);
+  const [genderCategory, setGenderCategory] = useState([]);
+  const [hoveredGenderCategory, setHoveredGenderCategory] = useState(null);
+  const [currentGenderCategory, setCurrentGenderCategory] = useState("");
+  const [filterBrands, setFilterBrands] = useState([]);
+  const [hoveredBrand, setHoveredBrand] = useState("");
+  const [currentBrand, setCurrentBrand] = useState("");
+  const [selectedRating, setSelectedRating] = useState("All");
+
+  useEffect(() => {
+    const extractUnique = (items, key, label = key) => {
+      const seen = new Set();
+      return items.reduce((acc, item) => {
+        const value = item[key];
+        if (value && !seen.has(value)) {
+          seen.add(value);
+          acc.push({
+            _id: item._id,
+            title: value,
+            sub_category: item.sub_category,
+          });
+        }
+        return acc;
+      }, []);
+    };
+
+    const genderOptions = [
+      { _id: 1, title: "Girls", sub_category: "Girls" },
+      { _id: 2, title: "Boys", sub_category: "Boys" },
+    ];
+
+    const Brands = [
+      { _id: 1, title: "H&M", sub_category: "H&M" },
+      { _id: 2, title: "Addiidas", sub_category: "Addiidas" },
+    ];
+
+    const sizeOptions = [
+      { _id: 1, title: "6 inches" },
+      { _id: 2, title: "10 inches" },
+      { _id: 3, title: "12 inches" },
+      { _id: 4, title: "18 inches" },
+      { _id: 5, title: "24 inches" },
+      { _id: 6, title: "Jumbo (36+ inch)" },
+    ];
+
+    setGenderCategory(genderOptions);
+    setFilterBrands(Brands);
+    setAgeCategory(extractUnique(toys_items, "age_group"));
+    setMaterialCategory(extractUnique(toys_items, "material"));
+    setColorCategory(extractUnique(toys_items, "color"));
+    setSizeCategory(sizeOptions);
+  }, []);
+
+  const clearAllFilters = () => {
+    setCurrentAgeCategory([]);
+    setCurrentMaterialCategory([]);
+    setCurrenColorCategory([]);
+    setCurrentSizeCategory([]);
+    setCurrentPriceCategory([]);
+  };
 
   useEffect(() => {
     let items = [];
@@ -137,6 +214,62 @@ const Products = () => {
               selectedItem={""}
               setSelectedItem={""}
             />
+            <FilterCategory
+              openFilter={openFilter}
+              headingTitile={"Brands"}
+              items={filterBrands}
+              hoveredItem={hoveredBrand}
+              setHoveredItem={setHoveredBrand}
+              selectedItems={currentBrand}
+              setSelectedItems={setCurrentBrand}
+            />
+            <FilterCategory
+              headingTitile={"Age Group"}
+              items={ageCategory}
+              hoveredItem={hoveredAgeCategory}
+              setHoveredItem={setHoveredAgeCategory}
+              selectedItems={currentAgeCategory}
+              setSelectedItems={setCurrentAgeCategory}
+            />
+            <FilterCategory
+              headingTitile={"Material Used"}
+              items={materialCategory}
+              hoveredItem={hoveredMaterialCategory}
+              setHoveredItem={setHoveredMaterialCategory}
+              selectedItems={currentMaterialCategory}
+              setSelectedItems={setCurrentMaterialCategory}
+            />
+            <FilterCategory
+              headingTitile={"Gender"}
+              items={genderCategory}
+              hoveredItem={hoveredGenderCategory}
+              setHoveredItem={setHoveredGenderCategory}
+              selectedItems={currentGenderCategory}
+              setSelectedItems={setCurrentGenderCategory}
+            />
+            <FilterColorCategory
+              headingTitile={"Colors"}
+              items={colorCategory}
+              hoveredItem={hoveredColorCategory}
+              setHoveredItem={setHoveredColorCategory}
+              selectedItems={currentColorCategory}
+              setSelectedItems={setCurrenColorCategory}
+            />
+            <FilterCategory
+              headingTitile={"Size"}
+              items={sizeCategory}
+              hoveredItem={hoveredSizeCategory}
+              setHoveredItem={setHoveredSizeCategory}
+              selectedItems={currentSizeCategory}
+              setSelectedItems={setCurrentSizeCategory}
+            />
+            <PriceRangeSlider headingTitle="Price" min={0} max={500} />
+            <RatingFilter
+              headingTitle="Rating"
+              selectedRating={selectedRating}
+              setSelectedRating={setSelectedRating}
+              groupName="rating"
+            />
             <div className="border-gray-200 border bg-white rounded-2xl p-6 flex flex-col gap-5">
               <div className="flex flex-col gap-2 w-full">
                 <p className="text-[18px] leading-[27px] font-semibold text-black">
@@ -192,6 +325,62 @@ const Products = () => {
               selectedItem={""}
               setSelectedItem={""}
             />
+            <FilterCategory
+              openFilter={openFilter}
+              headingTitile={"Brands"}
+              items={filterBrands}
+              hoveredItem={hoveredBrand}
+              setHoveredItem={setHoveredBrand}
+              selectedItems={currentBrand}
+              setSelectedItems={setCurrentBrand}
+            />
+            <FilterCategory
+              headingTitile={"Age Group"}
+              items={ageCategory}
+              hoveredItem={hoveredAgeCategory}
+              setHoveredItem={setHoveredAgeCategory}
+              selectedItems={currentAgeCategory}
+              setSelectedItems={setCurrentAgeCategory}
+            />
+            <FilterCategory
+              headingTitile={"Material Used"}
+              items={materialCategory}
+              hoveredItem={hoveredMaterialCategory}
+              setHoveredItem={setHoveredMaterialCategory}
+              selectedItems={currentMaterialCategory}
+              setSelectedItems={setCurrentMaterialCategory}
+            />
+            <FilterCategory
+              headingTitile={"Gender"}
+              items={genderCategory}
+              hoveredItem={hoveredGenderCategory}
+              setHoveredItem={setHoveredGenderCategory}
+              selectedItems={currentGenderCategory}
+              setSelectedItems={setCurrentGenderCategory}
+            />
+            <FilterColorCategory
+              headingTitile={"Colors"}
+              items={colorCategory}
+              hoveredItem={hoveredColorCategory}
+              setHoveredItem={setHoveredColorCategory}
+              selectedItems={currentColorCategory}
+              setSelectedItems={setCurrenColorCategory}
+            />
+            <FilterCategory
+              headingTitile={"Size"}
+              items={sizeCategory}
+              hoveredItem={hoveredSizeCategory}
+              setHoveredItem={setHoveredSizeCategory}
+              selectedItems={currentSizeCategory}
+              setSelectedItems={setCurrentSizeCategory}
+            />
+            <PriceRangeSlider headingTitle="Price" min={0} max={500} />
+            <RatingFilter
+              headingTitle="Rating"
+              selectedRating={selectedRating}
+              setSelectedRating={setSelectedRating}
+              groupName="rating-mobile"
+            />
           </div>
           <div className="lg:w-4/5 w-full flex flex-col gap-5">
             <div className="flex justify-between w-full items-center bg-white rounded-xl p-4">
@@ -200,6 +389,14 @@ const Products = () => {
                 {productItems.length !== 1 ? "s" : ""}
               </p>
               <div className="flex gap-5 items-center">
+                <div>
+                  <p
+                    onClick={clearAllFilters}
+                    className="text-[18px] leading-[27px] text-black font-semibold transition-colors duration-300 hover:text-[#00bbae] cursor-pointer"
+                  >
+                    Clear All Filters
+                  </p>
+                </div>
                 {/* <div className="flex w-60 justify-between items-center border border-[#69778a] rounded-md p-2">
                   <p className="text-[#69778a] text-[16px] leading-[24px] font-semibold">
                     Default Sorting
@@ -213,7 +410,7 @@ const Products = () => {
                   <option value="">Filter</option>
                   <option value="price-asc">Price: Low to High</option>
                   <option value="price-desc">Price: High to Low</option>
-                  <option value="popularity">Popularity</option>
+                  <option value="best-seller">Best Seller</option>
                   <option value="newest">Newest</option>
                 </select>
                 <div

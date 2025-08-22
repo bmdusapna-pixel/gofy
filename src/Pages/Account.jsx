@@ -1,9 +1,22 @@
 import React, { useContext, useState } from "react";
-import { Loader, Map, Package, User, LogOut, Coins } from "lucide-react";
+import {
+  Loader,
+  Map,
+  Package,
+  User,
+  LogOut,
+  Coins,
+  Undo2,
+  CircleAlert,
+} from "lucide-react";
 import { CartContext } from "../Context/CartContext";
 import { useNavigate } from "react-router-dom";
 import Orders from "../Components/Orders.jsx";
 import Points from "../Components/Points.jsx";
+import Returns from "../Components/Returns.jsx";
+import Issues from "../Components/Issues.jsx";
+import ReferEarn from "../Components/ReferEarn.jsx";
+import Wallet from "../Components/Wallet.jsx";
 
 const IconComponents = {
   User,
@@ -11,6 +24,8 @@ const IconComponents = {
   Package,
   LogOut,
   Coins,
+  Undo2,
+  CircleAlert,
 };
 
 const account_items = [
@@ -40,6 +55,30 @@ const account_items = [
   },
   {
     _id: 5,
+    icon: "Coins",
+    link: "wallet",
+    title: "Wallet",
+  },
+  {
+    _id: 6,
+    icon: "Coins",
+    link: "refer-earn",
+    title: "Refer Earn",
+  },
+  {
+    _id: 7,
+    icon: "Undo2",
+    link: "return",
+    title: "Returns",
+  },
+  {
+    _id: 8,
+    icon: "CircleAlert",
+    link: "issue",
+    title: "Issues",
+  },
+  {
+    _id: 9,
     icon: "LogOut",
     link: "logout",
     title: "LogOut",
@@ -409,6 +448,10 @@ const Account = () => {
 
             {activeItem === "orders" && <Orders />}
             {activeItem === "points" && <Points />}
+            {activeItem === "return" && <Returns />}
+            {activeItem === "issue" && <Issues />}
+            {activeItem === "refer-earn" && <ReferEarn />}
+            {activeItem === "wallet" && <Wallet />}
           </div>
         </div>
       </div>

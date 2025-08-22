@@ -10,7 +10,6 @@ const CartContextProvider = ({ children }) => {
   const [formSubmit, setFormSubmit] = useState(false);
   const [isForgotPasswordOpen, setIsForgotPasswordOpen] = useState(true);
 
-  // New state to manage the bulk order modal
   const [isBulkOrderModalOpen, setIsBulkOrderModalOpen] = useState(false);
 
   const [totalFavouriteItems, setTotalFavouriteItems] = useState(() => {
@@ -38,14 +37,17 @@ const CartContextProvider = ({ children }) => {
     return stored ? Number(JSON.parse(stored)) : 0;
   });
 
+  const [savedForLaterItems, setSavedForLaterItems] = useState(() => {
+    const stored = localStorage.getItem("savedForLaterItems");
+    return stored ? JSON.parse(stored) : [];
+  });
+
   const navigate = useNavigate();
 
-  // Function to handle the bulk order alert, which now opens the modal
   const handleBulkOrderAlert = () => {
     setIsBulkOrderModalOpen(true);
   };
 
-  // adding product to the cart
   const addToCart = (product) => {
     const existingItemIndex = cartItems.findIndex(
       (item) => item._id === product._id
@@ -80,7 +82,6 @@ const CartContextProvider = ({ children }) => {
     setOpenCart(true);
   };
 
-  // adding product to the cart from product details page
   const addingProductToCart = (product, quantity) => {
     const existingItemIndex = cartItems.findIndex(
       (item) => item._id === product._id
@@ -121,7 +122,6 @@ const CartContextProvider = ({ children }) => {
     setOpenCart(true);
   };
 
-  // removing product from cart
   const removeProductFromCart = (product) => {
     const existingItemIndex = cartItems.findIndex(
       (item) => item._id === product._id
@@ -140,7 +140,6 @@ const CartContextProvider = ({ children }) => {
     }
   };
 
-  // incraesing the quantity of the product from cart by 1
   const increaseQuantityFromCart = (product) => {
     const updatedCart = cartItems.map((item) => {
       if (item._id === product._id) {
@@ -156,7 +155,6 @@ const CartContextProvider = ({ children }) => {
     setCartItems(updatedCart);
   };
 
-  // decreasing the quantity of the product from cart by 1
   const decreaseQuantityFromCart = (product) => {
     const existingItemIndex = cartItems.findIndex(
       (item) => item._id === product._id
@@ -185,7 +183,6 @@ const CartContextProvider = ({ children }) => {
     }
   };
 
-  // add favour items to the wish list
   const addFavouriteItems = (product) => {
     const alreadyExists = favouriteItems.some(
       (item) => item._id === product._id
@@ -203,29 +200,51 @@ const CartContextProvider = ({ children }) => {
     setTotalFavouriteItems(updatedFavourites.length);
   };
 
-  // removing favourite items from the wish list
   const removeFavouriteItemsWishList = (product) => {
     const updatedFavourites = favouriteItems.filter(
       (item) => item._id !== product._id
     );
     setFavouriteItems(updatedFavourites);
     setTotalFavouriteItems(updatedFavourites.length);
-    localStorage.setItem("favouriteItems", JSON.stringify(updatedFavourites));
-    localStorage.setItem(
-      "totalFavouriteItems",
-      JSON.stringify(updatedFavourites.length)
-    );
   };
 
-  // removing all product from the cart
   const emptyCart = () => {
     setCartItems([]);
     setTotalItems(0);
     setTotalPrice(0);
     setOpenCart(false);
-    localStorage.removeItem("cartItems");
-    localStorage.removeItem("totalItems");
-    localStorage.removeItem("totalPrice");
+  };
+
+  const saveForLater = (product) => {
+    const isAlreadySaved = savedForLaterItems.some(
+      (item) => item._id === product._id
+    );
+    if (isAlreadySaved) {
+      return;
+    }
+    removeProductFromCart(product);
+    setSavedForLaterItems((prev) => [...prev, product]);
+  };
+
+  const moveToCartFromSaved = (product) => {
+    setSavedForLaterItems((prev) =>
+      prev.filter((item) => item._id !== product._id)
+    );
+
+    // Create a new product object with the 'images' property
+    // so it matches the expected structure of addingProductToCart
+    const productWithImages = {
+      ...product,
+      images: [product.image],
+    };
+
+    addingProductToCart(productWithImages, product.quantity);
+  };
+
+  const removeSavedForLaterItem = (product) => {
+    setSavedForLaterItems((prev) =>
+      prev.filter((item) => item._id !== product._id)
+    );
   };
 
   useEffect(() => {
@@ -237,7 +256,18 @@ const CartContextProvider = ({ children }) => {
       "totalFavouriteItems",
       JSON.stringify(totalFavouriteItems)
     );
-  }, [cartItems, totalItems, totalPrice, favouriteItems, totalFavouriteItems]);
+    localStorage.setItem(
+      "savedForLaterItems",
+      JSON.stringify(savedForLaterItems)
+    );
+  }, [
+    cartItems,
+    totalItems,
+    totalPrice,
+    favouriteItems,
+    totalFavouriteItems,
+    savedForLaterItems,
+  ]);
 
   const contextValues = {
     isMobileMenuOpen,
@@ -268,8 +298,12 @@ const CartContextProvider = ({ children }) => {
     removeFavouriteItemsWishList,
     isForgotPasswordOpen,
     setIsForgotPasswordOpen,
-    isBulkOrderModalOpen, // new value
-    setIsBulkOrderModalOpen, // new value
+    isBulkOrderModalOpen,
+    setIsBulkOrderModalOpen,
+    savedForLaterItems,
+    saveForLater,
+    moveToCartFromSaved,
+    removeSavedForLaterItem,
   };
 
   return (

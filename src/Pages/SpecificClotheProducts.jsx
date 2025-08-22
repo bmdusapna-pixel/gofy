@@ -7,6 +7,7 @@ import FilterCategory from "../Components/FilterCategory";
 import FilterColorCategory from "../Components/FilterColorCategory.jsx";
 import FilterActiveComponent from "../Components/FilterActiveComponent.jsx";
 import PriceRangeSlider from "../Components/PriceRangeSlider.jsx";
+import RatingFilter from "../Components/RatingFilter.jsx";
 
 import SuperBanner from "../assets/superBanner.png";
 
@@ -38,6 +39,9 @@ const SpecificClotheProducts = () => {
   const [hoveredSleevesCategory, setHoveredSleevesCategory] = useState(null);
   const [currentSleevesCategory, setCurrentSleevesCategory] = useState("");
   const [openFilter, setOpenFilter] = useState(false);
+  const [filterBrands, setFilterBrands] = useState([]);
+  const [hoveredBrand, setHoveredBrand] = useState("");
+  const [currentBrand, setCurrentBrand] = useState("");
 
   const clotheList = clothe_items;
 
@@ -106,6 +110,10 @@ const SpecificClotheProducts = () => {
       { _id: 1, title: "Girls", sub_category: "Girls" },
       { _id: 2, title: "Boys", sub_category: "Boys" },
     ];
+    const Brands = [
+      { _id: 1, title: "H&M", sub_category: "H&M" },
+      { _id: 2, title: "Addiidas", sub_category: "Addiidas" },
+    ];
 
     const sleevesOptions = [
       { _id: 1, title: "Half Sleeves" },
@@ -114,13 +122,14 @@ const SpecificClotheProducts = () => {
     ];
     setClotheCategory(extractUnique(clothe_items, "sub_category"));
     setGenderCategory(genderOptions);
+    setFilterBrands(Brands);
     setSleevesCategory(sleevesOptions);
     setAgeCategory(extractUnique(clothe_items, "age_group"));
     setMaterialCategory(extractUnique(clothe_items, "material"));
     setColorCategory(extractUnique(clothe_items, "color"));
     setSizeCategory(extractUniqueSizes(clothe_items));
   }, []);
-
+  const [selectedRating, setSelectedRating] = useState("All");
   const filteredClothes = useMemo(() => {
     return clotheList.filter((item) => {
       const categoryMatch =
@@ -222,6 +231,15 @@ const SpecificClotheProducts = () => {
               setSelectedItem={setCurrentClotheCategory}
             />
             <FilterCategory
+              openFilter={openFilter}
+              headingTitile={"Brands"}
+              items={filterBrands}
+              hoveredItem={hoveredBrand}
+              setHoveredItem={setHoveredBrand}
+              selectedItems={currentBrand}
+              setSelectedItems={setCurrentBrand}
+            />
+            <FilterCategory
               headingTitile={"Age Group"}
               items={ageCategory}
               hoveredItem={hoveredAgeCategory}
@@ -270,6 +288,12 @@ const SpecificClotheProducts = () => {
               setSelectedItems={setCurrentSizeCategory}
             />
             <PriceRangeSlider headingTitle="Price" min={0} max={500} />
+            <RatingFilter
+              headingTitle="Rating"
+              selectedRating={selectedRating}
+              setSelectedRating={setSelectedRating}
+              groupName="rating"
+            />
           </div>
           <div
             className={`fixed left-0 p-5 overflow-y-auto top-0 sm:w-96 w-[80%] bg-white flex flex-col gap-2 lg:hidden h-full z-50 transition-transform duration-300 ${
@@ -333,6 +357,15 @@ const SpecificClotheProducts = () => {
             />
             <FilterCategory
               openFilter={openFilter}
+              headingTitile={"Brands"}
+              items={filterBrands}
+              hoveredItem={hoveredBrand}
+              setHoveredItem={setHoveredBrand}
+              selectedItems={currentBrand}
+              setSelectedItems={setCurrentBrand}
+            />
+            <FilterCategory
+              openFilter={openFilter}
               headingTitile={"Age Group"}
               items={ageCategory}
               hoveredItem={hoveredAgeCategory}
@@ -386,6 +419,12 @@ const SpecificClotheProducts = () => {
               setSelectedItems={setCurrentSizeCategory}
             />
             <PriceRangeSlider headingTitle="Price" min={0} max={500} />
+            <RatingFilter
+              headingTitle="Rating"
+              selectedRating={selectedRating}
+              setSelectedRating={setSelectedRating}
+              groupName="ratingDesktop"
+            />
           </div>
           <div className="lg:w-4/5 w-full flex flex-col gap-5">
             <div className="flex justify-between w-full items-center bg-white rounded-xl p-4">
@@ -408,7 +447,7 @@ const SpecificClotheProducts = () => {
                   <option value="">Filter</option>
                   <option value="price-asc">Price: Low to High</option>
                   <option value="price-desc">Price: High to Low</option>
-                  <option value="popularity">Popularity</option>
+                  <option value="best-seller">Best Seller</option>
                   <option value="newest">Newest</option>
                 </select>
                 <div

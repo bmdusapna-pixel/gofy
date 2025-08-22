@@ -1,7 +1,8 @@
 import React, { useContext, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Loader, X } from "lucide-react";
+import { Loader, X, MapPin, Truck } from "lucide-react";
 import { CartContext } from "../Context/CartContext";
+import RelatedItems from "../Components/RelatedItems";
 
 const Checkout = () => {
   const [openCoupon, setOpenCoupon] = useState(false);
@@ -23,6 +24,9 @@ const Checkout = () => {
   // Calculation for points earned (e.g., 1 point per $1 or a custom rate)
   const pointsToEarn = Math.floor(totalPrice / 100);
   const pointsDiscount = 50; // Example fixed discount for using points
+  const [isGift, setIsGift] = useState(false);
+  const [giftNote, setGiftNote] = useState("");
+  const [selectedMessage, setSelectedMessage] = useState("");
 
   const [addressDetails, setAddressDetails] = useState({
     name: "",
@@ -480,6 +484,52 @@ const Checkout = () => {
               Offers and promotions will be applied at the next step.
             </p>
 
+            <div className="space-y-4">
+              <h2 className="text-[20px] leading-[30px] font-semibold text-black">
+                Choose Delivery Option
+              </h2>
+
+              {/* Store Pickup */}
+              <label className="flex items-start gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="delivery"
+                  className="mt-1 h-5 w-5 text-blue-500 border-gray-400 focus:ring-blue-500"
+                />
+                <div>
+                  <p className="text-gray-700">
+                    Store-pickup & Earn Gofy Points
+                  </p>
+                  <p className="flex items-center text-black font-semibold">
+                    <MapPin className="text-red-500 w-5 h-5 mr-1" />
+                    Gofy Store Model Town, Delhi
+                  </p>
+                </div>
+              </label>
+
+              {/* 30 Min Delivery */}
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="delivery"
+                  className="h-5 w-5 text-blue-500 border-gray-400 focus:ring-blue-500"
+                />
+                <span className="flex items-center text-gray-700">
+                  Get under 30 minutes
+                  <Truck className="w-5 h-5 text-blue-500 ml-1" />
+                </span>
+              </label>
+
+              {/* Normal Delivery */}
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="delivery"
+                  className="h-5 w-5 text-blue-500 border-gray-400 focus:ring-blue-500"
+                />
+                <span className="text-gray-700">Normal Delivery 2–3 days</span>
+              </label>
+            </div>
             {/* Added Gofy Points Section */}
             <div className=" flex flex-col gap-3">
               <p className="text-[20px] leading-[30px] font-semibold text-black">
@@ -502,6 +552,38 @@ const Checkout = () => {
                   discount
                 </label>
               </div>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={isGift}
+                  onChange={(e) => setIsGift(e.target.checked)}
+                  className="h-5 w-5 text-blue-500 border-gray-400 rounded focus:ring-blue-500"
+                />
+                <span className="text-gray-700">Add Gift Packaging</span>
+              </label>
+
+              {/* Extra section if checked */}
+              {isGift && (
+                <div className="p-3 border border-gray-300 rounded-lg space-y-2 bg-gray-50">
+                  <p className="text-sm text-gray-600">
+                    🎁 Your order will be gift wrapped.
+                  </p>
+                  <input
+                    type="text"
+                    value={selectedMessage}
+                    className="w-full border border-gray-300 rounded-lg p-2 text-sm focus:ring-blue-500 focus:border-blue-500"
+                    onClick={(e) => setSelectedMessage(e.target.value)}
+                    placeholder="Gift message"
+                  />
+                  <textarea
+                    value={giftNote}
+                    onChange={(e) => setGiftNote(e.target.value)}
+                    placeholder="Add a personal note (optional)"
+                    className="w-full border border-gray-300 rounded-lg p-2 text-sm focus:ring-blue-500 focus:border-blue-500"
+                    rows={3}
+                  />
+                </div>
+              )}
             </div>
 
             <button
@@ -515,6 +597,15 @@ const Checkout = () => {
               )}
             </button>
           </div>
+        </div>
+      </div>
+      <div className="w-full lg:px-12 px-5 mx-auto">
+        <div className="mt-12">
+          <RelatedItems
+            heading={
+              cartItems.length > 0 ? "You might also like" : "Specially for You"
+            }
+          />
         </div>
       </div>
     </div>

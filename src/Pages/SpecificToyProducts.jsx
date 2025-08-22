@@ -7,6 +7,7 @@ import FilterCategory from "../Components/FilterCategory";
 import FilterColorCategory from "../Components/FilterColorCategory.jsx";
 import FilterActiveComponent from "../Components/FilterActiveComponent.jsx";
 import PriceRangeSlider from "../Components/PriceRangeSlider.jsx";
+import RatingFilter from "../Components/RatingFilter.jsx";
 
 import SuperBanner from "../assets/superBanner.png";
 
@@ -35,6 +36,10 @@ const SpecificToyProducts = () => {
   const [hoveredGenderCategory, setHoveredGenderCategory] = useState(null);
   const [currentGenderCategory, setCurrentGenderCategory] = useState("");
   const [openFilter, setOpenFilter] = useState(false);
+  const [filterBrands, setFilterBrands] = useState([]);
+  const [hoveredBrand, setHoveredBrand] = useState("");
+  const [currentBrand, setCurrentBrand] = useState("");
+  const [selectedRating, setSelectedRating] = useState("All");
 
   const toyList = toys_items;
 
@@ -85,6 +90,11 @@ const SpecificToyProducts = () => {
       { _id: 2, title: "Boys", sub_category: "Boys" },
     ];
 
+    const Brands = [
+      { _id: 1, title: "H&M", sub_category: "H&M" },
+      { _id: 2, title: "Addiidas", sub_category: "Addiidas" },
+    ];
+
     const sizeOptions = [
       { _id: 1, title: "6 inches" },
       { _id: 2, title: "10 inches" },
@@ -96,6 +106,7 @@ const SpecificToyProducts = () => {
 
     setToyCategory(extractUnique(toys_items, "sub_category"));
     setGenderCategory(genderOptions);
+    setFilterBrands(Brands);
     setAgeCategory(extractUnique(toys_items, "age_group"));
     setMaterialCategory(extractUnique(toys_items, "material"));
     setColorCategory(extractUnique(toys_items, "color"));
@@ -208,6 +219,15 @@ const SpecificToyProducts = () => {
               setSelectedItem={setCurrentToyCategory}
             />
             <FilterCategory
+              openFilter={openFilter}
+              headingTitile={"Brands"}
+              items={filterBrands}
+              hoveredItem={hoveredBrand}
+              setHoveredItem={setHoveredBrand}
+              selectedItems={currentBrand}
+              setSelectedItems={setCurrentBrand}
+            />
+            <FilterCategory
               headingTitile={"Age Group"}
               items={ageCategory}
               hoveredItem={hoveredAgeCategory}
@@ -256,6 +276,12 @@ const SpecificToyProducts = () => {
               setSelectedItems={setCurrentPriceCategory}
             /> */}
             <PriceRangeSlider headingTitle="Price" min={0} max={500} />
+            <RatingFilter
+              headingTitle="Rating"
+              selectedRating={selectedRating}
+              setSelectedRating={setSelectedRating}
+              groupName="rating"
+            />
           </div>
           <div
             className={`fixed left-0 p-5 overflow-y-auto top-0 sm:w-96 w-[80%] bg-white flex flex-col gap-2 lg:hidden h-full z-50 transition-transform duration-300 ${
@@ -317,6 +343,15 @@ const SpecificToyProducts = () => {
             />
             <FilterCategory
               openFilter={openFilter}
+              headingTitile={"Brands"}
+              items={filterBrands}
+              hoveredItem={hoveredBrand}
+              setHoveredItem={setHoveredBrand}
+              selectedItems={currentBrand}
+              setSelectedItems={setCurrentBrand}
+            />
+            <FilterCategory
+              openFilter={openFilter}
               headingTitile={"Age Group"}
               items={ageCategory}
               hoveredItem={hoveredAgeCategory}
@@ -370,6 +405,12 @@ const SpecificToyProducts = () => {
               setSelectedItems={setCurrentPriceCategory}
             /> */}
             <PriceRangeSlider headingTitle="Price" min={0} max={500} />
+            <RatingFilter
+              headingTitle="Rating"
+              selectedRating={selectedRating}
+              setSelectedRating={setSelectedRating}
+              groupName="rating-mobile"
+            />
           </div>
           <div className="lg:w-4/5 w-full flex flex-col gap-5">
             <div className="flex justify-between w-full items-center bg-white rounded-xl p-4">
@@ -392,7 +433,7 @@ const SpecificToyProducts = () => {
                   <option value="">Filter</option>
                   <option value="price-asc">Price: Low to High</option>
                   <option value="price-desc">Price: High to Low</option>
-                  <option value="popularity">Popularity</option>
+                  <option value="best-seller">Best Seller</option>
                   <option value="newest">Newest</option>
                 </select>
                 <div

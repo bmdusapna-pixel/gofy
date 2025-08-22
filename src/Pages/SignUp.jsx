@@ -20,6 +20,7 @@ const SignUp = () => {
     name: "",
     phone: "",
     otp: "",
+    referralCode: "",
   });
 
   const [otpMethod, setOtpMethod] = useState("");
@@ -193,30 +194,49 @@ const SignUp = () => {
                     />
                   </div>
 
-                  <div className="flex flex-col gap-1 w-full">
-                    <div className="flex gap-2 items-center">
-                      <p className="text-[16px] leading-[24px] font-semibold text-black">
-                        Phone Number
-                      </p>
-                      <Star
-                        className="w-2 h-2 text-[#dc3545] self-start translate-y-2"
-                        fill="#dc3545"
-                      />
+                  <div className="flex flex-col md:flex-row gap-2 md:gap-4 w-full">
+                    <div className="flex flex-col gap-1 w-full md:w-1/2">
+                      <div className="flex gap-2 items-center">
+                        <p className="text-[16px] leading-[24px] font-semibold text-black">
+                          Phone Number
+                        </p>
+                        <Star
+                          className="w-2 h-2 text-[#dc3545] self-start translate-y-2"
+                          fill="#dc3545"
+                        />
+                      </div>
+                      <div className="flex">
+                        <span className="flex items-center bg-white border border-gray-200 border-r-0 rounded-l-md px-4 text-[18px] leading-[27px] font-medium text-black">
+                          +91
+                        </span>
+                        <input
+                          required
+                          onChange={inputChangeHandler}
+                          value={signUpData.phone}
+                          name="phone"
+                          type="tel"
+                          maxLength="10"
+                          className="flex-1 transition-colors text-[18px] leading-[27px] duration-300 w-full px-4 py-2 border border-gray-200 outline-none rounded-r-md bg-white"
+                          placeholder="10-digit number"
+                          autoComplete="tel"
+                        />
+                      </div>
                     </div>
-                    <div className="flex">
-                      <span className="flex items-center bg-white border border-gray-200 border-r-0 rounded-l-md px-4 text-[18px] leading-[27px] font-medium text-black">
-                        +91
-                      </span>
+
+                    <div className="flex flex-col gap-1 w-full md:w-1/2">
+                      <p className="text-[16px] leading-[24px] font-semibold text-black">
+                        Referral Code
+                        <span className="text-sm font-normal text-gray-500 ml-1">
+                          (Optional)
+                        </span>
+                      </p>
                       <input
-                        required
                         onChange={inputChangeHandler}
-                        value={signUpData.phone}
-                        name="phone"
-                        type="tel"
-                        maxLength="10"
-                        className="flex-1 transition-colors text-[18px] leading-[27px] duration-300 w-full px-4 py-2 border border-gray-200 outline-none rounded-r-md bg-white"
-                        placeholder="10-digit number"
-                        autoComplete="tel"
+                        value={signUpData.referralCode}
+                        name="referralCode"
+                        type="text"
+                        className="transition-colors duration-300 text-[18px] leading-[27px] w-full px-4 py-2 border border-gray-200  outline-none rounded-md bg-white"
+                        placeholder="Enter a referral code"
                       />
                     </div>
                   </div>

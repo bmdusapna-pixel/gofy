@@ -1,19 +1,15 @@
+// Orders.jsx
 import React, { useState } from "react";
 import SubmitReview from "./SubmitReview.jsx";
-import Invoice from "./Invoice.jsx"; // Import the new Invoice component
-import {
-  ShoppingBag,
-  Download,
-  MapPin,
-  User,
-  LogOut,
-  Eye,
-  ArrowLeft,
-} from "lucide-react";
+import Invoice from "./Invoice.jsx";
+import IssueForm from "./IssueForm.jsx";
+import { ShoppingBag, Download, LogOut, Eye, ArrowLeft } from "lucide-react";
 
 const Orders = () => {
   const [selectedOrder, setSelectedOrder] = useState(null);
-  const [showInvoiceModal, setShowInvoiceModal] = useState(false); // New state for controlling invoice modal visibility
+  const [showInvoiceModal, setShowInvoiceModal] = useState(false);
+  const [showIssueModal, setShowIssueModal] = useState(false);
+  const [isIssue, setIsissue] = useState(false);
 
   const orders = [
     {
@@ -32,6 +28,10 @@ const Orders = () => {
         warranty: "6-Month Warranty - (₹249.00)",
         paymentMethod: "UPI",
       },
+      // Added dummy dates for each status
+      statusDates: {
+        Processing: "19 Aug",
+      },
     },
     {
       id: 1002,
@@ -48,6 +48,11 @@ const Orders = () => {
         accessories: "Storage Box - (₹149.00)",
         warranty: "1-Year Warranty - (₹199.00)",
         paymentMethod: "Cash on Delivery",
+      },
+      // Added dummy dates for each status
+      statusDates: {
+        Processing: "18 Aug",
+        Shipped: "19 Aug",
       },
     },
     {
@@ -66,6 +71,12 @@ const Orders = () => {
         warranty: "2-Year Warranty - (₹349.00)",
         paymentMethod: "NetBanking",
       },
+      // Added dummy dates for each status
+      statusDates: {
+        Processing: "17 Aug",
+        Shipped: "18 Aug",
+        Delivered: "20 Aug",
+      },
     },
     {
       id: 1004,
@@ -82,6 +93,10 @@ const Orders = () => {
         accessories: "Extra Tennis Ball - (₹99.00)",
         warranty: "6-Month Warranty - (₹199.00)",
         paymentMethod: "Credit Card",
+      },
+      // Added dummy dates for each status
+      statusDates: {
+        Processing: "16 Aug",
       },
     },
     {
@@ -122,7 +137,8 @@ const Orders = () => {
 
   const handleOrderView = (order) => {
     setSelectedOrder(order);
-    setShowInvoiceModal(false); // Close invoice modal if open when viewing new order
+    setShowInvoiceModal(false);
+    setShowIssueModal(false);
   };
 
   const getStatusProgress = (status) => {
@@ -147,14 +163,11 @@ const Orders = () => {
   };
 
   const handleReorder = () => {
-    // Logic to handle reordering the product
     console.log("Reordering:", selectedOrder.details.product);
-    // In a real application, you'd likely redirect to a product page or add to cart
     alert("Reorder functionality coming soon!");
   };
 
   const handleDownloadInvoice = () => {
-    // Set state to true to show the invoice modal
     setShowInvoiceModal(true);
   };
 
@@ -183,7 +196,6 @@ const Orders = () => {
       statusColor = "green";
     }
 
-    // Calculate subtotal
     const subtotal =
       selectedOrder.total -
       selectedOrder.deliveryCharges +
@@ -209,14 +221,18 @@ const Orders = () => {
 
         <div className="mb-8">
           <h2 className="text-lg font-semibold mb-4">Shipment Status</h2>
-          {isCancelled ? (
-            <div className="bg-red-100 text-red-700 p-3 rounded-lg text-sm font-medium flex items-center gap-2">
-              <LogOut size={20} /> This order has been cancelled.
-            </div>
-          ) : isRefunded ? (
-            <div className="bg-teal-100 text-teal-700 p-3 rounded-lg text-sm font-medium flex items-center gap-2">
-              <ShoppingBag size={20} /> This order has been successfully
-              refunded.
+          {isCancelled || isRefunded ? (
+            <div
+              className={`p-3 rounded-lg text-sm font-medium flex items-center gap-2 ${
+                isCancelled
+                  ? "bg-red-100 text-red-700"
+                  : "bg-teal-100 text-teal-700"
+              }`}
+            >
+              {isCancelled ? <LogOut size={20} /> : <ShoppingBag size={20} />}
+              {isCancelled
+                ? "This order has been cancelled."
+                : "This order has been successfully refunded."}
             </div>
           ) : (
             <>
@@ -230,13 +246,19 @@ const Orders = () => {
                 {Object.keys(statusSteps).map((step, index) => (
                   <div
                     key={index}
-                    className={`text-center ${
+                    className={`flex flex-col items-center ${
                       selectedOrder.status === step
                         ? "text-teal-600"
                         : "text-gray-500"
                     }`}
                   >
-                    {statusSteps[step]}
+                    <span>{statusSteps[step]}</span>
+                    {selectedOrder.statusDates &&
+                      selectedOrder.statusDates[step] && (
+                        <span className="text-xs text-gray-400">
+                          {selectedOrder.statusDates[step]}
+                        </span>
+                      )}
                   </div>
                 ))}
               </div>
@@ -329,10 +351,30 @@ const Orders = () => {
                 <ShoppingBag size={20} /> Order Again
               </button>
               <button
-                onClick={handleDownloadInvoice} // This will now show the modal
+                onClick={handleDownloadInvoice}
                 className="border border-gray-300 text-gray-700 hover:bg-gray-100 font-medium py-2 px-4 rounded-lg flex-1 transition-colors flex items-center justify-center gap-2"
               >
                 <Download size={20} /> Download Invoice
+              </button>
+              <button
+                onClick={() => {
+                  setShowIssueModal(true);
+                  setIsissue(true);
+                }}
+                className="border border-gray-300 text-gray-700 hover:bg-gray-100 font-medium py-2 px-4 rounded-lg flex-1 transition-colors flex items-center justify-center gap-2"
+              >
+                <LogOut size={20} className="transform rotate-180" /> Raise an
+                Issue
+              </button>
+              <button
+                onClick={() => {
+                  setShowIssueModal(true);
+                  setIsissue(false);
+                }}
+                className="border border-gray-300 text-gray-700 hover:bg-gray-100 font-medium py-2 px-4 rounded-lg flex-1 transition-colors flex items-center justify-center gap-2"
+              >
+                <ArrowLeft size={20} className="transform rotate-180" /> Return
+                Order
               </button>
             </div>
             <hr className="text-gray-200 my-4" />
@@ -458,9 +500,11 @@ const Orders = () => {
           </div>
         }
 
-        {/* Invoice Modal - Conditionally rendered */}
         {showInvoiceModal && selectedOrder && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div
+            className="fixed inset-0 flex items-center justify-center p-4 z-50"
+            style={{ background: "rgba(0,0,0,0.5)" }}
+          >
             <div className="bg-white rounded-lg p-6 max-w-2xl w-full relative overflow-y-auto max-h-[90vh]">
               <button
                 onClick={() => setShowInvoiceModal(false)}
@@ -470,6 +514,27 @@ const Orders = () => {
                 &times;
               </button>
               <Invoice orderDetails={selectedOrder} />
+            </div>
+          </div>
+        )}
+
+        {showIssueModal && selectedOrder && (
+          <div
+            className="fixed inset-0 flex items-center justify-center p-4 z-50"
+            style={{ background: "rgba(0,0,0,0.5)" }}
+          >
+            <div className="bg-white rounded-lg p-6 max-w-2xl w-full relative overflow-y-auto max-h-[90vh]">
+              <button
+                onClick={() => setShowIssueModal(false)}
+                className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 text-2xl"
+                aria-label="Close issue form"
+              >
+                &times;
+              </button>
+              <IssueForm
+                orderDetails={selectedOrder}
+                type={isIssue ? "issue" : "return"}
+              />
             </div>
           </div>
         )}
