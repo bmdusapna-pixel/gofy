@@ -1,4 +1,3 @@
-// Orders.jsx
 import React, { useState } from "react";
 import SubmitReview from "./SubmitReview.jsx";
 import Invoice from "./Invoice.jsx";
@@ -10,6 +9,8 @@ const Orders = () => {
   const [showInvoiceModal, setShowInvoiceModal] = useState(false);
   const [showIssueModal, setShowIssueModal] = useState(false);
   const [isIssue, setIsissue] = useState(false);
+  const [selectedStatus, setSelectedStatus] = useState("All");
+  const [selectedTime, setSelectedTime] = useState("all");
 
   const orders = [
     {
@@ -28,7 +29,6 @@ const Orders = () => {
         warranty: "6-Month Warranty - (₹249.00)",
         paymentMethod: "UPI",
       },
-      // Added dummy dates for each status
       statusDates: {
         Processing: "19 Aug",
       },
@@ -49,7 +49,6 @@ const Orders = () => {
         warranty: "1-Year Warranty - (₹199.00)",
         paymentMethod: "Cash on Delivery",
       },
-      // Added dummy dates for each status
       statusDates: {
         Processing: "18 Aug",
         Shipped: "19 Aug",
@@ -71,7 +70,6 @@ const Orders = () => {
         warranty: "2-Year Warranty - (₹349.00)",
         paymentMethod: "NetBanking",
       },
-      // Added dummy dates for each status
       statusDates: {
         Processing: "17 Aug",
         Shipped: "18 Aug",
@@ -94,7 +92,6 @@ const Orders = () => {
         warranty: "6-Month Warranty - (₹199.00)",
         paymentMethod: "Credit Card",
       },
-      // Added dummy dates for each status
       statusDates: {
         Processing: "16 Aug",
       },
@@ -204,6 +201,23 @@ const Orders = () => {
 
     return (
       <div className="overflow-x-auto max-h-[400px]">
+        {isDelivered && (
+          <div className="flex flex-col sm:flex-row gap-4 mb-6">
+            <button
+              onClick={handleReorder}
+              className="bg-[#00bbae] hover:bg-[#02a499] text-white font-medium py-2 px-4 rounded-lg flex-1 transition-colors flex items-center justify-center gap-2"
+            >
+              <ShoppingBag size={20} /> Order Again
+            </button>
+            <button
+              onClick={handleDownloadInvoice}
+              className="border border-gray-300 text-gray-700 hover:bg-gray-100 font-medium py-2 px-4 rounded-lg flex-1 transition-colors flex items-center justify-center gap-2"
+            >
+              <Download size={20} /> Download Invoice
+            </button>
+          </div>
+        )}
+
         <div className="mb-6">
           <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
             <span>Order #</span>
@@ -345,18 +359,6 @@ const Orders = () => {
             <hr className="text-gray-200 my-4" />
             <div className="flex flex-col sm:flex-row gap-4">
               <button
-                onClick={handleReorder}
-                className="bg-[#00bbae] hover:bg-[#02a499] text-white font-medium py-2 px-4 rounded-lg flex-1 transition-colors flex items-center justify-center gap-2"
-              >
-                <ShoppingBag size={20} /> Order Again
-              </button>
-              <button
-                onClick={handleDownloadInvoice}
-                className="border border-gray-300 text-gray-700 hover:bg-gray-100 font-medium py-2 px-4 rounded-lg flex-1 transition-colors flex items-center justify-center gap-2"
-              >
-                <Download size={20} /> Download Invoice
-              </button>
-              <button
                 onClick={() => {
                   setShowIssueModal(true);
                   setIsissue(true);
@@ -385,84 +387,90 @@ const Orders = () => {
     );
   };
 
-  const renderOrdersList = () => (
-    <div
-      style={{
-        maxHeight: "400px",
-        overflowX: "auto",
-        overflowY: "auto",
-        whiteSpace: "nowrap",
-      }}
-    >
-      <table className="w-full">
-        <thead className="bg-gray-50">
-          <tr>
-            <th className="px-6 py-3 text-left text-sm font-bold text-gray-900">
-              Order
-            </th>
-            <th className="px-6 py-3 text-left text-sm font-bold text-gray-900">
-              Product Name
-            </th>
-            <th className="px-6 py-3 text-left text-sm font-bold text-gray-900">
-              Date
-            </th>
-            <th className="px-6 py-3 text-left text-sm font-bold text-gray-900">
-              Status
-            </th>
-            <th className="px-6 py-3 text-left text-sm font-bold text-gray-900">
-              Total
-            </th>
-            <th className="px-6 py-3 text-left text-sm font-bold text-gray-900">
-              Actions
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {orders.map((order) => {
-            let statusColor = "orange";
-            if (order.status === "Delivered") {
-              statusColor = "teal";
-            } else if (order.status === "Cancelled") {
-              statusColor = "red";
-            } else if (order.status === "Refunded") {
-              statusColor = "green";
-            }
-            return (
-              <tr key={order.id} className="border-b border-gray-200">
-                <td className="px-6 py-4 text-sm font-medium text-gray-900">
-                  #{order.id}
-                </td>
-                <td className="px-6 py-4 text-sm font-medium text-gray-900 max-w-[75px] whitespace-nowrap overflow-hidden text-ellipsis">
-                  {order.details.product}
-                </td>
-                <td className="px-6 py-4 text-sm text-gray-600">
-                  {order.date}
-                </td>
-                <td className="px-6 py-4">
-                  <span
-                    className={`bg-${statusColor}-100 text-${statusColor}-600 px-2 py-1 rounded text-sm font-medium`}
-                  >
-                    {order.status}
-                  </span>
-                </td>
-                <td className="px-6 py-4 text-sm text-gray-900">
-                  ₹{order.total.toFixed(2)}
-                </td>
-                <td className="px-6 py-4">
-                  <button
-                    onClick={() => handleOrderView(order)}
-                    className="bg-teal-500 hover:bg-teal-600 text-white p-2 rounded-full transition-colors"
-                  >
-                    <Eye size={16} />
-                  </button>
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
-    </div>
-  );
+  const renderOrdersList = () => {
+    const filteredOrders = orders.filter(
+      (order) => selectedStatus === "All" || order.status === selectedStatus
+    );
+
+    return (
+      <div
+        style={{
+          maxHeight: "400px",
+          overflowX: "auto",
+          overflowY: "auto",
+          whiteSpace: "nowrap",
+        }}
+      >
+        <table className="w-full">
+          <thead className="bg-gray-50">
+            <tr>
+              <th className="px-6 py-3 text-left text-sm font-bold text-gray-900">
+                Order
+              </th>
+              <th className="px-6 py-3 text-left text-sm font-bold text-gray-900">
+                Product Name
+              </th>
+              <th className="px-6 py-3 text-left text-sm font-bold text-gray-900">
+                Date
+              </th>
+              <th className="px-6 py-3 text-left text-sm font-bold text-gray-900">
+                Status
+              </th>
+              <th className="px-6 py-3 text-left text-sm font-bold text-gray-900">
+                Total
+              </th>
+              <th className="px-6 py-3 text-left text-sm font-bold text-gray-900">
+                Actions
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredOrders.map((order) => {
+              let statusColor = "orange";
+              if (order.status === "Delivered") {
+                statusColor = "teal";
+              } else if (order.status === "Cancelled") {
+                statusColor = "red";
+              } else if (order.status === "Refunded") {
+                statusColor = "green";
+              }
+              return (
+                <tr key={order.id} className="border-b border-gray-200">
+                  <td className="px-6 py-4 text-sm font-medium text-gray-900">
+                    #{order.id}
+                  </td>
+                  <td className="px-6 py-4 text-sm font-medium text-gray-900 max-w-[75px] whitespace-nowrap overflow-hidden text-ellipsis">
+                    {order.details.product}
+                  </td>
+                  <td className="px-6 py-4 text-sm text-gray-600">
+                    {order.date}
+                  </td>
+                  <td className="px-6 py-4">
+                    <span
+                      className={`bg-${statusColor}-100 text-${statusColor}-600 px-2 py-1 rounded text-sm font-medium`}
+                    >
+                      {order.status}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 text-sm text-gray-900">
+                    ₹{order.total.toFixed(2)}
+                  </td>
+                  <td className="px-6 py-4">
+                    <button
+                      onClick={() => handleOrderView(order)}
+                      className="bg-teal-500 hover:bg-teal-600 text-white p-2 rounded-full transition-colors"
+                    >
+                      <Eye size={16} />
+                    </button>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    );
+  };
 
   return (
     <div>
@@ -481,17 +489,37 @@ const Orders = () => {
               </div>
             ) : (
               <div>
-                <div className="flex justify-between mb-4 items-center">
+                <div className="flex justify-between mb-4 items-center gap-2 flex-wrap">
                   <h1 className="text-[18px] leading-[24px] font-semibold text-black">
                     My Orders
                   </h1>
-                  <select className="w-full md:w-48 rounded-md border border-gray-300 bg-white p-2 text-sm font-medium text-gray-700 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 cursor-pointer">
-                    <option value="today">Today</option>
-                    <option value="week">This Week</option>
-                    <option value="month">This Month</option>
-                    <option value="year">This Year</option>
-                    <option value="custom">Custom Range</option>
-                  </select>
+                  <div className="flex gap-2 flex-wrap">
+                    <select
+                      value={selectedTime}
+                      onChange={(e) => setSelectedTime(e.target.value)}
+                      className="w-full md:w-48 rounded-md border border-gray-300 bg-white p-2 text-sm font-medium text-gray-700 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 cursor-pointer"
+                    >
+                      <option value="all">All Time</option>
+                      <option value="today">Today</option>
+                      <option value="week">This Week</option>
+                      <option value="month">This Month</option>
+                      <option value="year">This Year</option>
+                      <option value="custom">Custom Range</option>
+                    </select>
+
+                    <select
+                      value={selectedStatus}
+                      onChange={(e) => setSelectedStatus(e.target.value)}
+                      className="w-full md:w-48 rounded-md border border-gray-300 bg-white p-2 text-sm font-medium text-gray-700 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 cursor-pointer"
+                    >
+                      <option value="All">All Statuses</option>
+                      <option value="Processing">Processing</option>
+                      <option value="Shipped">Shipped</option>
+                      <option value="Delivered">Delivered</option>
+                      <option value="Cancelled">Cancelled</option>
+                      <option value="Refunded">Refunded</option>
+                    </select>
+                  </div>
                 </div>
 
                 {renderOrdersList()}

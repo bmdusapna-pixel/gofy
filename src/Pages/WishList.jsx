@@ -59,11 +59,12 @@ const WishList = () => {
                       <div className="flex-[0.3] text-[#001430] font-semibold text-center text-[16px] sm:text-[18px]">
                         {item.name}
                       </div>
-                      <div className="flex-[0.2] text-[#001430] font-semibold text-center text-[16px]">
-                        <span className="text-[14px] text-gray-600 line-through">
+                      <div className="flex-[0.2] text-pink-600 font-semibold text-center text-[18px]">
+                        ₹ {item.price}
+                        <br />
+                        <span className="text-[14px] text-gray-500 line-through">
                           ₹ {item.price - 100}
                         </span>
-                        <br />₹ {item.price}
                       </div>
                       <div
                         onClick={() => addToCart(item)}

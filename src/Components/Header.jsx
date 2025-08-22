@@ -189,7 +189,7 @@ const SecondHeader = ({
             <img src={logo} alt="" className="w-full" />
           </Link>
           <div className="w-40">
-            <h3 className="font-bold text-[14px] font-sans">
+            <h3 className="font-bold text-[16px] blink-text">
               Delivery in 8 minutes
             </h3>
             <div className="flex gap-1 items-center">

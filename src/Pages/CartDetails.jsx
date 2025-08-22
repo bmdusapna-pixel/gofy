@@ -122,7 +122,7 @@ const CartDetails = () => {
                         <div className="flex flex-col sm:flex-row items-center sm:items-end justify-between gap-4 mt-4">
                           {/* Price */}
                           <div className="flex flex-col">
-                            <span className="text-xl font-bold text-gray-900">
+                            <span className="text-xl font-bold text-pink-600">
                               ₹ {item.price * item.quantity}
                             </span>
                             <span className="text-sm text-gray-500 line-through">
@@ -228,9 +228,12 @@ const CartDetails = () => {
                         </div>
 
                         {/* Price */}
-                        <div className="flex flex-col mt-4">
-                          <span className="text-xl font-bold text-gray-900">
+                        <div className="flex flex-col">
+                          <span className="text-xl font-bold text-pink-600">
                             ₹ {item.price}
+                          </span>
+                          <span className="text-sm font-bold text-gray-500 line-through">
+                            ₹ {item.price - 100}
                           </span>
                         </div>
                       </div>

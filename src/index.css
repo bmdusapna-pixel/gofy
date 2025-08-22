@@ -229,3 +229,21 @@ input[type="file"]:focus-within::file-selector-button {
     animation: none !important;
   }
 }
+
+@keyframes blink-text {
+  0% {
+    color: #f10808;
+  }
+
+  50% {
+    color: #089c52;
+  }
+
+  100% {
+    color: #f10808;
+  }
+}
+
+.blink-text {
+  animation: blink-text 0.5s step-end infinite;
+}

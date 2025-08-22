@@ -81,7 +81,7 @@ const SuperDeals = () => {
           className="absolute -top-3 -right-3 ribbon-flip pl-5 pr-3 
                 bg-gradient-to-br from-red-400 to-red-700 
                 text-white font-bold text-sm 
-                shadow-lg border border-red-800"
+                shadow-lg border border-red-800 z-[3]"
         >
           <div style={{ animation: "blink 0.5s step-end infinite" }}>
             30% OFF

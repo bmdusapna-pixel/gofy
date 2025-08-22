@@ -8,26 +8,36 @@ const Notifications = ({ show, onClose }) => {
       id: 1,
       message: "Your order #1234 has been shipped!",
       timestamp: "2 hours ago",
+      image: "https://via.placeholder.com/150/00bbae/ffffff?text=Shipped",
     },
     {
       id: 2,
       message: "New product alert: Check out our latest collection!",
       timestamp: "1 day ago",
+      image: "https://via.placeholder.com/150/b3d4f4/000000?text=New+Product",
     },
     {
       id: 3,
       message: "Your wishlist item 'Bluetooth Speaker' is now in stock.",
       timestamp: "3 days ago",
+      image: "https://via.placeholder.com/150/d3d3d3/000000?text=In+Stock",
     },
     {
       id: 4,
       message: "Don't miss out! Flash sale ends tonight.",
       timestamp: "5 days ago",
+      image: "https://via.placeholder.com/150/ff6347/ffffff?text=Sale",
     },
   ]);
 
   const clearAllNotifications = () => {
     setNotifications([]);
+  };
+
+  const removeNotification = (id) => {
+    setNotifications((prevNotifications) =>
+      prevNotifications.filter((notification) => notification.id !== id)
+    );
   };
 
   return (
@@ -72,13 +82,28 @@ const Notifications = ({ show, onClose }) => {
                   className="flex justify-between items-start w-full bg-gray-50 p-3 rounded-lg shadow-sm"
                   key={notification.id}
                 >
-                  <div className="flex flex-col gap-1 w-full pr-4">
-                    <p className="text-[16px] leading-[24px] text-[#001430] font-medium">
-                      {notification.message}
-                    </p>
-                    <p className="text-[12px] leading-[18px] text-gray-500">
-                      {notification.timestamp}
-                    </p>
+                  <div className="flex items-start gap-4 w-full pr-4">
+                    {notification.image && (
+                      <img
+                        src={notification.image}
+                        alt="Notification"
+                        className="w-12 h-12 rounded-lg object-cover"
+                      />
+                    )}
+                    <div className="flex flex-col gap-1 w-full">
+                      <p className="text-[16px] leading-[24px] text-[#001430] font-medium">
+                        {notification.message}
+                      </p>
+                      <p className="text-[12px] leading-[18px] text-gray-500">
+                        {notification.timestamp}
+                      </p>
+                    </div>
+                  </div>
+                  <div
+                    className="w-8 h-8 cursor-pointer flex items-center justify-center p-1 rounded-md transition-colors duration-300 text-black hover:text-white hover:bg-red-500"
+                    onClick={() => removeNotification(notification.id)}
+                  >
+                    <X className="w-5 h-5" />
                   </div>
                 </div>
               ))
@@ -89,7 +114,7 @@ const Notifications = ({ show, onClose }) => {
                   alt="No notifications"
                   className="w-full h-auto mb-4"
                 />
-                <p>No new notifications.</p>
+                {/* <p>No new notifications.</p> */}
               </div>
             )}
           </div>
