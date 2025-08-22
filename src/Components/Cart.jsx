@@ -126,7 +126,10 @@ const Cart = () => {
                           <Plus className="w-3 h-3" />
                         </div>
                       </div>
-                      <p className="text-[18px] leading-[27px] text-[#001430] font-semibold">
+                      <p className="text-[18px] leading-[27px] text-pink-600 font-semibold">
+                        <span className="text-[14px] line-through text-gray-500">
+                          ₹ {item.price - 100}
+                        </span>{" "}
                         ₹ {item.price}
                       </p>
                     </div>

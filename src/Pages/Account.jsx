@@ -17,6 +17,7 @@ import Returns from "../Components/Returns.jsx";
 import Issues from "../Components/Issues.jsx";
 import ReferEarn from "../Components/ReferEarn.jsx";
 import Wallet from "../Components/Wallet.jsx";
+import SavedAddress from "../Components/SavedAddress.jsx";
 
 const IconComponents = {
   User,
@@ -89,31 +90,12 @@ const Account = () => {
   const navigate = useNavigate();
   const { formSubmit } = useContext(CartContext);
 
-  const [sameAddress, setSameAddress] = useState(false);
   const [activeItem, setActiveItem] = useState("profile");
 
   const [profileData, setProfileData] = useState({
     name: "",
     email: "",
     phone: "",
-  });
-
-  const [billingAddresss, setBillingAddress] = useState({
-    houseAndStreet: "",
-    apartments: "",
-    town: "",
-    pinCode: "",
-    district: "",
-    state: "",
-  });
-
-  const [shippingAddress, setShippingAddress] = useState({
-    houseAndStreet: "",
-    apartments: "",
-    town: "",
-    pinCode: "",
-    district: "",
-    state: "",
   });
 
   const profileInputChangeHandler = (event) => {
@@ -128,51 +110,11 @@ const Account = () => {
     }
   };
 
-  const billingInputChangeHandler = (event) => {
-    const { name, value } = event.target;
-    setBillingAddress((prev) => ({ ...prev, [name]: value }));
-    if (sameAddress) {
-      setShippingAddress((prev) => ({ ...prev, [name]: value }));
-    }
-  };
-
-  const shippingInputChangeHandler = (event) => {
-    const { name, value } = event.target;
-    setShippingAddress((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleSameAddressToggle = () => {
-    setSameAddress((prev) => {
-      const newValue = !prev;
-      if (newValue) {
-        setShippingAddress({ ...billingAddresss });
-      } else {
-        setShippingAddress({
-          houseAndStreet: "",
-          apartments: "",
-          town: "",
-          pinCode: "",
-          district: "",
-          state: "",
-        });
-      }
-      return newValue;
-    });
-  };
-
   const handleProfileUpdate = (event) => {
     event.preventDefault();
     console.log("Updating Profile:", profileData);
     // Simulating an alert. It's recommended to use a custom message box.
     alert("Profile updated successfully! (Simulated)");
-  };
-
-  const handleAddressUpdate = (event) => {
-    event.preventDefault();
-    console.log("Updating Billing Address:", billingAddresss);
-    console.log("Updating Shipping Address:", shippingAddress);
-    // Simulating an alert. It's recommended to use a custom message box.
-    alert("Address updated successfully! (Simulated)");
   };
 
   const handleLogout = () => {
@@ -298,153 +240,7 @@ const Account = () => {
               </form>
             )}
 
-            {activeItem === "address" && (
-              <form onSubmit={handleAddressUpdate} className="w-full">
-                <div className="flex flex-col gap-5 h-[50vh] overflow-y-scroll pr-2">
-                  <p className="text-[18px] leading-[24px] font-semibold text-black">
-                    Billing Address
-                  </p>
-                  <div className="flex flex-col gap-2 w-full">
-                    <input
-                      required
-                      name="houseAndStreet"
-                      value={billingAddresss.houseAndStreet}
-                      onChange={billingInputChangeHandler}
-                      type="text"
-                      placeholder="House number and street name"
-                      className="transition-colors text-[18px] leading-[27px] duration-300 w-full px-4 py-1 border border-gray-200 focus:border-[#00bbae] outline-none rounded-md"
-                    />
-                    <input
-                      name="apartments"
-                      value={billingAddresss.apartments}
-                      onChange={billingInputChangeHandler}
-                      type="text"
-                      placeholder="Apartments, suits, unit, etc. (optional)"
-                      className="transition-colors text-[18px] leading-[27px] duration-300 w-full px-4 py-1 border border-gray-200 focus:border-[#00bbae] outline-none rounded-md"
-                    />
-                    <input
-                      required
-                      name="town"
-                      value={billingAddresss.town}
-                      onChange={billingInputChangeHandler}
-                      type="text"
-                      placeholder="Town / City"
-                      className="transition-colors text-[18px] leading-[27px] duration-300 w-full px-4 py-1 border border-gray-200 focus:border-[#00bbae] outline-none rounded-md"
-                    />
-                    <input
-                      required
-                      name="pinCode"
-                      value={billingAddresss.pinCode}
-                      onChange={billingInputChangeHandler}
-                      type="text"
-                      placeholder="Zip / Postal Code"
-                      className="transition-colors text-[18px] leading-[27px] duration-300 w-full px-4 py-1 border border-gray-200 focus:border-[#00bbae] outline-none rounded-md"
-                    />
-                    <input
-                      required
-                      name="district"
-                      value={billingAddresss.district}
-                      onChange={billingInputChangeHandler}
-                      type="text"
-                      placeholder="District"
-                      className="transition-colors text-[18px] leading-[27px] duration-300 w-full px-4 py-1 border border-gray-200 focus:border-[#00bbae] outline-none rounded-md"
-                    />
-                    <input
-                      required
-                      name="state"
-                      value={billingAddresss.state}
-                      onChange={billingInputChangeHandler}
-                      type="text"
-                      placeholder="State"
-                      className="transition-colors text-[18px] leading-[27px] duration-300 w-full px-4 py-1 border border-gray-200 focus:border-[#00bbae] outline-none rounded-md"
-                    />
-                  </div>
-                  <div className="flex flex-col gap-5 w-full">
-                    <div className="flex sm:flex-row flex-col gap-2 sm:gap-5 w-full sm:items-center">
-                      <p className="text-[18px] leading-[24px] font-semibold text-black">
-                        Shipping Address
-                      </p>
-                      <div className="flex gap-2 items-center">
-                        <input
-                          checked={sameAddress}
-                          onChange={handleSameAddressToggle}
-                          type="checkbox"
-                          className="border border-gray-200 rounded-md cursor-pointer w-4 h-4"
-                        />
-                        <p className="text-[14px] leading-[18px] font-medium text-gray-600">
-                          Same as Billing Address
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex flex-col gap-2 w-full">
-                      <input
-                        required
-                        name="houseAndStreet"
-                        value={shippingAddress.houseAndStreet}
-                        onChange={shippingInputChangeHandler}
-                        type="text"
-                        placeholder="House number and street name"
-                        className="transition-colors text-[18px] leading-[27px] duration-300 w-full px-4 py-1 border border-gray-200 focus:border-[#00bbae] outline-none rounded-md"
-                      />
-                      <input
-                        name="apartments"
-                        value={shippingAddress.apartments}
-                        onChange={shippingInputChangeHandler}
-                        type="text"
-                        placeholder="Apartments, suits, unit, etc. (optional)"
-                        className="transition-colors text-[18px] leading-[27px] duration-300 w-full px-4 py-1 border border-gray-200 focus:border-[#00bbae] outline-none rounded-md"
-                      />
-                      <input
-                        required
-                        name="town"
-                        value={shippingAddress.town}
-                        onChange={shippingInputChangeHandler}
-                        type="text"
-                        placeholder="Town / City"
-                        className="transition-colors text-[18px] leading-[27px] duration-300 w-full px-4 py-1 border border-gray-200 focus:border-[#00bbae] outline-none rounded-md"
-                      />
-                      <input
-                        required
-                        name="pinCode"
-                        value={shippingAddress.pinCode}
-                        onChange={shippingInputChangeHandler}
-                        type="text"
-                        placeholder="Zip / Postal Code"
-                        className="transition-colors text-[18px] leading-[27px] duration-300 w-full px-4 py-1 border border-gray-200 focus:border-[#00bbae] outline-none rounded-md"
-                      />
-                      <input
-                        required
-                        name="district"
-                        value={shippingAddress.district}
-                        onChange={shippingInputChangeHandler}
-                        type="text"
-                        placeholder="District"
-                        className="transition-colors text-[18px] leading-[27px] duration-300 w-full px-4 py-1 border border-gray-200 focus:border-[#00bbae] outline-none rounded-md"
-                      />
-                      <input
-                        required
-                        name="state"
-                        value={shippingAddress.state}
-                        onChange={shippingInputChangeHandler}
-                        type="text"
-                        placeholder="State"
-                        className="transition-colors text-[18px] leading-[27px] duration-300 w-full px-4 py-1 border border-gray-200 focus:border-[#00bbae] outline-none rounded-md"
-                      />
-                    </div>
-                  </div>
-                </div>
-                <button
-                  type="submit"
-                  className="rounded-xl mt-5 w-24 h-10 text-[18px] leading-[27px] font-semibold text-white transition-colors duration-300 hover:bg-[#f88e0f] cursor-pointer bg-[#00bbae] flex gap-3 items-center justify-center"
-                >
-                  {formSubmit ? (
-                    <Loader className="w-6 h-6 text-white animate-spin" />
-                  ) : (
-                    "Update"
-                  )}
-                </button>
-              </form>
-            )}
+            {activeItem === "address" && <SavedAddress />}
 
             {activeItem === "orders" && <Orders />}
             {activeItem === "points" && <Points />}

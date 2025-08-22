@@ -193,7 +193,7 @@ const Deals = () => {
                           ({product.review} Reviews)
                         </p>
                       </div> */}
-                      <div className="flex gap-2 items-center">
+                      <div className="flex gap-2 items-center flex-wrap">
                         <p className="text-pink-600 text-[22px] leading-[30px] font-semibold whitespace-nowrap">
                           ₹ {product.price}
                         </p>
@@ -344,7 +344,7 @@ const Deals = () => {
                               {trending.name}
                             </p>
                             <div className="flex sm:flex-row flex-col lg:flex-col sm:justify-between justify-start w-full">
-                              <div className="flex gap-2 items-center">
+                              <div className="flex gap-2 items-center flex-wrap">
                                 <p className="text-pink-600 text-[22px] leading-[30px] font-semibold whitespace-nowrap">
                                   ₹ {trending.price}
                                 </p>

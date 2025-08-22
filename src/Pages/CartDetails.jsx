@@ -8,6 +8,7 @@ import {
   Copy,
   Tag,
   Pin,
+  ArrowRight,
   ShoppingCart,
 } from "lucide-react";
 import { CartContext } from "../Context/CartContext";
@@ -106,7 +107,7 @@ const CartDetails = () => {
                       </Link>
 
                       {/* Product Details */}
-                      <div className="flex-1 flex flex-col justify-between w-full sm:w-auto text-center sm:text-left">
+                      <div className="flex-1 flex flex-col gap-2 w-full sm:w-auto text-center sm:text-left">
                         <div>
                           <Link to={`/product/${item._id}`}>
                             <h3 className="text-lg md:text-xl font-semibold text-gray-800 line-clamp-2 leading-tight">
@@ -119,15 +120,16 @@ const CartDetails = () => {
                         </div>
 
                         {/* Prices & Quantity */}
-                        <div className="flex flex-col sm:flex-row items-center sm:items-end justify-between gap-4 mt-4">
+                        <div className="flex flex-col sm:flex-row items-center sm:items-start justify-between gap-4">
                           {/* Price */}
-                          <div className="flex flex-col">
+                          <div className="flex items-center gap-2">
                             <span className="text-xl font-bold text-pink-600">
                               ₹ {item.price * item.quantity}
                             </span>
                             <span className="text-sm text-gray-500 line-through">
                               ₹ {item.price}
                             </span>
+                            <span className="text-red-600">30% Off</span>
                           </div>
 
                           {/* Quantity Control */}
@@ -176,8 +178,10 @@ const CartDetails = () => {
                       </div>
                     </div>
                   ))}
-                  <div className="flex justify-between items-center mt-6">
-                    <div>Missed Something?</div>
+                  <div className="flex justify-end gap-4 items-center mt-6">
+                    <div className="flex items-center gap-2">
+                      Missed Something? <ArrowRight className="w-4 h-4" />
+                    </div>
                     <Link
                       to="/products"
                       className="flex items-center gap-2 text-sm font-semibold text-[#00bbae] transition-colors duration-300 hover:text-[#f88e0f] px-4 py-2 border border-gray-300 rounded-full shadow-sm"
@@ -215,7 +219,7 @@ const CartDetails = () => {
                       </Link>
 
                       {/* Product Details */}
-                      <div className="flex-1 flex flex-col justify-between w-full sm:w-auto text-center sm:text-left">
+                      <div className="flex-1 flex flex-col gap-2 w-full sm:w-auto text-center sm:text-left">
                         <div>
                           <Link to={`/product/${item._id}`}>
                             <h3 className="text-lg md:text-xl font-semibold text-gray-800 line-clamp-2 leading-tight">
@@ -228,13 +232,14 @@ const CartDetails = () => {
                         </div>
 
                         {/* Price */}
-                        <div className="flex flex-col">
+                        <div className="flex items-center gap-2">
                           <span className="text-xl font-bold text-pink-600">
                             ₹ {item.price}
                           </span>
                           <span className="text-sm font-bold text-gray-500 line-through">
                             ₹ {item.price - 100}
                           </span>
+                          <span className="text-red-600">30% Off</span>
                         </div>
                       </div>
 

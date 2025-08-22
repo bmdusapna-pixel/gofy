@@ -85,7 +85,7 @@ const HeroSection = () => {
           </Slider>
         </div>
       </div>
-      <div className="flex lg:px-12 mx-auto sm:px-10 px-5 flex-col gap-2 w-full items-center justify-center">
+      <div className="flex lg:px-12 mx-auto px-5 flex-col gap-2 w-full items-center justify-center">
         <p className="text-[32px] md:text-[38px] leading-[48px] md:leading-[57px] text-[#212529] font-bold">
           Shop By Categories
         </p>
@@ -94,7 +94,7 @@ const HeroSection = () => {
           vulputate eget dolor.
         </p>
         <div className="w-full flex max-w-[1200px] my-10 relative">
-          <div className="w-full bg-[#e9f9fc] rounded-full px-8 sm:px-10 category-swiper">
+          <div className="w-full bg-[#e9f9fc] rounded-full category-swiper">
             <Swiper
               slidesPerView="auto"
               breakpoints={{
@@ -116,9 +116,9 @@ const HeroSection = () => {
                           ? `/products/toys/item/${slugify(item.name)}`
                           : `/products/clothes/item/${slugify(item.name)}`
                       }
-                      className="flex cursor-pointer flex-col items-center justify-center gap-3 transition-transform duration-300 py-5 md:py-10 hover:-translate-y-1"
+                      className="flex cursor-pointer flex-col items-center justify-center gap-3 transition-transform duration-300 py-5 hover:-translate-y-1"
                     >
-                      <div className="w-20 md:w-28 h-20 md:h-28 border-8 flex items-center justify-center rounded-full border-white bg-[#e9f9fc] shadow-md">
+                      <div className="w-20 md:w-35 h-20 md:h-35 border-8 flex items-center justify-center rounded-full border-white bg-[#e9f9fc] shadow-md">
                         <img
                           src={item.image_url}
                           alt={item.name}

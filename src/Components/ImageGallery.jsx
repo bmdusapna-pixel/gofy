@@ -86,20 +86,19 @@ const ImageGallery = ({ images }) => {
           style={{ background: "rgba(0,0,0,0.5)" }}
         >
           <div
-            className="relative bg-white rounded-lg overflow-hidden max-w-full max-h-[90vh] cursor-zoom-out"
+            className="relative bg-white rounded-lg overflow-y-auto lg:w-[70vw] w-[90vw] max-h-[90vh] cursor-zoom-out"
             onClick={(e) => e.stopPropagation()}
           >
             <div
-              className="w-full h-full relative"
+              className="w-full h-full relative flex items-center justify-center"
               onMouseMove={handleMouseMove}
               onMouseEnter={() => setIsZoomed(true)}
               onMouseLeave={() => setIsZoomed(false)}
-              style={{ overflow: "hidden" }}
             >
               <img
                 src={selectedImage}
                 alt="Zoomed view"
-                className="transition-transform duration-300 ease-in-out"
+                className="transition-transform duration-300 ease-in-out w-full h-full object-contain"
                 style={{
                   transform: isZoomed ? `scale(1.5)` : `scale(1)`,
                   transformOrigin: `${cursorPos.x}% ${cursorPos.y}%`,
