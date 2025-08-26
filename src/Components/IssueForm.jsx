@@ -116,7 +116,7 @@ const IssueForm = ({ type = "return" }) => {
       {/* Submit Button */}
       <button
         type="submit"
-        className="w-full bg-blue-600 text-white py-3 rounded-full"
+        className="w-full bg-[#00bbae] text-white py-3 rounded-full"
       >
         {isReturn ? "Submit Return Request" : "Submit Complaint"}
       </button>
