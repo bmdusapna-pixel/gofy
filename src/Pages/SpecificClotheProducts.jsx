@@ -8,6 +8,7 @@ import FilterColorCategory from "../Components/FilterColorCategory.jsx";
 import FilterActiveComponent from "../Components/FilterActiveComponent.jsx";
 import PriceRangeSlider from "../Components/PriceRangeSlider.jsx";
 import RatingFilter from "../Components/RatingFilter.jsx";
+import Breadcrumbs from "../Components/Breadcrumbs.jsx";
 
 import SuperBanner from "../assets/superBanner.png";
 
@@ -151,13 +152,13 @@ const SpecificClotheProducts = () => {
       );
     });
   }, [
-    clothe_items,
+    // clothe_items,
     currentClotheCategory,
     currentAgeCategory,
     currentMaterialCategory,
     currentColorCategory,
     currentSizeCategory,
-    currentPriceCategory,
+    // currentPriceCategory,
     clotheList,
   ]);
 
@@ -178,7 +179,10 @@ const SpecificClotheProducts = () => {
           className="object-cover h-full w-full"
         />
       </div>
-      <div className="w-full lg:px-12 px-5 mx-auto py-10 flex flex-col gap-14">
+      <div className="lg:px-12 px-5 pt-4">
+        <Breadcrumbs />
+      </div>
+      <div className="w-full lg:px-12 px-5 mx-auto py-5 flex flex-col gap-14">
         <div className="flex gap-5 w-full">
           <div className="lg:w-1/5 lg:flex hidden flex-col gap-5">
             {/* <div
@@ -231,29 +235,12 @@ const SpecificClotheProducts = () => {
               setSelectedItem={setCurrentClotheCategory}
             />
             <FilterCategory
-              openFilter={openFilter}
-              headingTitile={"Brands"}
-              items={filterBrands}
-              hoveredItem={hoveredBrand}
-              setHoveredItem={setHoveredBrand}
-              selectedItems={currentBrand}
-              setSelectedItems={setCurrentBrand}
-            />
-            <FilterCategory
               headingTitile={"Age Group"}
               items={ageCategory}
               hoveredItem={hoveredAgeCategory}
               setHoveredItem={setHoveredAgeCategory}
               selectedItems={currentAgeCategory}
               setSelectedItems={setCurrentAgeCategory}
-            />
-            <FilterCategory
-              headingTitile={"Material Used"}
-              items={materialCategory}
-              hoveredItem={hoveredMaterialCategory}
-              setHoveredItem={setHoveredMaterialCategory}
-              selectedItems={currentMaterialCategory}
-              setSelectedItems={setCurrentMaterialCategory}
             />
             <FilterCategory
               headingTitile={"Gender"}
@@ -264,12 +251,38 @@ const SpecificClotheProducts = () => {
               setSelectedItems={setCurrentGenderCategory}
             />
             <FilterCategory
+              headingTitile={"Size"}
+              items={sizeCategory}
+              hoveredItem={hoveredSizeCategory}
+              setHoveredItem={setHoveredSizeCategory}
+              selectedItems={currentSizeCategory}
+              setSelectedItems={setCurrentSizeCategory}
+            />
+            <FilterCategory
               headingTitile={"Sleeves"}
               items={sleevesCategory}
               hoveredItem={hoveredSleevesCategory}
               setHoveredItem={setHoveredSleevesCategory}
               selectedItems={currentSleevesCategory}
               setSelectedItems={setCurrentSleevesCategory}
+            />
+            <PriceRangeSlider headingTitle="Price" min={0} max={500} />
+            <FilterCategory
+              openFilter={openFilter}
+              headingTitile={"Brands"}
+              items={filterBrands}
+              hoveredItem={hoveredBrand}
+              setHoveredItem={setHoveredBrand}
+              selectedItems={currentBrand}
+              setSelectedItems={setCurrentBrand}
+            />
+            <FilterCategory
+              headingTitile={"Material Used"}
+              items={materialCategory}
+              hoveredItem={hoveredMaterialCategory}
+              setHoveredItem={setHoveredMaterialCategory}
+              selectedItems={currentMaterialCategory}
+              setSelectedItems={setCurrentMaterialCategory}
             />
             <FilterColorCategory
               headingTitile={"Colors"}
@@ -279,15 +292,6 @@ const SpecificClotheProducts = () => {
               selectedItems={currentColorCategory}
               setSelectedItems={setCurrenColorCategory}
             />
-            <FilterCategory
-              headingTitile={"Size"}
-              items={sizeCategory}
-              hoveredItem={hoveredSizeCategory}
-              setHoveredItem={setHoveredSizeCategory}
-              selectedItems={currentSizeCategory}
-              setSelectedItems={setCurrentSizeCategory}
-            />
-            <PriceRangeSlider headingTitle="Price" min={0} max={500} />
             <RatingFilter
               headingTitle="Rating"
               selectedRating={selectedRating}
@@ -356,6 +360,39 @@ const SpecificClotheProducts = () => {
               setSelectedItem={setCurrentClotheCategory}
             />
             <FilterCategory
+              headingTitile={"Age Group"}
+              items={ageCategory}
+              hoveredItem={hoveredAgeCategory}
+              setHoveredItem={setHoveredAgeCategory}
+              selectedItems={currentAgeCategory}
+              setSelectedItems={setCurrentAgeCategory}
+            />
+            <FilterCategory
+              headingTitile={"Gender"}
+              items={genderCategory}
+              hoveredItem={hoveredGenderCategory}
+              setHoveredItem={setHoveredGenderCategory}
+              selectedItems={currentGenderCategory}
+              setSelectedItems={setCurrentGenderCategory}
+            />
+            <FilterCategory
+              headingTitile={"Size"}
+              items={sizeCategory}
+              hoveredItem={hoveredSizeCategory}
+              setHoveredItem={setHoveredSizeCategory}
+              selectedItems={currentSizeCategory}
+              setSelectedItems={setCurrentSizeCategory}
+            />
+            <FilterCategory
+              headingTitile={"Sleeves"}
+              items={sleevesCategory}
+              hoveredItem={hoveredSleevesCategory}
+              setHoveredItem={setHoveredSleevesCategory}
+              selectedItems={currentSleevesCategory}
+              setSelectedItems={setCurrentSleevesCategory}
+            />
+            <PriceRangeSlider headingTitle="Price" min={0} max={500} />
+            <FilterCategory
               openFilter={openFilter}
               headingTitile={"Brands"}
               items={filterBrands}
@@ -365,25 +402,6 @@ const SpecificClotheProducts = () => {
               setSelectedItems={setCurrentBrand}
             />
             <FilterCategory
-              openFilter={openFilter}
-              headingTitile={"Age Group"}
-              items={ageCategory}
-              hoveredItem={hoveredAgeCategory}
-              setHoveredItem={setHoveredAgeCategory}
-              selectedItems={currentAgeCategory}
-              setSelectedItems={setCurrentAgeCategory}
-            />
-            <FilterCategory
-              openFilter={openFilter}
-              headingTitile={"Gender"}
-              items={genderCategory}
-              hoveredItem={hoveredGenderCategory}
-              setHoveredItem={setHoveredGenderCategory}
-              selectedItems={currentGenderCategory}
-              setSelectedItems={setCurrentGenderCategory}
-            />
-            <FilterCategory
-              openFilter={openFilter}
               headingTitile={"Material Used"}
               items={materialCategory}
               hoveredItem={hoveredMaterialCategory}
@@ -391,17 +409,7 @@ const SpecificClotheProducts = () => {
               selectedItems={currentMaterialCategory}
               setSelectedItems={setCurrentMaterialCategory}
             />
-            <FilterCategory
-              openFilter={openFilter}
-              headingTitile={"Sleeves"}
-              items={sleevesCategory}
-              hoveredItem={hoveredSleevesCategory}
-              setHoveredItem={setHoveredSleevesCategory}
-              selectedItems={currentSleevesCategory}
-              setSelectedItems={setCurrentSleevesCategory}
-            />
             <FilterColorCategory
-              openFilter={openFilter}
               headingTitile={"Colors"}
               items={colorCategory}
               hoveredItem={hoveredColorCategory}
@@ -409,16 +417,6 @@ const SpecificClotheProducts = () => {
               selectedItems={currentColorCategory}
               setSelectedItems={setCurrenColorCategory}
             />
-            <FilterCategory
-              openFilter={openFilter}
-              headingTitile={"Size"}
-              items={sizeCategory}
-              hoveredItem={hoveredSizeCategory}
-              setHoveredItem={setHoveredSizeCategory}
-              selectedItems={currentSizeCategory}
-              setSelectedItems={setCurrentSizeCategory}
-            />
-            <PriceRangeSlider headingTitle="Price" min={0} max={500} />
             <RatingFilter
               headingTitle="Rating"
               selectedRating={selectedRating}

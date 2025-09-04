@@ -186,7 +186,7 @@ const ProductReviews = ({ items }) => {
             value={reviewData.description}
             id=""
           ></textarea>
-          <label for="media-upload" class="custom-file-upload">
+          <label htmlFor="media-upload" className="custom-file-upload">
             Upload image/video (optional)
           </label>
           <input

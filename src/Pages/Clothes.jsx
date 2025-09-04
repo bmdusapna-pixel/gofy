@@ -146,7 +146,7 @@ const Clothes = () => {
       );
     });
   }, [
-    clothe_items,
+    // clothe_items,
     currentClotheCategory,
     currentAgeCategory,
     currentMaterialCategory,

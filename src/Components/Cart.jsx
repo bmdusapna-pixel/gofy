@@ -127,10 +127,10 @@ const Cart = () => {
                         </div>
                       </div>
                       <p className="text-[18px] leading-[27px] text-pink-600 font-semibold">
+                        ₹ {item.price}{" "}
                         <span className="text-[14px] line-through text-gray-500">
                           ₹ {item.price - 100}
-                        </span>{" "}
-                        ₹ {item.price}
+                        </span>
                       </p>
                     </div>
                   </div>

@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { CartContext } from "../Context/CartContext";
 import FilterCategory from "../Components/FilterCategory";
 import FilterColorCategory from "../Components/FilterColorCategory.jsx";
-import { toys_items } from "../assets/helper.js";
+import { priceRanges, toys_items } from "../assets/helper.js";
 
 const Toys = () => {
   const [productHovered, setProductHoverd] = useState(null);
@@ -120,7 +120,7 @@ const Toys = () => {
       );
     });
   }, [
-    toys_items,
+    // toys_items,
     currentToyCategory,
     currentAgeCategory,
     currentMaterialCategory,
