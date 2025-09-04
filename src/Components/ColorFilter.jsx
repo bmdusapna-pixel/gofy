@@ -48,7 +48,8 @@ export default function ColorFilter({ selectedColor, setVariant, variants }) {
             }
           `}
             style={{
-              backgroundColor: colors.find((c) => c._id === v.color)?.hexCode,
+              backgroundColor: colors.find((c) => c._id === v.color._id)
+                ?.hexCode,
             }}
           />
         ))}

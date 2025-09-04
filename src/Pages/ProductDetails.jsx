@@ -194,28 +194,6 @@ const ProductDetails = () => {
             {variant && variant.images && (
               <ImageGallery images={variant.images} />
             )}
-            <div className="w-full lg:w-4/5">
-              <div className="bg-white border border-gray-200 rounded-2xl">
-                <Swiper
-                  onSwiper={(swiper) => {
-                    swiperRef.current = swiper;
-                  }}
-                  modules={[Autoplay]}
-                  autoplay={{ delay: 3000, disableOnInteraction: false }}
-                  slidesPerView={1}
-                >
-                  {variant.images.map((item, index) => (
-                    <SwiperSlide key={index}>
-                      <img
-                        src={item}
-                        className="w-full object-cover"
-                        alt={`${productData.name} image ${index + 1}`}
-                      />
-                    </SwiperSlide>
-                  ))}
-                </Swiper>
-              </div>
-            </div>
           </div>
           <div className="lg:w-1/2 flex flex-col gap-5">
             <div>
@@ -371,6 +349,16 @@ const ProductDetails = () => {
                   {selectedAgeGroup.stock === 0
                     ? "Save for later"
                     : "Add to cart"}
+                </p>
+              </div>
+              <div className="py-2 w-40 rounded-2xl transition-colors duration-300 hover:bg-[#f88e0f] cursor-pointer px-3 bg-[#00bbae] flex gap-3 items-center justify-center">
+                {selectedAgeGroup.stock > 0 ? (
+                  <IndianRupee className="w-6 h-6 text-white" />
+                ) : (
+                  <Bell className="w-6 h-6 text-white" />
+                )}
+                <p className="text-[18px] leading-[27px] md:text-[20px] md:leading-[30px] font-semibold text-white">
+                  {selectedAgeGroup.stock === 0 ? "Notify Me" : "Buy Now"}
                 </p>
               </div>
               <div
