@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect, useRef } from "react";
+import React, { useContext, useState, useEffect, useRef, use } from "react";
 import {
   ArrowRight,
   ChevronLeft,
@@ -60,6 +60,8 @@ const Deals = () => {
   const [buttonHovered, setButtonHovered] = useState(false);
   const [slidingSectionHovered, setSlidingSectionHovered] = useState(null);
   const { addToCart, addFavouriteItems } = useContext(CartContext);
+  const baseUrl = import.meta.env.VITE_BASE_URL;
+  const [productList, setProductList] = useState([]);
 
   const addDealToCart = (product, event) => {
     event.stopPropagation();
@@ -76,6 +78,15 @@ const Deals = () => {
   const [bounce, setBounce] = useState(false);
   const chevronsRef = useRef(null);
   const isMobile = useIsMobile();
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      const res = await fetch(`${baseUrl}/products`);
+      const data = await res.json();
+      setProductList(data.data);
+    };
+    fetchProducts();
+  }, [baseUrl]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -112,7 +123,8 @@ const Deals = () => {
             <p className="text-[32px] md:text-[38px] leading-[48px] md:leading-[57px] text-[#212529] font-bold">
               Deal of the Day
             </p>
-            <button
+            <Link
+              to={"/super-deals-product"}
               onMouseEnter={() => setButtonHovered(true)}
               onMouseLeave={() => setButtonHovered(false)}
               className="text-[#212529] hover:text-white relative overflow-hidden flex items-center gap-5 group border border-gray-200 rounded-full px-4 py-2 cursor-pointer transition-colors duration-500"
@@ -126,7 +138,7 @@ const Deals = () => {
                   buttonHovered ? "translate-x-1" : "translate-x-0"
                 }`}
               />
-            </button>
+            </Link>
           </div>
           <div className="w-full relative">
             <Swiper
@@ -146,12 +158,12 @@ const Deals = () => {
               loop={true}
               grabCursor={true}
             >
-              {clothe_items.map((product) => (
+              {productList?.map((product) => (
                 <SwiperSlide key={product._id}>
                   <div className="w-full border flex lg:flex-row flex-col gap-3 xl:gap-5 border-gray-200 rounded-md p-2">
                     <div className="w-full h-60 lg:w-1/2 bg-[#FFC0CB] rounded-md flex items-center justify-center relative">
                       <img
-                        src={product.images[0]}
+                        src={product.variants?.[0].images[0]}
                         alt=""
                         className="object-contain"
                       />
@@ -174,7 +186,7 @@ const Deals = () => {
                       {/* <p className="text-[#212529] text-[16px] leading-[24px] opacity-75">
                         {product.sub_category}
                       </p> */}
-                      <p className="text-[22px] leading-[30px] text-[#212529] font-bold">
+                      <p className="text-[22px] leading-[30px] text-[#212529] font-bold whitespace-nowrap overflow-hidden text-ellipsis">
                         {product?.name}
                       </p>
                       {/* <div className="flex lg:flex-row md:flex-col flex-row w-full items-center">
@@ -195,20 +207,21 @@ const Deals = () => {
                       </div> */}
                       <div className="flex gap-2 items-center flex-wrap">
                         <p className="text-pink-600 text-[22px] leading-[30px] font-semibold whitespace-nowrap">
-                          ₹ {product.price}
+                          ₹ {product?.variants?.[0]?.ageGroups?.[0]?.price}
                         </p>
                         <p className="text-gray-500 text-[16px] line-through leading-[30px] font-semibold whitespace-nowrap">
-                          ₹ {product.price + 100}
+                          ₹ {product?.variants?.[0]?.ageGroups?.[0]?.cutPrice}
                         </p>
                         <p className="text-red-600 text-[16px] leading-[30px] font-semibold whitespace-nowrap">
-                          30% OFF
+                          {product?.variants?.[0]?.ageGroups?.[0]?.discount}%
+                          OFF
                         </p>
                       </div>
                       <div className="max-w-[150px] mt-4">
                         <p className="text-red-600 text-[16px] leading-[16px] font-semibold">
                           Sale ends in:
                         </p>
-                        <Countdown />
+                        <Countdown hour={product?.dealHours} />
                       </div>
                       <div
                         onClick={(event) => addDealToCart(product, event)}
@@ -295,12 +308,12 @@ const Deals = () => {
                     loop={true}
                     grabCursor={true}
                   >
-                    {product_list.map((trending) => (
+                    {productList.map((trending) => (
                       <SwiperSlide key={trending._id}>
                         <div className="w-full flex lg:flex-row flex-col gap-5 border border-gray-200 rounded-md p-3 bg-white">
                           <div className="w-full lg:w-1/2 bg-gray-200 flex items-center rounded-md justify-center relative">
                             <img
-                              src={trending.images[0]}
+                              src={trending.variants?.[0]?.images[0]}
                               alt=""
                               className="h-60 object-contain"
                             />
@@ -346,13 +359,25 @@ const Deals = () => {
                             <div className="flex sm:flex-row flex-col lg:flex-col sm:justify-between justify-start w-full">
                               <div className="flex gap-2 items-center flex-wrap">
                                 <p className="text-pink-600 text-[22px] leading-[30px] font-semibold whitespace-nowrap">
-                                  ₹ {trending.price}
+                                  ₹{" "}
+                                  {
+                                    trending.variants?.[0]?.ageGroups?.[0]
+                                      ?.price
+                                  }
                                 </p>
                                 <p className="text-gray-500 text-[16px] leading-[27px] font-normal line-through whitespace-nowrap">
-                                  ₹ {trending.price + 100}
+                                  ₹{" "}
+                                  {
+                                    trending.variants?.[0]?.ageGroups?.[0]
+                                      ?.cutPrice
+                                  }
                                 </p>
                                 <p className="text-red-600 text-[18px] leading-[27px] font-normal whitespace-nowrap">
-                                  30% OFF
+                                  {
+                                    trending.variants?.[0]?.ageGroups?.[0]
+                                      ?.discount
+                                  }
+                                  % OFF
                                 </p>
                               </div>
                             </div>

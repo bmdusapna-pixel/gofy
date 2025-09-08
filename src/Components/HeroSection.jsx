@@ -33,7 +33,9 @@ const hero_slider_array = [
 ];
 
 const HeroSection = () => {
-  const [categories, setCategories] = useState([]);
+  const baseUrl = import.meta.env.VITE_BASE_URL;
+  // const [categories, setCategories] = useState([]);
+  const [collection, setCollection] = useState([]);
   const settings = {
     infinite: true,
     speed: 500,
@@ -46,9 +48,18 @@ const HeroSection = () => {
   };
 
   useEffect(() => {
-    const getCategories = sub_category_toys_clothes;
-    setCategories(getCategories);
-  }, []);
+    const fetchCollection = async () => {
+      const res = await fetch(`${baseUrl}/collections`);
+      const data = await res.json();
+      setCollection(data.collections);
+    };
+    fetchCollection();
+  }, [baseUrl]);
+
+  // useEffect(() => {
+  //   const getCategories = sub_category_toys_clothes;
+  //   setCategories(getCategories);
+  // }, []);
 
   return (
     <div className="flex flex-col gap-10 w-full">
@@ -93,40 +104,38 @@ const HeroSection = () => {
           Lorem ipsum dolor sit amet consectetur. Id fames there are many
           vulputate eget dolor.
         </p>
-        <div className="w-full flex max-w-[1200px] my-10 relative">
+        <div
+          className="flex max-w-[1200px] my-10 relative"
+          style={{ width: collection.length * 300 }}
+        >
           <div className="w-full bg-[#e9f9fc] rounded-full category-swiper">
             <Swiper
               slidesPerView="auto"
+              key={collection.length}
               breakpoints={{
-                320: { slidesPerView: 2 },
-                640: { slidesPerView: 3 },
-                768: { slidesPerView: 4 },
-                1024: { slidesPerView: 4 },
-                1536: { slidesPerView: 4 },
+                320: { slidesPerView: Math.min(collection.length, 2) },
+                640: { slidesPerView: Math.min(collection.length, 3) },
+                768: { slidesPerView: Math.min(collection.length, 4) },
+                1024: { slidesPerView: Math.min(collection.length, 4) },
+                1536: { slidesPerView: Math.min(collection.length, 6) },
               }}
             >
-              {categories.map((item, i) => {
-                // to show only 4 card for now
-                if (i >= 4) return null;
+              {collection.map((item) => {
                 return (
                   <SwiperSlide key={item._id}>
                     <Link
-                      to={
-                        item.category === "toys"
-                          ? `/products/toys/item/${slugify(item.name)}`
-                          : `/products/clothes/item/${slugify(item.name)}`
-                      }
+                      to={`/products/${slugify(item.collectionName)}`}
                       className="flex cursor-pointer flex-col items-center justify-center gap-3 transition-transform duration-300 py-5 hover:-translate-y-1"
                     >
                       <div className="w-20 md:w-35 h-20 md:h-35 border-8 flex items-center justify-center rounded-full border-white bg-[#e9f9fc] shadow-md">
                         <img
-                          src={item.image_url}
-                          alt={item.name}
+                          src={item.imageUrl}
+                          alt={item.collectionName}
                           className="w-full h-full object-contain rounded-full"
                         />
                       </div>
                       <p className="text-[16px] leading-[24px] sm:text-[18px] sm:leading-[27px] text-[#000000] font-semibold text-center">
-                        {item.name}
+                        {item.collectionName}
                       </p>
                     </Link>
                   </SwiperSlide>

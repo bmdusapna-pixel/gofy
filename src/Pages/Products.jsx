@@ -23,6 +23,9 @@ import {
   unslugify,
 } from "../assets/helper";
 
+import SuperBanner from "../assets/superBanner.png";
+const baseUrl = import.meta.env.VITE_BASE_URL;
+
 const product_categories = [
   { _id: 1, sub_category: "Dolls" },
   { _id: 2, sub_category: "Educational Toy" },
@@ -64,6 +67,23 @@ const Products = () => {
   const [hoveredBrand, setHoveredBrand] = useState("");
   const [currentBrand, setCurrentBrand] = useState("");
   const [selectedRating, setSelectedRating] = useState("All");
+
+  const [allProducts, setAllProducts] = useState([]);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const res = await fetch(`${baseUrl}/products`);
+        const results = await res.json();
+        console.log(results.data);
+        setAllProducts(results.data);
+        setProductItems(results.data);
+      } catch (err) {
+        console.error("Error fetching products:", err);
+      }
+    };
+    fetchProducts();
+  }, []);
 
   useEffect(() => {
     const extractUnique = (items, key, label = key) => {
@@ -117,43 +137,43 @@ const Products = () => {
     setCurrentPriceCategory([]);
   };
 
-  useEffect(() => {
-    let items = [];
-    if (category === "age" && slugToAgeGroup[slug]) {
-      const ageGroup = slugToAgeGroup[slug];
-      const filteredClothes = clothe_items
-        .filter((item) => item.age_group === ageGroup)
-        .map((item) => ({ ...item, category: "clothes" }));
-      const filteredToys = toys_items
-        .filter((item) => item.age_group === ageGroup)
-        .map((item) => ({ ...item, category: "toys" }));
-      items = [...filteredClothes, ...filteredToys];
-      setProductItems(items);
-    } else if (!category && !slug) {
-      setProductItems([...clothe_items, ...toys_items]);
-    } else if (category === "toys") {
-      if (slug) {
-        items = toys_items.filter(
-          (item) => unslugify(slug) === item.sub_category
-        );
-        setProductItems(items);
-      } else {
-        items = toys_items.map((item) => ({ ...item, category: "toys" }));
-        console.log(items);
-        setProductItems(items);
-      }
-    } else if (category === "clothes") {
-      if (slug) {
-        items = clothe_items.filter(
-          (item) => unslugify(slug) === item.sub_category
-        );
-        setProductItems(items);
-      } else {
-        items = clothe_items.map((item) => ({ ...item, category: "clothes" }));
-        setProductItems(items);
-      }
-    }
-  }, [category, slug]);
+  // useEffect(() => {
+  //   let items = [];
+  //   if (category === "age" && slugToAgeGroup[slug]) {
+  //     const ageGroup = slugToAgeGroup[slug];
+  //     const filteredClothes = clothe_items
+  //       .filter((item) => item.age_group === ageGroup)
+  //       .map((item) => ({ ...item, category: "clothes" }));
+  //     const filteredToys = toys_items
+  //       .filter((item) => item.age_group === ageGroup)
+  //       .map((item) => ({ ...item, category: "toys" }));
+  //     items = [...filteredClothes, ...filteredToys];
+  //     setProductItems(items);
+  //   } else if (!category && !slug) {
+  //     setProductItems([...clothe_items, ...toys_items]);
+  //   } else if (category === "toys") {
+  //     if (slug) {
+  //       items = toys_items.filter(
+  //         (item) => unslugify(slug) === item.sub_category
+  //       );
+  //       setProductItems(items);
+  //     } else {
+  //       items = toys_items.map((item) => ({ ...item, category: "toys" }));
+  //       console.log(items);
+  //       setProductItems(items);
+  //     }
+  //   } else if (category === "clothes") {
+  //     if (slug) {
+  //       items = clothe_items.filter(
+  //         (item) => unslugify(slug) === item.sub_category
+  //       );
+  //       setProductItems(items);
+  //     } else {
+  //       items = clothe_items.map((item) => ({ ...item, category: "clothes" }));
+  //       setProductItems(items);
+  //     }
+  //   }
+  // }, [category, slug]);
 
   const addProductToCart = (product, event) => {
     event.stopPropagation();
@@ -169,6 +189,13 @@ const Products = () => {
 
   return (
     <div className="w-full bg-[#f9f9f9]">
+      <div className="w-full h-[350px]">
+        <img
+          src={SuperBanner}
+          alt="super banner"
+          className="object-cover h-full w-full"
+        />
+      </div>
       <div className="lg:px-12 px-5 pt-4">
         <Breadcrumbs />
       </div>
@@ -282,31 +309,41 @@ const Products = () => {
                 {/* <hr className="w-14 rounded-2xl bg-[#f88e0f] h-1 border-none" /> */}
               </div>
               <div className="flex flex-col gap-2 w-full">
-                {productItems.slice(0, 5).map((product) => (
-                  <div
-                    className="flex gap-5 w-full items-center cursor-pointer"
-                    key={product._id}
-                  >
-                    <div className="w-40 bg-[#f9f9f9] rounded-md">
-                      <img
-                        src={product.images[0]}
-                        alt={product.name}
-                        className="w-20 object-cover"
-                      />
+                {productItems.slice(0, 5).map((product) => {
+                  const imageSrc =
+                    product.variants?.[0]?.images?.[0] ||
+                    product.images?.[0] ||
+                    "/placeholder.png";
+
+                  const price =
+                    product.variants?.[0]?.ageGroups?.[0]?.price || "—";
+
+                  return (
+                    <div
+                      className="flex gap-5 w-full items-center cursor-pointer"
+                      key={product._id}
+                    >
+                      <div className="w-40 bg-[#f9f9f9] rounded-md flex justify-center items-center">
+                        <img
+                          src={imageSrc}
+                          alt={product.name}
+                          className="w-20 h-20 object-contain"
+                        />
+                      </div>
+                      <div className="w-full flex flex-col">
+                        <p className="text-sm text-gray-500">
+                          {product.product_type || product.brand || "General"}
+                        </p>
+                        <p className="text-black text-[16px] leading-[24px] transition-colors duration-300 hover:text-[#00bbae] font-semibold">
+                          {product.name}
+                        </p>
+                        <p className="text-pink-600 text-[16px] leading-[24px] font-semibold">
+                          ₹ {price}
+                        </p>
+                      </div>
                     </div>
-                    <div className="w-full flex flex-col">
-                      <p className="text-sm text-gray-500">
-                        {product.product_type}
-                      </p>
-                      <p className="text-black text-[16px] leading-[24px] transition-colors duration-300 hover:text-[#00bbae] font-semibold">
-                        {product.name}
-                      </p>
-                      <p className="text-pink-600 text-[16px] leading-[24px] font-semibold">
-                        ₹ {product.price}
-                      </p>
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           </div>
@@ -426,124 +463,105 @@ const Products = () => {
               </div>
             </div>
             <div className="w-full grid md:grid-cols-4 grid-cols-1 sm:grid-cols-2 gap-3">
-              {productItems?.map((product, index) => (
-                <Link
-                  to={
-                    product.category === "clothes"
-                      ? `/products/clothes/${product.url}`
-                      : `/products/toys/${product.url}`
-                  }
-                  key={index}
-                  onMouseEnter={() => setProductHoverd(product._id)}
-                  onMouseLeave={() => setProductHoverd(null)}
-                  className="w-full cursor-pointer border border-gray-200 rounded-md p-3 shadow-sm hover:shadow-xl bg-white flex flex-col gap-2 lg:gap-3 transition-shadow duration-300 group"
-                >
-                  <div className="w-full bg-[#f9f9f9] rounded-md relative h-52">
-                    {product.stocks === 0 && (
-                      <p className="absolute top-0 -left-3 bg-red-400 ribbon pl-2 pr-5 text-white">
-                        Sold Out
-                      </p>
-                    )}
-                    <img
-                      src={product.images[0]}
-                      alt={product.name}
-                      className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-110"
-                    />
-                    {productHovered === product._id && (
-                      <div className="absolute inset-0 bg-black/10 z-10 rounded-md"></div>
-                    )}
-                    {productHovered === product._id && (
-                      <div className="absolute sm:block hidden bottom-3 left-1/2 -translate-x-1/2 transform transition-all duration-300 translate-y-8 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 z-20">
-                        <div className="flex gap-2 items-center">
-                          <div
-                            onClick={(event) =>
-                              addFavouriteItemsWishList(product, event)
-                            }
-                            className="w-10 h-10 flex items-center justify-center rounded-full bg-white transition-colors hover:bg-[#00bbae] text-black hover:text-white"
-                          >
-                            <Heart className="w-5 h-4" />
-                          </div>
-                          <div
-                            onClick={(event) =>
-                              addProductToCart(product, event)
-                            }
-                            className="w-10 h-10 flex items-center justify-center rounded-full bg-white transition-colors hover:bg-[#00bbae] text-black hover:text-white"
-                          >
-                            <ShoppingBag className="w-5 h-5" />
+              {productItems?.map((product, index) => {
+                return (
+                  <Link
+                    to={`/product-details/${product.url}`}
+                    key={index}
+                    onMouseEnter={() => setProductHoverd(product._id)}
+                    onMouseLeave={() => setProductHoverd(null)}
+                    className="w-full cursor-pointer border border-gray-200 rounded-md p-3 shadow-sm hover:shadow-xl bg-white flex flex-col gap-2 lg:gap-3 transition-shadow duration-300 group"
+                  >
+                    {/* ✅ image + hover overlay */}
+                    <div className="w-full bg-[#f9f9f9] rounded-md relative h-52">
+                      {product.status === "Out of Stock" && (
+                        <p className="absolute top-0 -left-3 bg-red-400 ribbon pl-2 pr-5 text-white">
+                          Sold Out
+                        </p>
+                      )}
+                      <img
+                        src={product.variants?.[0]?.images?.[0]}
+                        alt={product.name}
+                        className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-110"
+                      />
+                      {productHovered === product._id && (
+                        <div className="absolute inset-0 bg-black/10 z-10 rounded-md"></div>
+                      )}
+                      {productHovered === product._id && (
+                        <div className="absolute sm:block hidden bottom-3 left-1/2 -translate-x-1/2 transform transition-all duration-300 translate-y-8 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 z-20">
+                          <div className="flex gap-2 items-center">
+                            <div
+                              onClick={(event) =>
+                                addFavouriteItemsWishList(product, event)
+                              }
+                              className="w-10 h-10 flex items-center justify-center rounded-full bg-white transition-colors hover:bg-[#00bbae] text-black hover:text-white"
+                            >
+                              <Heart className="w-5 h-4" />
+                            </div>
+                            <div
+                              onClick={(event) =>
+                                addProductToCart(product, event)
+                              }
+                              className="w-10 h-10 flex items-center justify-center rounded-full bg-white transition-colors hover:bg-[#00bbae] text-black hover:text-white"
+                            >
+                              <ShoppingBag className="w-5 h-5" />
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    )}
-                  </div>
-                  <div className="flex flex-col gap-2 w-full px-2">
-                    <div className="flex gap-2 items-center">
-                      {/* <div className="flex gap-2 items-center py-0.5 px-1.5 rounded-bl-lg rounded-tr-lg bg-[#f88e0f]">
-                        <Star className="w-3 h-3 text-white" fill="white" />
-                        <p className="text-white">({product.rating})</p>
-                      </div>
-                      <p className="text-sm text-gray-500">
-                        {product.review} Review
-                      </p> */}
-                      <div className="flex items-center">
-                        {Array.from({
-                          length: Math.floor(product.rating),
-                        }).map(() => (
-                          <Star
-                            className="w-3 h-3 text-yellow-500"
-                            fill="#f88e0f"
-                          />
-                        ))}
-                        {Array.from({
-                          length: 5 - Math.floor(product.rating),
-                        }).map(() => (
-                          <Star
-                            className="w-3 h-3 text-yellow-500"
-                            fill="white"
-                          />
-                        ))}
-                      </div>
+                      )}
                     </div>
-                    {/* <p className="text-sm text-gray-500">
-                      {product.product_type}
-                    </p> */}
-                    <div className="flex sm:flex-col flex-row justify-between w-full gap-2">
-                      <p className="text-black text-[20px] leading-[30px] transition-colors duration-300 hover:text-[#00bbae] font-semibold">
-                        {product.name}
-                      </p>
-                      {/* <p className="text-[#00bbae] text-[20px] leading-[30px] font-semibold">
-                        ₹{product.price}
-                      </p> */}
+
+                    {/* ✅ product details */}
+                    <div className="flex flex-col gap-2 w-full px-2">
                       <div className="flex gap-2 items-center">
-                        <p className="text-pink-600 text-[20px] leading-[30px] font-semibold">
-                          ₹ {product.price}
+                        <div className="flex items-center">
+                          {Array.from({
+                            length: Math.floor(product.rating || 0),
+                          }).map((_, i) => (
+                            <Star
+                              key={`filled-${i}`}
+                              className="w-3 h-3 text-yellow-500"
+                              fill="#f88e0f"
+                            />
+                          ))}
+                          {Array.from({
+                            length: 5 - Math.floor(product.rating || 0),
+                          }).map((_, i) => (
+                            <Star
+                              key={`empty-${i}`}
+                              className="w-3 h-3 text-yellow-500"
+                              fill="white"
+                            />
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="flex sm:flex-col flex-row justify-between w-full gap-2">
+                        <p className="text-black text-[20px] leading-[30px] transition-colors duration-300 hover:text-[#00bbae] font-semibold">
+                          {product.name}
                         </p>
-                        <p className="text-gray-500 text-[14px] leading-[30px] line-through font-semibold">
-                          ₹ {product.price + 100}
-                        </p>
-                        <p className="text-red-600 text-[18px] leading-[30px] font-semibold">
-                          30% OFF
-                        </p>
+                        <div className="flex gap-2 items-center">
+                          <p className="text-pink-600 text-[20px] leading-[30px] font-semibold">
+                            ₹{" "}
+                            {product.variants?.[0]?.ageGroups?.[0]?.price ||
+                              product.price}
+                          </p>
+                          {product.variants?.[0]?.ageGroups?.[0]?.cutPrice && (
+                            <>
+                              <p className="text-gray-500 text-[14px] leading-[30px] line-through font-semibold">
+                                ₹ {product.variants[0].ageGroups[0].cutPrice}
+                              </p>
+                              <p className="text-red-600 text-[18px] leading-[30px] font-semibold">
+                                {product.variants[0].ageGroups[0].discount}% OFF
+                              </p>
+                            </>
+                          )}
+                        </div>
                       </div>
                     </div>
-                    <div className="flex sm:hidden gap-2 items-center">
-                      <div
-                        onClick={(event) =>
-                          addFavouriteItemsWishList(product, event)
-                        }
-                        className="w-8 h-8 flex items-center justify-center rounded-full bg-[#00bbae] text-white"
-                      >
-                        <Heart className="w-4 h-4" />
-                      </div>
-                      <div
-                        onClick={(event) => addProductToCart(product, event)}
-                        className="w-8 h-8 flex items-center justify-center rounded-full bg-[#00bbae] text-white"
-                      >
-                        <ShoppingBag className="w-4 h-4" />
-                      </div>
-                    </div>
-                  </div>
-                </Link>
-              ))}
+                  </Link>
+                );
+              })}
             </div>
           </div>
         </div>

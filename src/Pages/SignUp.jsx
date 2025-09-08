@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   Star,
   Loader,
@@ -6,6 +6,7 @@ import {
   XCircle,
   MessageSquare,
 } from "lucide-react";
+import { AuthContext } from "../Context/AuthContext";
 import { FaWhatsapp } from "react-icons/fa";
 import LoginBanner from "../assets/signUp.jpeg";
 import LoginBannerMobile from "../assets/login-banner-mobile.jpeg";
@@ -28,6 +29,7 @@ const SignUp = () => {
   const [otpSent, setOtpSent] = useState(false);
   const [otpRequestLoading, setOtpRequestLoading] = useState(false);
   const [verificationLoading, setVerificationLoading] = useState(false);
+  const { register, loading } = useContext(AuthContext);
 
   const [message, setMessage] = useState(null);
   const [messageType, setMessageType] = useState("");
@@ -86,8 +88,8 @@ const SignUp = () => {
     );
   };
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
     if (currentStep === 1) {
       if (validateStep1()) {
@@ -99,21 +101,15 @@ const SignUp = () => {
         showMessage("Please enter the OTP.", "error");
         return;
       }
-      setVerificationLoading(true);
-      await new Promise((resolve) => setTimeout(resolve, 2000));
 
-      if (signUpData.otp === "123456") {
-        showMessage(
-          "Account created successfully and phone number verified!",
-          "success"
-        );
-        setTimeout(() => {
-          navigate("/account");
-        }, 1000);
+      const res = await register(signUpData);
+
+      if (res.success) {
+        showMessage("Account created successfully!", "success");
+        setTimeout(() => navigate("/account"), 1000);
       } else {
-        showMessage("Invalid OTP. Please try again.", "error");
+        showMessage(res.message, "error");
       }
-      setVerificationLoading(false);
     }
   };
 

@@ -1,10 +1,9 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/autoplay";
 import "swiper/css/navigation";
-import product_list from "../assets/product-list.js";
 import {
   ChevronLeft,
   ChevronRight,
@@ -19,6 +18,22 @@ import { Countdown } from "./AnimatedDropdown.jsx";
 const ProductsCollectionBelow = ({ color }) => {
   const [hoveredId, setHoveredId] = useState(null);
   const { addToCart, addFavouriteItems } = useContext(CartContext);
+  const baseUrl = import.meta.env.VITE_BASE_URL;
+
+  const [products, setProductList] = useState([]);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch(`${baseUrl}/products`);
+        const result = await response.json();
+        setProductList(result.data);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    };
+    fetchProducts();
+  }, [baseUrl]);
 
   const addProductToCart = (product, event) => {
     event.stopPropagation();
@@ -66,8 +81,23 @@ const ProductsCollectionBelow = ({ color }) => {
             loop={true}
             grabCursor={true}
           >
-            {product_list.map((product) => {
+            {products.map((product) => {
               const isHovered = hoveredId === product._id;
+              // Access the first variant and the first age group to get the images and pricing
+              const firstVariant = product.variants[0];
+              if (!firstVariant) {
+                return null;
+              }
+              const firstAgeGroup = firstVariant.ageGroups[0];
+              if (!firstAgeGroup) {
+                return null;
+              }
+
+              const images = firstVariant.images;
+              const price = firstAgeGroup.price;
+              const cutPrice = firstAgeGroup.cutPrice;
+              const discount = firstAgeGroup.discount;
+
               return (
                 <SwiperSlide key={product._id}>
                   <Link
@@ -77,35 +107,38 @@ const ProductsCollectionBelow = ({ color }) => {
                     onMouseLeave={() => setHoveredId(null)}
                   >
                     <div className="flex relative">
-                      {product.stocks === 0 && (
-                        <p className="absolute top-0 -left-3 bg-red-400 ribbon pl-2 pr-5 text-white">
+                      {product.status === "Out of Stock" && (
+                        <p className="absolute top-0 -left-3 bg-red-400 ribbon pl-2 pr-5 text-white z-[3]">
                           Sold Out
                         </p>
                       )}
-                      {/* <p className="absolute -top-3 -left-2 text-white bg-pink-600 px-1 py-1 rounded-sm text-[14px] leading-[21px] font-semibold">
-                        80%
-                      </p> */}
                       <div className="w-full h-72 sm:h-[280px] flex items-center justify-center">
-                        <img
-                          src={product.images[0]}
-                          alt={product.name}
-                          className={`absolute top-0 left-0 w-72 h-full ease-in-out ${
-                            isHovered
-                              ? "opacity-0 scale-105 duration-300"
-                              : "opacity-100 scale-100 duration-100"
-                          }`}
-                          draggable={false}
-                        />
-                        <img
-                          src={product.images[1]}
-                          alt={product.name + " hover"}
-                          className={`absolute top-0 left-0 w-72 h-full ease-in-out ${
-                            isHovered
-                              ? "opacity-100 scale-100 duration-300"
-                              : "opacity-0 scale-95 duration-100"
-                          }`}
-                          draggable={false}
-                        />
+                        {images.length > 0 && (
+                          <>
+                            <img
+                              src={images[0]}
+                              alt={product.name}
+                              className={`absolute top-0 left-0 w-72 h-full ease-in-out ${
+                                isHovered
+                                  ? "opacity-0 scale-105 duration-300"
+                                  : "opacity-100 scale-100 duration-100"
+                              }`}
+                              draggable={false}
+                            />
+                            {images.length > 1 && (
+                              <img
+                                src={images[1]}
+                                alt={product.name + " hover"}
+                                className={`absolute top-0 left-0 w-72 h-full ease-in-out ${
+                                  isHovered
+                                    ? "opacity-100 scale-100 duration-300"
+                                    : "opacity-0 scale-95 duration-100"
+                                }`}
+                                draggable={false}
+                              />
+                            )}
+                          </>
+                        )}
                       </div>
                     </div>
                     {hoveredId === product._id && (
@@ -126,25 +159,10 @@ const ProductsCollectionBelow = ({ color }) => {
                           >
                             <Heart className="w-4 md:w-5 h-4 md:h-5" />
                           </div>
-                          {/* <div
-                            onClick={(event) =>
-                              addProductToCart(product, event)
-                            }
-                            style={{ boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)" }}
-                            className="md:w-10 w-8 md:h-10 h-8 flex items-center justify-center rounded-full bg-white transition-colors hover:bg-[#00bbae] text-black hover:text-white"
-                          >
-                            <ShoppingBag className="w-4 md:w-5 h-4 md:h-5" />
-                          </div> */}
                         </div>
                       </div>
                     )}
                     <div className="flex flex-col gap-2 px-2">
-                      {/* <div
-                                            style={{ boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)" }}
-                                            className="w-60 mx-auto"
-                                          >
-                                            <Countdown />
-                                          </div> */}
                       <p className="text-[20px] leading-[30px] font-semibold text-[#212529] mt-4 whitespace-nowrap overflow-hidden text-ellipsis">
                         {product.name}
                       </p>
@@ -158,31 +176,44 @@ const ProductsCollectionBelow = ({ color }) => {
                             />
                           )
                         )}
-                        <Star
-                          className="w-4 h-4 text-yellow-500"
-                          fill="#f8f9fa"
-                        />
+                        {Array.from({
+                          length: 5 - Math.floor(product.rating),
+                        }).map((_, index) => (
+                          <Star
+                            key={index}
+                            className="w-4 h-4 text-yellow-500"
+                            fill="#f8f9fa"
+                          />
+                        ))}
                       </div>
                       <div className="flex gap-2 items-center">
                         <p className="text-[24px] leading-[27px] font-semibold text-pink-600">
-                          ₹{product.price}
+                          ₹{price}
                         </p>
-                        <p className="text-[14px] leading-[24px] line-through font-semibold text-gray-500">
-                          ₹ 2000
-                        </p>
-                        <p className="text-[16px] leading-[24px] font-semibold text-red-600">
-                          30% OFF
-                        </p>
+                        {cutPrice && (
+                          <p className="text-[14px] leading-[24px] line-through font-semibold text-gray-500">
+                            ₹{cutPrice}
+                          </p>
+                        )}
+                        {discount > 0 && (
+                          <p className="text-[16px] leading-[24px] font-semibold text-red-600">
+                            {discount}% OFF
+                          </p>
+                        )}
                       </div>
                       <div className="flex items-center gap-4 mt-2">
                         <button
                           onClick={(event) => addProductToCart(product, event)}
                           className="text-[14] leading-[24px] px-2 w-1/2 font-semibold cursor-pointer py-2 rounded-md hover:bg-[#00bbae] bg-[#e9ecef] hover:text-white transition duration-300"
                         >
-                          Add To Cart
+                          {product.status === "Out of Stock"
+                            ? "Save for later"
+                            : "Add To Cart"}
                         </button>
                         <button className="text-[14] leading-[24px] px-2 w-1/2 font-semibold cursor-pointer py-2 rounded-md bg-[#00bbae] text-white hover:text-black hover:bg-[#e9ecef] transition duration-300">
-                          Buy Now
+                          {product.status === "Out of Stock"
+                            ? "Notify Me"
+                            : "Buy Now"}
                         </button>
                       </div>
                     </div>

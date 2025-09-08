@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import cta_banner from "../assets/cta.png";
 import I1 from "../assets/1.png";
 import I2 from "../assets/2.png";
@@ -11,6 +11,8 @@ import I8 from "../assets/8.png";
 // import ProductsCollection from "./ProductsCollection";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
+const baseUrl = import.meta.env.VITE_BASE_URL;
+import { slugify } from "../assets/helper";
 
 const age_category_array = [
   {
@@ -65,6 +67,16 @@ const age_category_array = [
 
 const CTA = () => {
   const [buttonHovered, setButtonHovered] = useState(false);
+  const [ageCategories, setAgeCategories] = useState([]);
+
+  useEffect(() => {
+    const fetchAges = async () => {
+      const res = await fetch(`${baseUrl}/ages`);
+      const data = await res.json();
+      setAgeCategories(data);
+    };
+    fetchAges();
+  }, []);
 
   return (
     <div className="flex flex-col gap-5 w-full">
@@ -105,9 +117,9 @@ const CTA = () => {
           vulputate eget dolor.
         </p>
         <div className="grid xl:grid-cols-8 lg:grid-cols-4 md:grid-cols-3 grid-cols-2 gap-0 sm:gap-5 w-full my-5 sm:my-10 items-center">
-          {age_category_array.map((item) => (
+          {ageCategories?.map((item) => (
             <Link
-              to={`/products/${item.url}`}
+              to={`/products/${slugify(item.ageRange)}`}
               key={item._id}
               className="flex flex-col gap-3 w-full items-center group"
             >
@@ -119,7 +131,7 @@ const CTA = () => {
                 />
               </div>
               <p className="bottom-8 text-[18px] leading-[27px] text-[#000000] font-semibold">
-                {item.age_difference}
+                {item.ageRange}
               </p>
             </Link>
           ))}

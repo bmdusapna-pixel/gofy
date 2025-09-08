@@ -120,7 +120,8 @@ const Account = () => {
   const handleLogout = () => {
     console.log("Logging out...");
     // Simulating an alert. It's recommended to use a custom message box.
-    alert("You have been logged out. (Simulated)");
+    alert("You have been logged out.");
+    localStorage.removeItem("token");
     navigate("/sign-in");
   };
 

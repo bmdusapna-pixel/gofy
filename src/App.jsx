@@ -150,23 +150,23 @@ const App = () => {
             path="/terms-and-conditions"
             element={<TermsAndConditions />}
           />
-          <Route path="/products/:category?/:slug?" element={<Products />} />
+          <Route path="/products/:slug?/:category?" element={<Products />} />
           <Route path="/super-deals-product" element={<SuperDealsProduct />} />
           <Route path="/trending" element={<Trending />} />
           <Route path="/offer" element={<Offers />} />
           <Route path="/product-details/:url" element={<ProductDetails />} />
-          <Route path="/products/toys" element={<Toys />} />
+          {/* <Route path="/products/toys" element={<Toys />} /> */}
           <Route
             path="/products/toys/item/:url"
             element={<SpecificToyProducts />}
           />
-          <Route path="/products/toys/:url" element={<ToysDetails />} />
-          <Route path="/products/clothes" element={<Clothes />} />
+          {/* <Route path="/products/toys/:url" element={<ToysDetails />} /> */}
+          {/* <Route path="/products/clothes" element={<Clothes />} /> */}
           <Route
             path="/products/clothes/item/:url"
             element={<SpecificClotheProducts />}
           />
-          <Route path="/products/clothes/:url" element={<ClothesDetails />} />
+          {/* <Route path="/products/clothes/:url" element={<ClothesDetails />} /> */}
           <Route path="/faq" element={<Faq />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/cart" element={<CartDetails />} />

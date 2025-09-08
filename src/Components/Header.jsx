@@ -31,6 +31,7 @@ import {
 import { CartContext } from "../Context/CartContext";
 import Notifications from "./Notifications.jsx";
 import { groupedCombined } from "../assets/helper.js";
+import { AuthContext } from "../Context/AuthContext.jsx";
 
 const shop_collection = [
   {
@@ -88,6 +89,7 @@ const shop_collection = [
     ],
   },
 ];
+const baseUrl = import.meta.env.VITE_BASE_URL;
 
 const FaIconsComp = {
   faFacebookF,
@@ -142,6 +144,7 @@ const SecondHeader = ({
   const [searchProduct, setSearchProduct] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [showNotification, setShowNotification] = useState(false);
+  const { user } = useContext(AuthContext);
 
   const chechkingOut = () => {
     if (cartItems.length === 0) {
@@ -277,13 +280,24 @@ const SecondHeader = ({
               {totalItems}
             </p>
           </div>
-          <Link to="/sign-in" className="flex gap-0.5 items-center">
-            <User className="sm:w-7 w-6 sm:h-7 h-6 text-black" />
-            <div className="flex-col sm:flex hidden">
-              <p className="text-gray-600 font-medium text-sm">Sign In</p>
-              <p className="text-base font-semibold text-black">Account</p>
-            </div>
-          </Link>
+          {user ? (
+            <Link to="/account" className="flex gap-0.5 items-center">
+              <User className="sm:w-7 w-6 sm:h-7 h-6 text-black" />
+              <div className="flex-col sm:flex hidden">
+                <p className="text-base font-semibold text-black">
+                  {user?.name}
+                </p>
+              </div>
+            </Link>
+          ) : (
+            <Link to="/sign-in" className="flex gap-0.5 items-center">
+              <User className="sm:w-7 w-6 sm:h-7 h-6 text-black" />
+              <div className="flex-col sm:flex hidden">
+                <p className="text-gray-600 font-medium text-sm">Sign In</p>
+                <p className="text-base font-semibold text-black">Account</p>
+              </div>
+            </Link>
+          )}
         </div>
         <div className="flex lg:hidden">
           <div
@@ -315,6 +329,11 @@ const ThirdHeader = ({ isMobileMenuOpen, setIsMobileMenuOpen }) => {
   const laptopMenuRef = useRef(null);
   const [productItems, setProductItems] = useState([]);
   const location = useLocation();
+  const [shopCollection, setShopCollection] = useState([]);
+  const [menu, setMenu] = useState([]);
+
+  const slugify = (text) =>
+    text.toString().toLowerCase().trim().replace(/\s+/g, "-");
 
   const navigatingPageInMobileTablet = (item) => {
     if (itemHovered === item) {
@@ -347,6 +366,94 @@ const ThirdHeader = ({ isMobileMenuOpen, setIsMobileMenuOpen }) => {
         menuNode.removeEventListener("mouseleave", handleMouseLeave);
       }
     };
+  }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const collectionRes = await fetch(`${baseUrl}/collections`);
+        const collectionData = await collectionRes.json();
+
+        const categoryRes = await fetch(`${baseUrl}/categories`);
+        const categoryData = await categoryRes.json();
+
+        const collectionsMap = collectionData.collections.map((col) => ({
+          _id: col._id,
+          label: col.collectionName,
+          url: `/products/${col.collectionName.toLowerCase()}`,
+          items: [],
+        }));
+
+        categoryData.categories.forEach((cat) => {
+          const collectionId = cat.collectionId._id;
+          const collectionIndex = collectionsMap.findIndex(
+            (c) => c._id === collectionId
+          );
+
+          if (collectionIndex !== -1) {
+            collectionsMap[collectionIndex].items.push({
+              name: cat.categoryName,
+              category: cat.collectionId.collectionName.toLowerCase(),
+              _id: cat._id,
+            });
+          }
+        });
+
+        setShopCollection(collectionsMap);
+      } catch (error) {
+        console.error("Error fetching collections and categories:", error);
+      }
+    };
+
+    fetchData();
+    async function fetchMenu() {
+      const ageRes = await fetch(`${baseUrl}/ages`).then((res) => res.json());
+      const ages = ageRes;
+
+      const productsRes = await fetch(`${baseUrl}/products`).then((res) =>
+        res.json()
+      );
+      const products = productsRes.data;
+
+      const ageMap = new Map();
+
+      ages.forEach((age) => {
+        const ageSlug = slugify(age.ageRange);
+
+        ageMap.set(ageSlug, {
+          label: age.ageRange,
+          url: `/products/${ageSlug}`,
+          items: new Map(),
+        });
+      });
+
+      products.forEach((product) => {
+        product.variants.forEach((variant) => {
+          variant.ageGroups.forEach(({ ageGroup }) => {
+            const ageSlug = slugify(ageGroup.ageRange);
+
+            if (!ageMap.has(ageSlug)) return;
+
+            product.categories.forEach((category) => {
+              const catSlug = slugify(category.categoryName);
+              ageMap.get(ageSlug).items.set(catSlug, {
+                name: category.categoryName,
+                url: `/products/${ageSlug}/${catSlug}`,
+              });
+            });
+          });
+        });
+      });
+
+      const finalMenu = Array.from(ageMap.values()).map((age) => ({
+        ...age,
+        items: Array.from(age.items.values()),
+      }));
+
+      setMenu(finalMenu);
+    }
+
+    fetchMenu();
   }, []);
 
   return (
@@ -389,9 +496,7 @@ const ThirdHeader = ({ isMobileMenuOpen, setIsMobileMenuOpen }) => {
                   itemHovered === "shopByAge" ? "rotate-180" : "rotate-0"
                 }`}
               />
-              {itemHovered === "shopByAge" && (
-                <AnimatedDropdown items={productItems} />
-              )}
+              {itemHovered === "shopByAge" && <AnimatedDropdown items={menu} />}
             </div>
             <div
               onMouseEnter={() => setItemHovered("shopByCollection")}
@@ -412,7 +517,7 @@ const ThirdHeader = ({ isMobileMenuOpen, setIsMobileMenuOpen }) => {
                 }`}
               />
               {itemHovered === "shopByCollection" && (
-                <AnimatedDropdown items={shop_collection} />
+                <AnimatedDropdown items={shopCollection} />
               )}
             </div>
             <Link

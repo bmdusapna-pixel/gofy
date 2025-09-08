@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   Star,
   Loader,
@@ -6,6 +6,7 @@ import {
   XCircle,
   MessageSquare,
 } from "lucide-react";
+import { AuthContext } from "../Context/AuthContext";
 import { FaWhatsapp } from "react-icons/fa";
 import LoginBanner from "../assets/login-banner.jpeg";
 import LoginBannerMobile from "../assets/login-banner-mobile.jpeg";
@@ -22,7 +23,7 @@ const SignIn = () => {
   const [otpMethod, setOtpMethod] = useState(""); // 'whatsapp' or 'sms'
 
   const [otpSent, setOtpSent] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const { login, loading } = useContext(AuthContext);
   const [otpRequestLoading, setOtpRequestLoading] = useState(false);
 
   const [message, setMessage] = useState(null);
@@ -72,17 +73,14 @@ const SignIn = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setLoading(true);
+    const res = await login(loginData.phone, loginData.otp);
 
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-
-    if (loginData.otp === "123456") {
+    if (res.success) {
       showMessage("Login successful!", "success");
       navigate("/account");
     } else {
-      showMessage("Invalid OTP. Please try again.", "error");
+      showMessage(res.message || "Invalid credentials", "error");
     }
-    setLoading(false);
   };
 
   useEffect(() => {

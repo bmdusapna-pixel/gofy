@@ -74,7 +74,7 @@ const AnimatedDropdown = ({ items }) => {
               onMouseLeave={() => setHoveredIndex(null)}
             >
               <Link
-                to={`/products/${item.url}`}
+                to={item.url}
                 className="text-[18px] leading-[27px] text-[#DC3545] font-bold block"
               >
                 {item.label}
@@ -97,13 +97,7 @@ const AnimatedDropdown = ({ items }) => {
                     <div className="flex flex-col gap-1">
                       {item?.items?.map((product) => (
                         <Link
-                          to={
-                            product.category === "toy"
-                              ? `/products/toys/item/${slugify(product.name)}`
-                              : `/products/clothes/item/${slugify(
-                                  product.name
-                                )}`
-                          }
+                          to={`${item.url}/${slugify(product.name)}`}
                           className="relative overflow-hidden group cursor-pointer px-3 py-1 rounded-md text-[#001430] hover:text-green-700 transition-colors duration-500"
                           key={product._id}
                         >
@@ -154,15 +148,14 @@ const FlipUnit = ({ value }) => {
   );
 };
 
-const Countdown = () => {
-  const [timeLeft, setTimeLeft] = useState(
-    40 * 24 * 60 * 60 + 13 * 3600 + 56 * 60
-  );
+const Countdown = ({ hour = 40 }) => {
+  const [timeLeft, setTimeLeft] = useState(hour * 3600);
 
   useEffect(() => {
     const interval = setInterval(() => {
       setTimeLeft((prev) => (prev > 0 ? prev - 1 : 0));
     }, 1000);
+
     return () => clearInterval(interval);
   }, []);
 
