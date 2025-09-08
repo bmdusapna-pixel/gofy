@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Loader,
   Map,
@@ -18,6 +18,7 @@ import Issues from "../Components/Issues.jsx";
 import ReferEarn from "../Components/ReferEarn.jsx";
 import Wallet from "../Components/Wallet.jsx";
 import SavedAddress from "../Components/SavedAddress.jsx";
+import { AuthContext } from "../Context/AuthContext.jsx";
 
 const IconComponents = {
   User,
@@ -97,7 +98,7 @@ const Account = () => {
     email: "",
     phone: "",
   });
-
+  const { user, logout } = useContext(AuthContext);
   const profileInputChangeHandler = (event) => {
     const { name, value } = event.target;
     if (name === "phone") {
@@ -110,6 +111,17 @@ const Account = () => {
     }
   };
 
+  useEffect(() => {
+    if (user) {
+      setProfileData((prev) => ({
+        ...prev,
+        name: user?.name,
+        email: user?.email,
+        phone: user?.phone,
+      }));
+    }
+  }, [user]);
+
   const handleProfileUpdate = (event) => {
     event.preventDefault();
     console.log("Updating Profile:", profileData);
@@ -119,9 +131,8 @@ const Account = () => {
 
   const handleLogout = () => {
     console.log("Logging out...");
-    // Simulating an alert. It's recommended to use a custom message box.
+    logout();
     alert("You have been logged out.");
-    localStorage.removeItem("token");
     navigate("/sign-in");
   };
 
@@ -133,11 +144,11 @@ const Account = () => {
             <div className="flex gap-5 w-full p-3 items-center">
               <div className="w-16 h-16 p-2 rounded-full bg-[#00bbae] flex items-center justify-center">
                 <p className="text-[32px] leading-[48px] text-white font-bold">
-                  NS
+                  {user?.name?.split(" ").map((i) => i[0])}
                 </p>
               </div>
               <p className="text-[18px] font-semibold text-black leading-[27px]">
-                Nandit Sharma
+                {user?.name}
               </p>
             </div>
             <div className="bg-[#f8f9fa] w-full h-0.5"></div>

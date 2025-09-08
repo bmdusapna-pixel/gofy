@@ -1,30 +1,33 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { FaEdit, FaTrash, FaPlus } from "react-icons/fa";
+import { AuthContext } from "../Context/AuthContext.jsx";
 
 const SavedAddress = () => {
+  const { user, updateUser } = useContext(AuthContext);
+  const baseUrl = import.meta.env.VITE_BASE_URL;
   // We'll use a unique 'id' for each address. In a real app, this would come from a database.
-  const [addresses, setAddresses] = useState([
-    {
-      id: 1,
-      name: "Home Address",
-      houseAndStreet: "123 Main St",
-      apartments: "Apt 4B",
-      town: "Springfield",
-      pinCode: "12345",
-      district: "Capital District",
-      state: "State of Mind",
-    },
-    {
-      id: 2,
-      name: "Work Address",
-      houseAndStreet: "456 Office Rd",
-      apartments: "Suite 100",
-      town: "Metro City",
-      pinCode: "67890",
-      district: "Business District",
-      state: "Another State",
-    },
-  ]);
+  // const [addresses, setAddresses] = useState([
+  //   {
+  //     id: 1,
+  //     name: "Home Address",
+  //     houseAndStreet: "123 Main St",
+  //     apartments: "Apt 4B",
+  //     town: "Springfield",
+  //     pinCode: "12345",
+  //     district: "Capital District",
+  //     state: "State of Mind",
+  //   },
+  //   {
+  //     id: 2,
+  //     name: "Work Address",
+  //     houseAndStreet: "456 Office Rd",
+  //     apartments: "Suite 100",
+  //     town: "Metro City",
+  //     pinCode: "67890",
+  //     district: "Business District",
+  //     state: "Another State",
+  //   },
+  // ]);
 
   const [showForm, setShowForm] = useState(false);
   const [editingAddressId, setEditingAddressId] = useState(null);
@@ -58,30 +61,116 @@ const SavedAddress = () => {
   };
 
   const handleEditClick = (address) => {
-    setEditingAddressId(address.id);
-    setFormData({ ...address });
+    setEditingAddressId(address._id);
+
+    setFormData({
+      name: address.nickname || "",
+      houseAndStreet: address.houseStreet || "",
+      apartments: address.apartment || "",
+      town: address.city || "",
+      pinCode: address.zipCode || "",
+      district: address.district || "",
+      state: address.state || "",
+    });
+
     setShowForm(true);
   };
 
-  const handleDeleteClick = (id) => {
-    setAddresses(addresses.filter((addr) => addr.id !== id));
+  const handleDeleteClick = async (id) => {
+    try {
+      const response = await fetch(`${baseUrl}/user/auth/address`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId: user?._id,
+          addressId: id,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert("Address deleted successfully!");
+        if (data.user) {
+          updateUser(data.user);
+        }
+      } else {
+        alert(data.message || "Failed to delete address");
+      }
+    } catch (error) {
+      console.error("Error deleting address:", error);
+      alert("Something went wrong");
+    }
   };
 
-  const handleSaveAddress = (event) => {
+  const handleSaveAddress = async (event) => {
     event.preventDefault();
-    if (editingAddressId) {
-      // Logic for editing an existing address
-      setAddresses(
-        addresses.map((addr) =>
-          addr.id === editingAddressId ? { ...formData, id: addr.id } : addr
-        )
-      );
-    } else {
-      // Logic for adding a new address
-      const newAddress = { ...formData, id: Date.now() }; // Simple unique ID
-      setAddresses([...addresses, newAddress]);
+
+    try {
+      let response;
+
+      if (editingAddressId) {
+        response = await fetch(`${baseUrl}/user/auth/address`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userId: user?._id,
+            addressId: editingAddressId,
+            address: {
+              nickname: formData.name,
+              houseStreet: formData.houseAndStreet,
+              apartment: formData.apartments,
+              city: formData.town,
+              zipCode: formData.pinCode,
+              district: formData.district,
+              state: formData.state,
+            },
+          }),
+        });
+      } else {
+        response = await fetch(`${baseUrl}/user/auth/address`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userId: user?._id,
+            address: {
+              nickname: formData.name,
+              houseStreet: formData.houseAndStreet,
+              apartment: formData.apartments,
+              city: formData.town,
+              zipCode: formData.pinCode,
+              district: formData.district,
+              state: formData.state,
+            },
+          }),
+        });
+      }
+
+      const data = await response.json();
+
+      if (response.ok) {
+        if (data.user) {
+          updateUser(data.user);
+        }
+        alert(
+          editingAddressId
+            ? "Address updated successfully!"
+            : "Address added successfully!"
+        );
+        setShowForm(false);
+      } else {
+        alert(data.message || "Failed to save address");
+      }
+    } catch (error) {
+      console.error("Error saving address:", error);
+      alert("Something went wrong");
     }
-    setShowForm(false);
   };
 
   const handleCancel = () => {
@@ -93,21 +182,21 @@ const SavedAddress = () => {
       {/* Display list of addresses */}
       <h2 className="text-xl font-bold">Your Saved Addresses</h2>
       <div className="flex flex-col gap-4">
-        {addresses.length > 0 ? (
-          addresses.map((address) => (
+        {user?.addresses.length > 0 ? (
+          user?.addresses.map((address) => (
             <div
-              key={address.id}
+              key={address._id}
               className="bg-gray-100 p-4 rounded-md flex justify-between items-center"
             >
               <div>
-                <p className="font-semibold">{address.name}</p>
+                <p className="font-semibold">{address.nickname}</p>
                 <p className="text-gray-700">
-                  {address.houseAndStreet}, {address.apartments}
+                  {address.houseStreet}, {address.apartment}
                 </p>
                 <p className="text-gray-700">
-                  {address.town}, {address.district}, {address.state}
+                  {address.city}, {address.district}, {address.state}
                 </p>
-                <p className="text-gray-700">{address.pinCode}</p>
+                <p className="text-gray-700">{address.zipCode}</p>
               </div>
               <div className="flex gap-2">
                 <button
@@ -117,7 +206,7 @@ const SavedAddress = () => {
                   <FaEdit />
                 </button>
                 <button
-                  onClick={() => handleDeleteClick(address.id)}
+                  onClick={() => handleDeleteClick(address._id)}
                   className="text-red-500 hover:text-red-700"
                 >
                   <FaTrash />

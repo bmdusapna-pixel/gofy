@@ -144,7 +144,7 @@ const SecondHeader = ({
   const [searchProduct, setSearchProduct] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [showNotification, setShowNotification] = useState(false);
-  const { user } = useContext(AuthContext);
+  const { user, token } = useContext(AuthContext);
 
   const chechkingOut = () => {
     if (cartItems.length === 0) {
@@ -280,7 +280,7 @@ const SecondHeader = ({
               {totalItems}
             </p>
           </div>
-          {user ? (
+          {token ? (
             <Link to="/account" className="flex gap-0.5 items-center">
               <User className="sm:w-7 w-6 sm:h-7 h-6 text-black" />
               <div className="flex-col sm:flex hidden">
