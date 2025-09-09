@@ -98,7 +98,7 @@ const Account = () => {
     email: "",
     phone: "",
   });
-  const { user, logout } = useContext(AuthContext);
+  const { user, logout, token, updateUser } = useContext(AuthContext);
   const profileInputChangeHandler = (event) => {
     const { name, value } = event.target;
     if (name === "phone") {
@@ -122,11 +122,43 @@ const Account = () => {
     }
   }, [user]);
 
-  const handleProfileUpdate = (event) => {
+  const handleProfileUpdate = async (event) => {
     event.preventDefault();
-    console.log("Updating Profile:", profileData);
-    // Simulating an alert. It's recommended to use a custom message box.
-    alert("Profile updated successfully! (Simulated)");
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_BASE_URL}/user/auth/profile`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(profileData),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Profile update failed");
+      }
+
+      setProfileData((prev) => ({
+        ...prev,
+        name: data.user.name,
+        phone: data.user.phone,
+        email: data.user.email || prev.email,
+      }));
+
+      if (data.user) {
+        updateUser(data.user);
+      }
+
+      alert("Profile updated successfully!");
+    } catch (error) {
+      console.error("Profile update error:", error);
+      alert(error.message);
+    }
   };
 
   const handleLogout = () => {

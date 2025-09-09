@@ -1,8 +1,11 @@
-import React, { createContext, useEffect, useState } from "react";
+import React, { createContext, useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 const CartContext = createContext();
+import { AuthContext } from "./AuthContext";
 
 const CartContextProvider = ({ children }) => {
+  const { user } = useContext(AuthContext);
+  const baseUrl = import.meta.env.VITE_BASE_URL;
   const [openCart, setOpenCart] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [itemDescriptions, setItemDescriptions] = useState([]);
@@ -48,6 +51,62 @@ const CartContextProvider = ({ children }) => {
     setIsBulkOrderModalOpen(true);
   };
 
+  const syncAddToCart = async (productId, quantity = 1) => {
+    if (!user?._id) return;
+    try {
+      const body = productId
+        ? { userId: user._id, productId, quantity }
+        : { userId: user._id };
+
+      await fetch(`${baseUrl}/user/cart/add`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+    } catch (err) {
+      console.error("Cart add API failed:", err);
+    }
+  };
+
+  const syncRemoveFromCart = async (productId) => {
+    if (!user?._id) return;
+    try {
+      await fetch(`${baseUrl}/user/cart/remove`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId: user._id, productId }),
+      });
+    } catch (err) {
+      console.error("Cart remove API failed:", err);
+    }
+  };
+
+  const syncAddToWishlist = async (productId) => {
+    if (!user?._id) return;
+    try {
+      await fetch(`${baseUrl}/user/wishlist/add`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId: user._id, productId }),
+      });
+    } catch (err) {
+      console.error("Wishlist add API failed:", err);
+    }
+  };
+
+  const syncRemoveFromWishlist = async (productId) => {
+    if (!user?._id) return;
+    try {
+      await fetch(`${baseUrl}/user/wishlist/remove`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId: user._id, productId }),
+      });
+    } catch (err) {
+      console.error("Wishlist remove API failed:", err);
+    }
+  };
+
   const addToCart = (product) => {
     const existingItemIndex = cartItems.findIndex(
       (item) => item._id === product._id
@@ -66,6 +125,7 @@ const CartContextProvider = ({ children }) => {
         return item;
       });
       setCartItems(updatedCart);
+      syncAddToCart(product._id, 1);
     } else {
       const newCartItem = {
         _id: product._id,
@@ -76,6 +136,7 @@ const CartContextProvider = ({ children }) => {
         quantity: 1,
       };
       setCartItems([...cartItems, newCartItem]);
+      syncAddToCart(product._id, 1);
     }
     setTotalItems((prev) => prev + 1);
     setTotalPrice((prev) => prev + product.price);
@@ -103,6 +164,7 @@ const CartContextProvider = ({ children }) => {
         return item;
       });
       setCartItems(updatedCart);
+      syncAddToCart(product._id, quantity);
     } else {
       if (quantity > 5) {
         handleBulkOrderAlert();
@@ -116,6 +178,7 @@ const CartContextProvider = ({ children }) => {
         quantity: quantity,
       };
       setCartItems([...cartItems, newCartItem]);
+      syncAddToCart(product._id, quantity);
       setTotalItems((prev) => prev + quantity);
       setTotalPrice((prev) => prev + product.price * quantity);
     }
@@ -130,6 +193,7 @@ const CartContextProvider = ({ children }) => {
       const itemToRemove = cartItems[existingItemIndex];
       const updatedCart = cartItems.filter((item) => item._id !== product._id);
       setCartItems(updatedCart);
+      syncRemoveFromCart(product._id);
       setTotalItems((prev) => prev - itemToRemove.quantity);
       setTotalPrice(
         (prev) => prev - itemToRemove.price * itemToRemove.quantity
@@ -148,6 +212,7 @@ const CartContextProvider = ({ children }) => {
         }
         setTotalItems((prev) => prev + 1);
         setTotalPrice((prev) => prev + product.price);
+        syncAddToCart(product._id, 1);
         return { ...item, quantity: item.quantity + 1 };
       }
       return item;
@@ -164,6 +229,7 @@ const CartContextProvider = ({ children }) => {
       if (item.quantity === 1) {
         const updatedCart = cartItems.filter((i) => i._id !== product._id);
         setCartItems(updatedCart);
+        syncRemoveFromCart(product._id);
         setTotalItems((prev) => prev - 1);
         setTotalPrice((prev) => prev - product.price);
         if (totalItems - 1 <= 0) {
@@ -177,6 +243,7 @@ const CartContextProvider = ({ children }) => {
           return item;
         });
         setCartItems(updatedCart);
+        syncAddToCart(product._id, -1);
         setTotalItems((prev) => prev - 1);
         setTotalPrice((prev) => prev - product.price);
       }
@@ -197,6 +264,7 @@ const CartContextProvider = ({ children }) => {
     };
     const updatedFavourites = [...favouriteItems, newFavourite];
     setFavouriteItems(updatedFavourites);
+    syncAddToWishlist(product._id);
     setTotalFavouriteItems(updatedFavourites.length);
   };
 
@@ -205,10 +273,12 @@ const CartContextProvider = ({ children }) => {
       (item) => item._id !== product._id
     );
     setFavouriteItems(updatedFavourites);
+    syncRemoveFromWishlist(product._id);
     setTotalFavouriteItems(updatedFavourites.length);
   };
 
   const emptyCart = () => {
+    syncAddToCart();
     setCartItems([]);
     setTotalItems(0);
     setTotalPrice(0);
