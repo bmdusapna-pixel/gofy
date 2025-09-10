@@ -75,7 +75,6 @@ const Products = () => {
       try {
         const res = await fetch(`${baseUrl}/products`);
         const results = await res.json();
-        console.log(results.data);
         setAllProducts(results.data);
         setProductItems(results.data);
       } catch (err) {
