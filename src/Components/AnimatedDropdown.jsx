@@ -14,6 +14,8 @@ import {
   MoveRight,
   MoveLeft,
   ChevronDown,
+  Search,
+  X,
 } from "lucide-react";
 import product_list from "../assets/product-list";
 import { slugify } from "../assets/helper";
@@ -302,9 +304,16 @@ const AllCategories = () => {
   );
 };
 
-const SearchProducts = ({ searchProduct, debouncedSearch }) => {
+const SearchProducts = ({ searchProduct, debouncedSearch, onSearch }) => {
   const [filteredProducts, setFilteredProducts] = useState([]);
+  const [recentSearches, setRecentSearches] = useState([]);
   const isTyping = searchProduct !== debouncedSearch;
+
+  useEffect(() => {
+    const storedSearches =
+      JSON.parse(localStorage.getItem("recentSearches")) || [];
+    setRecentSearches(storedSearches);
+  }, []);
 
   useEffect(() => {
     const query = debouncedSearch.toLowerCase().trim();
@@ -318,16 +327,27 @@ const SearchProducts = ({ searchProduct, debouncedSearch }) => {
         product.product_type.toLowerCase().includes(query)
     );
     setFilteredProducts(results);
+
+    if (!recentSearches.includes(debouncedSearch) && query.length > 1) {
+      const updatedSearches = [debouncedSearch, ...recentSearches].slice(0, 6);
+      setRecentSearches(updatedSearches);
+      localStorage.setItem("recentSearches", JSON.stringify(updatedSearches));
+    }
   }, [debouncedSearch]);
+
+  const deleteSearch = (search) => {
+    const updated = recentSearches.filter((s) => s !== search);
+    setRecentSearches(updated);
+    localStorage.setItem("recentSearches", JSON.stringify(updated));
+  };
 
   return (
     <div className="absolute top-12 left-0 w-full bg-white shadow-xl z-40">
       <div className="grid grid-cols-2">
         {isTyping ? (
           <p className="p-4 text-gray-500 text-base">Searching...</p>
-        ) : (
-          filteredProducts.length > 0 &&
-          filteredProducts.map((product, index) => (
+        ) : filteredProducts.length > 0 ? (
+          filteredProducts.map((product) => (
             <div
               key={product._id}
               className="flex bg-white gap-5 w-full items-center cursor-pointer p-3"
@@ -345,8 +365,42 @@ const SearchProducts = ({ searchProduct, debouncedSearch }) => {
               </div>
             </div>
           ))
+        ) : debouncedSearch === "" ? null : (
+          <p className="p-4 text-gray-500 text-base">No products found</p>
         )}
       </div>
+
+      {recentSearches.length > 0 && (
+        <div className="border-t border-gray-200 mt-2 bg-gray-50">
+          <p className="px-4 py-2 text-gray-700 text-sm font-semibold">
+            Recent Searches
+          </p>
+          <div className="flex flex-col divide-y divide-gray-200">
+            {recentSearches.map((search, idx) => (
+              <div
+                key={idx}
+                className="flex justify-between items-center px-4 py-2 hover:bg-gray-100 transition"
+              >
+                <div
+                  className="flex items-center gap-2 cursor-pointer"
+                  onClick={() => onSearch && onSearch(search)}
+                >
+                  <Search className="w-4 h-4 text-gray-600" />
+                  <span className="text-[15px] text-[#001430] font-medium">
+                    {search}
+                  </span>
+                </div>
+                <button
+                  onClick={() => deleteSearch(search)}
+                  className="text-gray-400 hover:text-red-500 transition"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

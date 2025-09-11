@@ -33,7 +33,13 @@ const SuperDeals = () => {
   const addProductToCart = (product, event) => {
     event.stopPropagation();
     event.preventDefault();
-    addToCart(product);
+    const cartProduct = {
+      _id: product._id,
+      name: product.name,
+      price: product?.variants?.[0]?.ageGroups?.[0]?.price,
+      images: product?.variants?.[0]?.images,
+    };
+    addToCart(cartProduct);
   };
 
   const addFavouriteItemsWishList = (product, event) => {

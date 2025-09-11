@@ -160,8 +160,14 @@ const ProductDetails = () => {
   };
 
   const addProductToCart = () => {
+    const cartProduct = {
+      _id: productData._id,
+      name: productData.name,
+      price: productData?.variants?.[0]?.ageGroups?.[0]?.price,
+      images: productData?.variants?.[0]?.images,
+    };
     if (productData && variant && selectedAgeGroup) {
-      addingProductToCart(productData, quantity, variant, selectedAgeGroup);
+      addingProductToCart(cartProduct, quantity, variant, selectedAgeGroup);
     }
   };
 

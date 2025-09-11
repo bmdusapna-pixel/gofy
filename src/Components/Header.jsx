@@ -145,6 +145,7 @@ const SecondHeader = ({
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [showNotification, setShowNotification] = useState(false);
   const { user, token } = useContext(AuthContext);
+  const [showSearch, setShowSearch] = useState(false);
 
   const chechkingOut = () => {
     if (cartItems.length === 0) {
@@ -225,14 +226,22 @@ const SecondHeader = ({
                   name="searchProduct"
                   value={searchProduct}
                   onChange={(event) => setSearchProduct(event.target.value)}
+                  onFocus={() => setShowSearch(true)}
+                  onBlur={() => setTimeout(() => setShowSearch(false), 200)}
                   type="text"
                   placeholder="Search products..."
                   className="w-full px-4 py-3 bg-transparent outline-none text-black font-medium text-base placeholder:text-gray-400"
                 />
-                {searchProduct.length > 0 && (
+
+                {showSearch && (
                   <SearchProducts
                     searchProduct={searchProduct}
                     debouncedSearch={debouncedSearch}
+                    onSearch={(val) => {
+                      setSearchProduct(val);
+                      setDebouncedSearch(val);
+                      setShowSearch(false);
+                    }}
                   />
                 )}
               </div>

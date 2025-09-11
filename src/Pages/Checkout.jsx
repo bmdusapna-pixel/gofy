@@ -11,7 +11,8 @@ const baseUrl = import.meta.env.VITE_BASE_URL;
 const Checkout = () => {
   const { user, updateUser } = useContext(AuthContext);
   const [openCoupon, setOpenCoupon] = useState(false);
-  const { cartItems, formSubmit, totalPrice } = useContext(CartContext);
+  const { cartItems, formSubmit, totalPrice, emptyCart } =
+    useContext(CartContext);
 
   const [couponCode, setCouponeCode] = useState("");
   const [useGofyPoints, setUseGofyPoints] = useState(false);
@@ -20,6 +21,8 @@ const Checkout = () => {
   const [shippingEditable, setShippingEditable] = useState(false);
 
   const [gofyPoints, setGofyPoints] = useState(500);
+  const [deliveryOption, setDeliveryOption] = useState("");
+  const [message, setMessage] = useState("");
 
   // Gift packaging states
   const [isGift, setIsGift] = useState(false);
@@ -50,7 +53,7 @@ const Checkout = () => {
     setAddresses(() =>
       user?.addresses.map((addr, index) => ({
         id: index + 1,
-        details: `${addr.nickname}\n${addr.houseStreet}, ${addr.apartment}, ${addr.city}, ${addr.district}, ${addr.state}, ${addr.zipCode}, India\nPhone number: N/A`,
+        details: `${addr.nickname}\n${addr.houseStreet}, ${addr.apartment}, ${addr.city}, ${addr.district}, ${addr.state}, ${addr.zipCode}, India\nPhone number: ${user?.phone}`,
       }))
     );
   }, [user]);
@@ -92,7 +95,6 @@ const Checkout = () => {
 
     try {
       let response;
-
       response = await fetch(`${baseUrl}/user/auth/address`, {
         method: "POST",
         headers: {
@@ -111,7 +113,6 @@ const Checkout = () => {
           },
         }),
       });
-
       const data = await response.json();
 
       if (response.ok) {
@@ -128,23 +129,55 @@ const Checkout = () => {
       alert("Something went wrong");
     }
   };
-  const placeOrderForm = (event) => {
+  const placeOrderForm = async (event) => {
     event.preventDefault();
+
     const billingAddress = savedBillingAddresses.find(
       (addr) => addr.id === billingAddressId
     )?.details;
+
     const shippingAddress = savedShippingAddresses.find(
       (addr) => addr.id === shippingAddressId
     )?.details;
 
-    console.log("Proceeding to payment with addresses:", {
+    const order = {
+      userId: user?._id,
+      orderItems: cartItems,
+      totalPrice,
+      pointsToEarn,
+      discountedPrice,
       billingAddress,
       shippingAddress,
       useGofyPoints,
       isGift,
-      selectedMessage,
       giftNote,
-    });
+      giftMessage: selectedMessage,
+      deliveryOption,
+      additionalInformation: message,
+    };
+
+    try {
+      const response = await fetch(`${baseUrl}/user/order`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(order),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert("Order placed successfully!");
+        emptyCart();
+        console.log("Order response:", data);
+      } else {
+        alert(data.message || "Failed to place order");
+      }
+    } catch (error) {
+      console.error("Error placing order:", error);
+      alert("Something went wrong while placing order");
+    }
   };
 
   return (
@@ -447,6 +480,8 @@ const Checkout = () => {
                   className="transition-colors duration-300 w-full border border-gray-200 focus:border-[#00bbae] outline-none p-4 rounded-md"
                   name="message"
                   placeholder="Notes about your order, e.g. special delivery instructions"
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
                 ></textarea>
               </div>
             </div>
@@ -479,18 +514,18 @@ const Checkout = () => {
                       className="flex gap-3 w-full px-3 justify-between"
                       key={item._id}
                     >
-                      <div className="flex flex-col gap-1">
+                      <div className="flex gap-1 flex-wrap mb-3">
                         <p className="text-[16px] leading-[24px] text-[#001430]">
-                          {item.name}
+                          {item.name} X ({item?.quantity} items)
                         </p>
-                        <div className="flex gap-1 items-center">
+                        {/* <div className="flex gap-1 items-center">
                           <X className="w-4 h-4 text-[#001430]" />
                           <p className="text-[16px] leading-[24px] text-[#001430]">
-                            {item?.quantity}
+                            ({item?.quantity} items)
                           </p>
-                        </div>
+                        </div> */}
                       </div>
-                      <p className="text-[16px] leading-[24px]  text-[#001430]">
+                      <p className="text-[16px] leading-[24px] whitespace-nowrap text-[#001430]">
                         ₹ {item.price}
                       </p>
                     </div>
@@ -542,10 +577,14 @@ const Checkout = () => {
                 Choose Delivery Option
               </h2>
 
+              {/* Store Pickup */}
               <label className="flex items-start gap-2 cursor-pointer">
                 <input
                   type="radio"
                   name="delivery"
+                  value="pickup"
+                  checked={deliveryOption === "pickup"}
+                  onChange={(e) => setDeliveryOption(e.target.value)}
                   className="mt-1 h-5 w-5 text-blue-500 border-gray-400 focus:ring-blue-500"
                 />
                 <div>
@@ -559,10 +598,14 @@ const Checkout = () => {
                 </div>
               </label>
 
+              {/* 30 Min Delivery */}
               <label className="flex items-center gap-2 cursor-pointer">
                 <input
                   type="radio"
                   name="delivery"
+                  value="fast"
+                  checked={deliveryOption === "fast"}
+                  onChange={(e) => setDeliveryOption(e.target.value)}
                   className="h-5 w-5 text-blue-500 border-gray-400 focus:ring-blue-500"
                 />
                 <span className="flex items-center text-gray-700">
@@ -571,14 +614,26 @@ const Checkout = () => {
                 </span>
               </label>
 
+              {/* Normal Delivery */}
               <label className="flex items-center gap-2 cursor-pointer">
                 <input
                   type="radio"
                   name="delivery"
+                  value="normal"
+                  checked={deliveryOption === "normal"}
+                  onChange={(e) => setDeliveryOption(e.target.value)}
                   className="h-5 w-5 text-blue-500 border-gray-400 focus:ring-blue-500"
                 />
                 <span className="text-gray-700">Normal Delivery 2–3 days</span>
               </label>
+
+              {/* Debug / Show Selected */}
+              <p className="mt-4 text-sm text-gray-600">
+                Selected:{" "}
+                <span className="font-semibold">
+                  {deliveryOption || "None"}
+                </span>
+              </p>
             </div>
 
             {/* Gofy Points and Gift */}
