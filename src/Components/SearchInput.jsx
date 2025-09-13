@@ -1,9 +1,10 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 
 const SearchInput = ({ items }) => {
   const [search, setSearch] = useState("");
   const [filteredItems, setFilteredItems] = useState(items);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [highlightIndex, setHighlightIndex] = useState(-1);
   const inputRef = useRef(null);
 
   const handleChange = (e) => {
@@ -14,6 +15,7 @@ const SearchInput = ({ items }) => {
     );
     setFilteredItems(newFiltered);
     setShowSuggestions(true);
+    setHighlightIndex(-1);
   };
 
   const handleFocus = () => {
@@ -28,17 +30,34 @@ const SearchInput = ({ items }) => {
     setShowSuggestions(false);
   };
 
-  const handleBlur = (e) => {
-    if (
-      e.relatedTarget &&
-      e.relatedTarget.parentNode === inputRef.current.nextSibling
-    ) {
-      return;
+  const handleKeyDown = (e) => {
+    if (!showSuggestions) return;
+
+    if (e.key === "ArrowDown") {
+      setHighlightIndex((prev) =>
+        prev < filteredItems.length - 1 ? prev + 1 : 0
+      );
+    } else if (e.key === "ArrowUp") {
+      setHighlightIndex((prev) =>
+        prev > 0 ? prev - 1 : filteredItems.length - 1
+      );
+    } else if (e.key === "Enter" && highlightIndex >= 0) {
+      e.preventDefault();
+      handleItemClick(filteredItems[highlightIndex]);
     }
-    setTimeout(() => {
-      setShowSuggestions(false);
-    }, 100);
   };
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (inputRef.current && !inputRef.current.contains(e.target)) {
+        setShowSuggestions(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
     <div className="relative" ref={inputRef}>
@@ -46,8 +65,8 @@ const SearchInput = ({ items }) => {
         type="text"
         value={search}
         onChange={handleChange}
+        onKeyDown={handleKeyDown}
         onFocus={handleFocus}
-        onBlur={handleBlur}
         placeholder="Product Name"
         className="transition-colors duration-300 text-[18px] leading-[27px] w-full px-4 py-2 border border-gray-200 focus:border-[#00bbae] outline-none rounded-md"
       />
@@ -57,7 +76,9 @@ const SearchInput = ({ items }) => {
             filteredItems.map((item, index) => (
               <li
                 key={index}
-                className="hover:bg-gray-100 cursor-pointer p-1 rounded-md"
+                className={`cursor-pointer p-1 rounded-md ${
+                  index === highlightIndex ? "bg-gray-200" : "hover:bg-gray-100"
+                }`}
                 onClick={() => handleItemClick(item)}
               >
                 {item}
