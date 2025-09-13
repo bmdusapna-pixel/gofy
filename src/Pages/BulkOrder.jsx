@@ -27,7 +27,7 @@ const BulkOrder = () => {
 
   const [productDetails, setProductDetails] = useState([
     {
-      _id: Date.now(),
+      _id: null,
       name: "",
       quantity: "",
     },
@@ -36,7 +36,7 @@ const BulkOrder = () => {
   const handleAddProduct = () => {
     setProductDetails((prev) => [
       ...prev,
-      { _id: Date.now(), name: "", quantity: "" },
+      { _id: null, name: "", quantity: "" },
     ]);
   };
 
@@ -50,10 +50,36 @@ const BulkOrder = () => {
     setContactDetails((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form submitted!");
-    setIsSubmitted(true);
+
+    const data = { contactDetails, productDetails };
+
+    try {
+      const res = await fetch(
+        `${import.meta.env.VITE_BASE_URL}/user/bulk-orders`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        }
+      );
+
+      const result = await res.json();
+
+      if (res.ok) {
+        console.log("Order created successfully:", result);
+        setIsSubmitted(true);
+      } else {
+        console.error("Error creating order:", result.message);
+        alert(result.message || "Something went wrong!");
+      }
+    } catch (error) {
+      console.error("Network error:", error);
+      alert("Failed to submit order. Please try again later.");
+    }
   };
 
   const handleWhatsAppClick = () => {
@@ -155,7 +181,15 @@ const BulkOrder = () => {
                 key={product._id}
                 className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full"
               >
-                <SearchInput items={products} />
+                <SearchInput
+                  items={products}
+                  value={product}
+                  onChange={(item) => {
+                    const updated = [...productDetails];
+                    updated[index] = { ...updated[index], ...item };
+                    setProductDetails(updated);
+                  }}
+                />
                 <input
                   type="number"
                   placeholder="Quantity"
