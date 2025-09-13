@@ -405,7 +405,7 @@ const CartDetails = () => {
                   </Link>
                 </div>
                 {totalPrice > 0 && totalPrice < 500 && (
-                  <p className="text-sm font-normal text-green-600 text-center mt-4">
+                  <p className="md:text-[18px] font-normal text-red-600 text-center mt-4">
                     Add ₹{500 - totalPrice} more to get free shipping!
                   </p>
                 )}

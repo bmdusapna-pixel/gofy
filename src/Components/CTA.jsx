@@ -13,6 +13,8 @@ import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 const baseUrl = import.meta.env.VITE_BASE_URL;
 import { slugify } from "../assets/helper";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay } from "swiper/modules";
 
 const age_category_array = [
   {
@@ -68,6 +70,7 @@ const age_category_array = [
 const CTA = () => {
   const [buttonHovered, setButtonHovered] = useState(false);
   const [ageCategories, setAgeCategories] = useState([]);
+  const [banner, setBanner] = useState([]);
 
   useEffect(() => {
     const fetchAges = async () => {
@@ -76,36 +79,60 @@ const CTA = () => {
       setAgeCategories(data);
     };
     fetchAges();
+    const fetchBanner = async () => {
+      const result = await fetch(`${baseUrl}/banners/active`);
+      const res = await result.json();
+      setBanner(res);
+    };
+    fetchBanner();
   }, []);
 
   return (
     <div className="flex flex-col gap-5 w-full">
       <div className="w-full bg-white lg:px-12 sm:px-20 px-5">
-        <div className="w-full bg-[#002cc7] h-full mx-auto my-10 rounded-3xl flex md:flex-row flex-col justify-center items-center">
-          <div className="flex flex-col gap-5 sm:gap-10 w-full px-8 py-10 md:w-1/2">
-            <p className="text-white text-[32px] md:text-[38px] leading-[48px] md:leading-[57px] font-bold">
-              Get 25% discount in all kind of <br />
-              super hero theme
-            </p>
-            <button
-              onMouseEnter={() => setButtonHovered(true)}
-              onMouseLeave={() => setButtonHovered(false)}
-              className="flex gap-2 w-44 bg-orange-500 transition-all duration-300 hover:bg-orange-400 cursor-pointer rounded-full items-center justify-center p-3"
-            >
-              <p className="text-[16px] font-semibold text-white leading-[24px]">
-                See Collection
-              </p>
-              <ArrowRight
-                className={`w-5 h-5 text-white transition-transform duration-300 ${
-                  buttonHovered ? "translate-x-1" : ""
-                }`}
-              />
-            </button>
-          </div>
-          <div className="w-full md:w-1/2 flex items-center justify-center pt-0 sm:pt-10 pl-8 sm:pl-0">
-            <img src={cta_banner} alt="" className="w-full" />
-          </div>
-        </div>
+        <Swiper
+          modules={[Autoplay]}
+          spaceBetween={0}
+          slidesPerView={1}
+          loop={true}
+          autoplay={{
+            delay: 2000,
+            disableOnInteraction: false,
+          }}
+          className="w-full"
+        >
+          {banner
+            .filter((b) => b.bannerName === "offer banner")
+            .map((b) => (
+              <SwiperSlide key={b._id}>
+                <div className="w-full bg-[#002cc7] h-full mx-auto my-10 rounded-3xl flex md:flex-row flex-col justify-center items-center">
+                  <div className="flex flex-col gap-5 sm:gap-10 w-full px-8 py-10 md:w-1/2">
+                    <p className="text-white text-[32px] md:text-[38px] leading-[48px] md:leading-[57px] font-bold">
+                      {b.description}
+                    </p>
+                    <Link
+                      to={"/products"}
+                      onMouseEnter={() => setButtonHovered(true)}
+                      onMouseLeave={() => setButtonHovered(false)}
+                      className="flex gap-2 w-44 bg-orange-500 transition-all duration-300 hover:bg-orange-400 cursor-pointer rounded-full items-center justify-center p-3"
+                    >
+                      <p className="text-[16px] font-semibold text-white leading-[24px]">
+                        See Collection
+                      </p>
+                      <ArrowRight
+                        className={`w-5 h-5 text-white transition-transform duration-300 ${
+                          buttonHovered ? "translate-x-1" : ""
+                        }`}
+                      />
+                    </Link>
+                  </div>
+                  <div className="w-full md:w-1/2 flex items-center justify-center pt-0 sm:pt-10 pl-8 sm:pl-0">
+                    <img src={b.webImageUrl} alt="" className="w-full" />
+                  </div>
+                </div>
+              </SwiperSlide>
+            ))}
+        </Swiper>
       </div>
       {/* <ProductsCollection color={"#2563eb"} /> */}
       <div className="flex lg:px-12 sm:px-10 px-5 flex-col gap-2 w-full mx-auto items-center justify-center">

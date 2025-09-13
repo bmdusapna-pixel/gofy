@@ -1,13 +1,15 @@
 import { Plus } from "lucide-react";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import BulkBanner from "../assets/bulkBanner.png";
 import SearchInput from "../Components/SearchInput";
 import { groupedCombined } from "../assets/helper.js";
 import { FaWhatsapp } from "react-icons/fa"; // Assuming you have react-icons installed
+import { AuthContext } from "../Context/AuthContext.jsx";
 
 const BulkOrder = () => {
   const [productItems, setProductItems] = useState([]);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const { user } = useContext(AuthContext);
   const [contactDetails, setContactDetails] = useState({
     name: "",
     phone: "",
@@ -17,7 +19,8 @@ const BulkOrder = () => {
   useEffect(() => {
     const productsData = groupedCombined;
     setProductItems(productsData);
-  }, []);
+    setContactDetails({ name: user?.name || "", phone: user?.phone || "" });
+  }, [user]);
 
   const allItems = productItems.map((item) => item.items);
   const names = allItems.flatMap((group) => group.map((item) => item.name));

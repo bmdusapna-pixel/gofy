@@ -36,6 +36,7 @@ const HeroSection = () => {
   const baseUrl = import.meta.env.VITE_BASE_URL;
   // const [categories, setCategories] = useState([]);
   const [collection, setCollection] = useState([]);
+  const [banner, setBanner] = useState([]);
   const settings = {
     infinite: true,
     speed: 500,
@@ -46,7 +47,14 @@ const HeroSection = () => {
     slidesToScroll: 1,
     pauseOnHover: false,
   };
-
+  useEffect(() => {
+    const fetchBanner = async () => {
+      const result = await fetch(`${baseUrl}/banners/active`);
+      const res = await result.json();
+      setBanner(res);
+    };
+    fetchBanner();
+  }, [baseUrl]);
   useEffect(() => {
     const fetchCollection = async () => {
       const res = await fetch(`${baseUrl}/collections`);
@@ -66,33 +74,35 @@ const HeroSection = () => {
       <div className="w-full bg-[#fce7ef] px-5 py-5 lg:py-0">
         <div className="w-full mx-auto flex items-center justify-center">
           <Slider {...settings} className="w-full">
-            {hero_slider_array.map((item) => (
-              <div key={item._id}>
-                <div className="flex flex-col lg:flex-row items-center justify-center gap-10 h-full lg:h-[550px] 2xl:h-[750px]">
-                  <div className="w-full lg:w-1/2 flex items-center justify-center">
-                    <img
-                      src={item.image_url}
-                      alt={item.heading}
-                      className="w-auto h-full object-cover"
-                    />
-                  </div>
-                  <div className="w-full lg:w-1/2 flex flex-col items-center lg:items-start justify-center gap-6">
-                    <p className="text-[#dc3545] text-[18px] leading-[27px] font-semibold">
-                      {item.sub_heading}
-                    </p>
-                    <p className="text-[#212529] text-[32px] md:text-[38px] lg:text-[54px] leading-[48px] sm:text-left text-center lg:leading-[57px] font-bold">
-                      {item.heading}
-                    </p>
-                    <Link
-                      to="/products"
-                      className="transition-all duration-300 hover:bg-pink-600 hover:scale-105 cursor-pointer bg-[#ec407a] text-white text-[18px] leading-[27px] py-2 px-5 rounded-md"
-                    >
-                      SHOP NOW
-                    </Link>
+            {banner
+              .filter((b) => b.bannerName === "hero banner")
+              .map((item) => (
+                <div key={item._id}>
+                  <div className="flex flex-col lg:flex-row items-center justify-center gap-10 h-full lg:h-[550px] 2xl:h-[750px]">
+                    <div className="w-full lg:w-1/2 flex items-center justify-center">
+                      <img
+                        src={item.webImageUrl}
+                        alt={item.heading}
+                        className="w-auto h-full object-cover"
+                      />
+                    </div>
+                    <div className="w-full lg:w-1/2 flex flex-col items-center lg:items-start justify-center gap-6">
+                      <p className="text-[#dc3545] text-[18px] leading-[27px] font-semibold">
+                        {item.title}
+                      </p>
+                      <p className="text-[#212529] text-[32px] md:text-[38px] lg:text-[54px] leading-[48px] sm:text-left text-center lg:leading-[57px] font-bold">
+                        {item.description}
+                      </p>
+                      <Link
+                        to="/products"
+                        className="transition-all duration-300 hover:bg-pink-600 hover:scale-105 cursor-pointer bg-[#ec407a] text-white text-[18px] leading-[27px] py-2 px-5 rounded-md"
+                      >
+                        SHOP NOW
+                      </Link>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
           </Slider>
         </div>
       </div>

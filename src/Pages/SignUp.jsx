@@ -106,7 +106,7 @@ const SignUp = () => {
 
       if (res.success) {
         showMessage("Account created successfully!", "success");
-        setTimeout(() => navigate("/account"), 1000);
+        setTimeout(() => navigate("/"), 1000);
       } else {
         showMessage(res.message, "error");
       }

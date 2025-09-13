@@ -62,6 +62,7 @@ const Deals = () => {
   const { addToCart, addFavouriteItems } = useContext(CartContext);
   const baseUrl = import.meta.env.VITE_BASE_URL;
   const [productList, setProductList] = useState([]);
+  const [banner, setBanner] = useState([]);
 
   const addDealToCart = (product, event) => {
     event.stopPropagation();
@@ -86,6 +87,12 @@ const Deals = () => {
       setProductList(data.data);
     };
     fetchProducts();
+    const fetchBanner = async () => {
+      const result = await fetch(`${baseUrl}/banners/active`);
+      const res = await result.json();
+      setBanner(res);
+    };
+    fetchBanner();
   }, [baseUrl]);
 
   useEffect(() => {
@@ -160,14 +167,15 @@ const Deals = () => {
             >
               {productList?.map((product) => (
                 <SwiperSlide key={product._id}>
-                  <div className="w-full border flex lg:flex-row flex-col gap-3 xl:gap-5 border-gray-200 rounded-md p-2">
-                    <div className="w-full h-60 lg:w-1/2 bg-[#FFC0CB] rounded-md flex items-center justify-center relative">
-                      <img
-                        src={product.variants?.[0].images[0]}
-                        alt=""
-                        className="object-contain"
-                      />
-                      {/* <div
+                  <Link to={`product-details/${product.url}`}>
+                    <div className="w-full border flex lg:flex-row flex-col gap-3 xl:gap-5 border-gray-200 rounded-md p-2">
+                      <div className="w-full h-60 lg:w-1/2 bg-[#FFC0CB] rounded-md flex items-center justify-center relative">
+                        <img
+                          src={product.variants?.[0].images[0]}
+                          alt=""
+                          className="object-contain"
+                        />
+                        {/* <div
                         onClick={(event) =>
                           addFavouriteItemsWishList(product, event)
                         }
@@ -175,21 +183,21 @@ const Deals = () => {
                       >
                         <Heart className="w-5 h-5" />
                       </div> */}
-                      {/* <div className="absolute top-48 w-fit sm:w-40 lg:w-48">
+                        {/* <div className="absolute top-48 w-fit sm:w-40 lg:w-48">
                         <Countdown />
                       </div> */}
-                      {/* <p className="absolute top-0 left-0 bg-[#dc3545] rounded-tl-md rounded-br-md text-white text-[14px] leading-[20px] px-3 py-0.5">
+                        {/* <p className="absolute top-0 left-0 bg-[#dc3545] rounded-tl-md rounded-br-md text-white text-[14px] leading-[20px] px-3 py-0.5">
                         -23%
                       </p> */}
-                    </div>
-                    <div className="flex flex-col gap-1 py-5 w-full lg:w-1/2 lg:px-0 px-2">
-                      {/* <p className="text-[#212529] text-[16px] leading-[24px] opacity-75">
+                      </div>
+                      <div className="flex flex-col gap-1 py-5 w-full lg:w-1/2 lg:px-0 px-2">
+                        {/* <p className="text-[#212529] text-[16px] leading-[24px] opacity-75">
                         {product.sub_category}
                       </p> */}
-                      <p className="text-[22px] leading-[30px] text-[#212529] font-bold whitespace-nowrap overflow-hidden text-ellipsis">
-                        {product?.name}
-                      </p>
-                      {/* <div className="flex lg:flex-row md:flex-col flex-row w-full items-center">
+                        <p className="text-[22px] leading-[30px] text-[#212529] font-bold whitespace-nowrap overflow-hidden text-ellipsis">
+                          {product?.name}
+                        </p>
+                        {/* <div className="flex lg:flex-row md:flex-col flex-row w-full items-center">
                         <div className="flex gap-1 items-center">
                           {Array.from({
                             length: Math.floor(product.rating),
@@ -205,35 +213,36 @@ const Deals = () => {
                           ({product.review} Reviews)
                         </p>
                       </div> */}
-                      <div className="flex gap-2 items-center flex-wrap">
-                        <p className="text-pink-600 text-[22px] leading-[30px] font-semibold whitespace-nowrap">
-                          ₹ {product?.variants?.[0]?.ageGroups?.[0]?.price}
-                        </p>
-                        <p className="text-gray-500 text-[16px] line-through leading-[30px] font-semibold whitespace-nowrap">
-                          ₹ {product?.variants?.[0]?.ageGroups?.[0]?.cutPrice}
-                        </p>
-                        <p className="text-red-600 text-[16px] leading-[30px] font-semibold whitespace-nowrap">
-                          {product?.variants?.[0]?.ageGroups?.[0]?.discount}%
-                          OFF
-                        </p>
-                      </div>
-                      <div className="max-w-[150px] mt-4">
-                        <p className="text-red-600 text-[16px] leading-[16px] font-semibold">
-                          Sale ends in:
-                        </p>
-                        <Countdown hour={product?.dealHours} />
-                      </div>
-                      <div
-                        onClick={(event) => addDealToCart(product, event)}
-                        className="rounded-full transition-colors duration-300 hover:bg-[#f88e0f] cursor-pointer px-4 py-2 bg-[#00bbae] flex gap-3 items-center justify-center mt-auto"
-                      >
-                        <ShoppingBasket className="w-5 h-5 text-white" />
-                        <p className="text-[16px] leading-[18px] font-semibold text-white">
-                          Add to cart
-                        </p>
+                        <div className="flex gap-2 items-center flex-wrap">
+                          <p className="text-pink-600 text-[22px] leading-[30px] font-semibold whitespace-nowrap">
+                            ₹ {product?.variants?.[0]?.ageGroups?.[0]?.price}
+                          </p>
+                          <p className="text-gray-500 text-[16px] line-through leading-[30px] font-semibold whitespace-nowrap">
+                            ₹ {product?.variants?.[0]?.ageGroups?.[0]?.cutPrice}
+                          </p>
+                          <p className="text-red-600 text-[16px] leading-[30px] font-semibold whitespace-nowrap">
+                            {product?.variants?.[0]?.ageGroups?.[0]?.discount}%
+                            OFF
+                          </p>
+                        </div>
+                        <div className="max-w-[150px] mt-4">
+                          <p className="text-red-600 text-[16px] leading-[16px] font-semibold">
+                            Sale ends in:
+                          </p>
+                          <Countdown hour={product?.dealHours} />
+                        </div>
+                        <div
+                          onClick={(event) => addDealToCart(product, event)}
+                          className="rounded-full transition-colors duration-300 hover:bg-[#f88e0f] cursor-pointer px-4 py-2 bg-[#00bbae] flex gap-3 items-center justify-center mt-auto"
+                        >
+                          <ShoppingBasket className="w-5 h-5 text-white" />
+                          <p className="text-[16px] leading-[18px] font-semibold text-white">
+                            Add to cart
+                          </p>
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  </Link>
                 </SwiperSlide>
               ))}
             </Swiper>
@@ -310,90 +319,92 @@ const Deals = () => {
                   >
                     {productList.map((trending) => (
                       <SwiperSlide key={trending._id}>
-                        <div className="w-full flex lg:flex-row flex-col gap-5 border border-gray-200 rounded-md p-3 bg-white">
-                          <div className="w-full lg:w-1/2 bg-gray-200 flex items-center rounded-md justify-center relative">
-                            <img
-                              src={trending.variants?.[0]?.images[0]}
-                              alt=""
-                              className="h-60 object-contain"
-                            />
-                            {/* <div className="absolute top-44 w-48">
+                        <Link to={`product-details/${trending.url}`}>
+                          <div className="w-full flex lg:flex-row flex-col gap-5 border border-gray-200 rounded-md p-3 bg-white">
+                            <div className="w-full lg:w-1/2 bg-gray-200 flex items-center rounded-md justify-center relative">
+                              <img
+                                src={trending.variants?.[0]?.images[0]}
+                                alt=""
+                                className="h-60 object-contain"
+                              />
+                              {/* <div className="absolute top-44 w-48">
                                                         <Countdown />
                                                     </div> */}
-                            <div
-                              onClick={(event) =>
-                                addFavouriteItemsWishList(trending, event)
-                              }
-                              className="absolute top-2 right-2 w-10 h-10 border-[2px] text-gray-500 transition-colors duration-300 hover:text-white hover:bg-[#00bbae] cursor-pointer bg-white flex items-center justify-center border-gray-300 rounded-full"
-                            >
-                              <Heart className="w-4 h-4" />
+                              <div
+                                onClick={(event) =>
+                                  addFavouriteItemsWishList(trending, event)
+                                }
+                                className="absolute top-2 right-2 w-10 h-10 border-[2px] text-gray-500 transition-colors duration-300 hover:text-white hover:bg-[#00bbae] cursor-pointer bg-white flex items-center justify-center border-gray-300 rounded-full"
+                              >
+                                <Heart className="w-4 h-4" />
+                              </div>
                             </div>
-                          </div>
-                          <div className="lg:w-1/2 w-full flex flex-col gap-3">
-                            <div className="flex w-full items-center">
-                              {Array.from({
-                                length: Math.floor(trending.rating),
-                              }).map((_, index) => (
-                                <Star
-                                  key={index}
-                                  className="w-4 h-4 text-[#f88e0f]"
-                                  fill="#f88e0f"
-                                />
-                              ))}
-                              {Array.from({
-                                length: 5 - Math.floor(trending.rating),
-                              }).map((_, index) => (
-                                <Star
-                                  key={index}
-                                  className="w-4 h-4 text-[#f88e0f]"
-                                  fill="#f8f9fa"
-                                />
-                              ))}
-                              {/* <p className="text-gray-500 text-base leading-[16px] ml-2">
+                            <div className="lg:w-1/2 w-full flex flex-col gap-3">
+                              <div className="flex w-full items-center">
+                                {Array.from({
+                                  length: Math.floor(trending.rating),
+                                }).map((_, index) => (
+                                  <Star
+                                    key={index}
+                                    className="w-4 h-4 text-[#f88e0f]"
+                                    fill="#f88e0f"
+                                  />
+                                ))}
+                                {Array.from({
+                                  length: 5 - Math.floor(trending.rating),
+                                }).map((_, index) => (
+                                  <Star
+                                    key={index}
+                                    className="w-4 h-4 text-[#f88e0f]"
+                                    fill="#f8f9fa"
+                                  />
+                                ))}
+                                {/* <p className="text-gray-500 text-base leading-[16px] ml-2">
                                 ({trending.rating})
                               </p> */}
-                            </div>
-                            <p className="text-[22px] leading-[30px] text-[#212529] font-bold whitespace-nowrap overflow-hidden text-ellipsis">
-                              {trending.name}
-                            </p>
-                            <div className="flex sm:flex-row flex-col lg:flex-col sm:justify-between justify-start w-full">
-                              <div className="flex gap-2 items-center flex-wrap">
-                                <p className="text-pink-600 text-[22px] leading-[30px] font-semibold whitespace-nowrap">
-                                  ₹{" "}
-                                  {
-                                    trending.variants?.[0]?.ageGroups?.[0]
-                                      ?.price
-                                  }
-                                </p>
-                                <p className="text-gray-500 text-[16px] leading-[27px] font-normal line-through whitespace-nowrap">
-                                  ₹{" "}
-                                  {
-                                    trending.variants?.[0]?.ageGroups?.[0]
-                                      ?.cutPrice
-                                  }
-                                </p>
-                                <p className="text-red-600 text-[18px] leading-[27px] font-normal whitespace-nowrap">
-                                  {
-                                    trending.variants?.[0]?.ageGroups?.[0]
-                                      ?.discount
-                                  }
-                                  % OFF
+                              </div>
+                              <p className="text-[22px] leading-[30px] text-[#212529] font-bold whitespace-nowrap overflow-hidden text-ellipsis">
+                                {trending.name}
+                              </p>
+                              <div className="flex sm:flex-row flex-col lg:flex-col sm:justify-between justify-start w-full">
+                                <div className="flex gap-2 items-center flex-wrap">
+                                  <p className="text-pink-600 text-[22px] leading-[30px] font-semibold whitespace-nowrap">
+                                    ₹{" "}
+                                    {
+                                      trending.variants?.[0]?.ageGroups?.[0]
+                                        ?.price
+                                    }
+                                  </p>
+                                  <p className="text-gray-500 text-[16px] leading-[27px] font-normal line-through whitespace-nowrap">
+                                    ₹{" "}
+                                    {
+                                      trending.variants?.[0]?.ageGroups?.[0]
+                                        ?.cutPrice
+                                    }
+                                  </p>
+                                  <p className="text-red-600 text-[18px] leading-[27px] font-normal whitespace-nowrap">
+                                    {
+                                      trending.variants?.[0]?.ageGroups?.[0]
+                                        ?.discount
+                                    }
+                                    % OFF
+                                  </p>
+                                </div>
+                              </div>
+                              <div
+                                onClick={(event) =>
+                                  addDealToCart(trending, event)
+                                }
+                                className="rounded-full transition-colors duration-300 hover:bg-[#f88e0f] cursor-pointer px-3 py-2 bg-[#00bbae] flex gap-3 items-center justify-center mt-auto mb-4"
+                              >
+                                <ShoppingBasket className="w-5 h-5 text-white" />
+                                <p className="text-[16px] leading-[24px] font-semibold text-white">
+                                  Add to cart
                                 </p>
                               </div>
                             </div>
-                            <div
-                              onClick={(event) =>
-                                addDealToCart(trending, event)
-                              }
-                              className="rounded-full transition-colors duration-300 hover:bg-[#f88e0f] cursor-pointer px-3 py-2 bg-[#00bbae] flex gap-3 items-center justify-center mt-auto mb-4"
-                            >
-                              <ShoppingBasket className="w-5 h-5 text-white" />
-                              <p className="text-[16px] leading-[24px] font-semibold text-white">
-                                Add to cart
-                              </p>
-                            </div>
                           </div>
-                        </div>
+                        </Link>
                       </SwiperSlide>
                     ))}
                   </Swiper>
@@ -409,43 +420,43 @@ const Deals = () => {
               </div>
               <div className="w-full lg:w-1/4 relative">
                 <div className="flex md:flex-col flex-row gap-5 md:overflow-y-scroll overflow-x-scroll h-full sm:h-[50vh] hide-scrollbar">
-                  {sliding_section.map((item) => (
-                    <div
-                      className="w-full rounded-2xl flex flex-col gap-5 px-8 py-5 md:min-w-full min-w-[300px] h-full md:h-auto"
-                      style={{ backgroundColor: item.bg }}
-                      key={item._id}
-                    >
-                      <p className="text-[27px] leading-[40px] font-semibold text-white">
-                        {item.title}
-                      </p>
-                      <p className="text-[16px] leading-[24px] font-semibold text-gray-200">
-                        {item.title}
-                      </p>
-                      <div className="flex sm:flex-row flex-col justify-center sm:justify-between w-full items-center">
-                        <button
-                          onMouseEnter={() =>
-                            setSlidingSectionHovered(item._id)
-                          }
-                          onMouseLeave={() => setSlidingSectionHovered(null)}
-                          className="flex gap-1 items-center justify-center rounded-full px-5 py-2 bg-white"
-                        >
-                          <p className="text-[#689f38] text-[16px] leading-[22px] font-semibold cursor-pointer">
-                            See Collection
-                          </p>
-                          <ArrowRight
-                            className={`w-5 h-5 text-[#689f38] transition-transform duration-300 ${
-                              slidingSectionHovered === item._id
-                                ? "translate-x-1"
-                                : "translate-x-0"
-                            }`}
-                          />
-                        </button>
-                        <div className="flex justify-end items-end w-28">
-                          <img src={item.image_url} alt="" className="w-full" />
+                  {banner
+                    .filter((b) => b.bannerName === "trending banner")
+                    .map((item) => (
+                      <div
+                        key={item._id}
+                        className="w-full rounded-2xl flex flex-col gap-5 px-8 py-5 md:min-w-full min-w-[300px] h-full md:h-auto bg-cover bg-center bg-no-repeat"
+                        style={{ backgroundImage: `url(${item.webImageUrl})` }}
+                      >
+                        <p className="text-[27px] leading-[40px] font-semibold text-white">
+                          {item.title}
+                        </p>
+                        <p className="text-[16px] leading-[24px] font-semibold text-gray-200 mb-8">
+                          {item.description}
+                        </p>
+                        <div className="flex sm:flex-row flex-col justify-center sm:justify-between w-full items-center mb-6">
+                          <Link
+                            to={"/products"}
+                            onMouseEnter={() =>
+                              setSlidingSectionHovered(item._id)
+                            }
+                            onMouseLeave={() => setSlidingSectionHovered(null)}
+                            className="flex gap-1 items-center justify-center rounded-full px-5 py-2 bg-white"
+                          >
+                            <p className="text-[#689f38] text-[16px] leading-[22px] font-semibold cursor-pointer">
+                              See Collection
+                            </p>
+                            <ArrowRight
+                              className={`w-5 h-5 text-[#689f38] transition-transform duration-300 ${
+                                slidingSectionHovered === item._id
+                                  ? "translate-x-1"
+                                  : "translate-x-0"
+                              }`}
+                            />
+                          </Link>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
                 </div>
                 <div className={`absolute left-0 -bottom-10 w-full`}>
                   <div className="flex w-full justify-center" ref={chevronsRef}>

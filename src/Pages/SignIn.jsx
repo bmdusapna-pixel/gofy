@@ -77,7 +77,7 @@ const SignIn = () => {
 
     if (res.success) {
       showMessage("Login successful!", "success");
-      navigate("/account");
+      navigate("/");
     } else {
       showMessage(res.message || "Invalid credentials", "error");
     }
