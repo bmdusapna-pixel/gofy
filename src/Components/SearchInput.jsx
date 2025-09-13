@@ -11,7 +11,7 @@ const SearchInput = ({ items }) => {
     const inputValue = e.target.value;
     setSearch(inputValue);
     const newFiltered = items.filter((item) =>
-      item.toLowerCase().includes(inputValue.toLowerCase())
+      item.name.toLowerCase().includes(inputValue.toLowerCase())
     );
     setFilteredItems(newFiltered);
     setShowSuggestions(true);
@@ -26,7 +26,7 @@ const SearchInput = ({ items }) => {
   };
 
   const handleItemClick = (item) => {
-    setSearch(item);
+    setSearch(item.name);
     setShowSuggestions(false);
   };
 
@@ -81,7 +81,7 @@ const SearchInput = ({ items }) => {
                 }`}
                 onClick={() => handleItemClick(item)}
               >
-                {item}
+                {item.name}
               </li>
             ))
           ) : (

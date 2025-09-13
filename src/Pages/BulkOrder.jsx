@@ -23,7 +23,7 @@ const BulkOrder = () => {
   }, [user]);
 
   const allItems = productItems.map((item) => item.items);
-  const names = allItems.flatMap((group) => group.map((item) => item.name));
+  const products = allItems.flatMap((group) => group);
 
   const [productDetails, setProductDetails] = useState([
     {
@@ -155,7 +155,7 @@ const BulkOrder = () => {
                 key={product._id}
                 className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full"
               >
-                <SearchInput items={names} />
+                <SearchInput items={products} />
                 <input
                   type="number"
                   placeholder="Quantity"
