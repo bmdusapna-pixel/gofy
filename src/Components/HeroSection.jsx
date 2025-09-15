@@ -38,9 +38,9 @@ const HeroSection = () => {
   const [collection, setCollection] = useState([]);
   const [banner, setBanner] = useState([]);
   const settings = {
-    infinite: true,
+    infinite: banner.filter((b) => b.bannerName === "hero banner").length > 1,
     speed: 500,
-    autoplay: true,
+    autoplay: banner.filter((b) => b.bannerName === "hero banner").length > 1,
     autoplaySpeed: 2000,
     arrows: false,
     slidesToShow: 1,
