@@ -67,7 +67,9 @@ const FilterColorCategory = ({
               >
                 <div
                   className={`w-5 h-5 rounded-sm border border-gray-400 flex items-center justify-center`}
-                  style={{ backgroundColor: item.title }}
+                  style={{
+                    backgroundColor: item.hexCode ? item.hexCode : item.title,
+                  }}
                 >
                   {isSelected && (
                     <div className="w-2 h-2 bg-white rounded-sm" />

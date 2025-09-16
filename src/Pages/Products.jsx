@@ -67,6 +67,7 @@ const Products = () => {
   const [hoveredBrand, setHoveredBrand] = useState("");
   const [currentBrand, setCurrentBrand] = useState("");
   const [selectedRating, setSelectedRating] = useState("All");
+  const [selectedCategory, setSelectedCategory] = useState([]);
 
   const [allProducts, setAllProducts] = useState([]);
 
@@ -85,7 +86,7 @@ const Products = () => {
   }, []);
 
   useEffect(() => {
-    const extractUnique = (items, key, label = key) => {
+    const extractUnique = (items, key) => {
       const seen = new Set();
       return items.reduce((acc, item) => {
         const value = item[key];
@@ -94,7 +95,6 @@ const Products = () => {
           acc.push({
             _id: item._id,
             title: value,
-            sub_category: item.sub_category,
           });
         }
         return acc;
@@ -121,12 +121,34 @@ const Products = () => {
     ];
 
     setGenderCategory(genderOptions);
-    setFilterBrands(Brands);
-    setAgeCategory(extractUnique(toys_items, "age_group"));
-    setMaterialCategory(extractUnique(toys_items, "material"));
-    setColorCategory(extractUnique(toys_items, "color"));
+    setFilterBrands(extractUnique(productItems, "brand"));
+    const fetchAges = async () => {
+      const result = await fetch(`${baseUrl}/ages`);
+      const res = await result.json();
+      setAgeCategory(res.map((r) => ({ _id: r._id, title: r.ageRange })));
+    };
+    fetchAges();
+    // setAgeCategory(extractUnique(toys_items, "age_group"));
+    const fetchMaterial = async () => {
+      const result = await fetch(`${baseUrl}/material`);
+      const res = await result.json();
+      setMaterialCategory(
+        res.materials.map((r) => ({ _id: r._id, title: r.name }))
+      );
+    };
+    fetchMaterial();
+    // setMaterialCategory(extractUnique(toys_items, "material"));
+    const fetchColor = async () => {
+      const result = await fetch(`${baseUrl}/color/colors`);
+      const res = await result.json();
+      setColorCategory(
+        res.map((r) => ({ _id: r._id, title: r.name, hexCode: r.hexCode }))
+      );
+    };
+    fetchColor();
+    // setColorCategory(extractUnique(toys_items, "color"));
     setSizeCategory(sizeOptions);
-  }, []);
+  }, [productItems]);
 
   const clearAllFilters = () => {
     setCurrentAgeCategory([]);
@@ -134,6 +156,7 @@ const Products = () => {
     setCurrenColorCategory([]);
     setCurrentSizeCategory([]);
     setCurrentPriceCategory([]);
+    setSelectedCategory([]);
   };
 
   // useEffect(() => {
@@ -253,8 +276,8 @@ const Products = () => {
               headingTitle="Category"
               hoveredItem={hoveredProductCategory}
               setHoveredItem={setHoveredProductCategory}
-              selectedItem={""}
-              setSelectedItem={""}
+              selectedItem={selectedCategory}
+              setSelectedItem={setSelectedCategory}
             />
             <FilterCategory
               headingTitile={"Age Group"}
@@ -272,14 +295,14 @@ const Products = () => {
               selectedItems={currentGenderCategory}
               setSelectedItems={setCurrentGenderCategory}
             />
-            <FilterCategory
+            {/* <FilterCategory
               headingTitile={"Size"}
               items={sizeCategory}
               hoveredItem={hoveredSizeCategory}
               setHoveredItem={setHoveredSizeCategory}
               selectedItems={currentSizeCategory}
               setSelectedItems={setCurrentSizeCategory}
-            />
+            /> */}
             <PriceRangeSlider headingTitle="Price" min={0} max={500} />
             <FilterCategory
               openFilter={openFilter}
@@ -374,8 +397,8 @@ const Products = () => {
               headingTitle="Category"
               hoveredItem={hoveredProductCategory}
               setHoveredItem={setHoveredProductCategory}
-              selectedItem={""}
-              setSelectedItem={""}
+              selectedItem={selectedCategory}
+              setSelectedItem={setSelectedCategory}
             />
             <FilterCategory
               headingTitile={"Age Group"}
@@ -393,14 +416,14 @@ const Products = () => {
               selectedItems={currentGenderCategory}
               setSelectedItems={setCurrentGenderCategory}
             />
-            <FilterCategory
+            {/* <FilterCategory
               headingTitile={"Size"}
               items={sizeCategory}
               hoveredItem={hoveredSizeCategory}
               setHoveredItem={setHoveredSizeCategory}
               selectedItems={currentSizeCategory}
               setSelectedItems={setCurrentSizeCategory}
-            />
+            /> */}
             <PriceRangeSlider headingTitle="Price" min={0} max={500} />
             <FilterCategory
               openFilter={openFilter}

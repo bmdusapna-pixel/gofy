@@ -15,7 +15,9 @@ import PriceRangeSlider from "../Components/PriceRangeSlider.jsx";
 import FilterActiveComponent from "../Components/FilterActiveComponent.jsx";
 import FilterCategory from "../Components/FilterCategory";
 import FilterColorCategory from "../Components/FilterColorCategory.jsx";
+import RatingFilter from "../Components/RatingFilter.jsx";
 
+const baseUrl = import.meta.env.VITE_BASE_URL;
 const product_categories = [
   { _id: 1, sub_category: "Dolls" },
   { _id: 2, sub_category: "Educational Toy" },
@@ -63,6 +65,11 @@ const SuperDeals = () => {
   const [hoveredColorCategory, setHoveredColorCategory] = useState(null);
   const [hoveredSizeCategory, setHoveredSizeCategory] = useState(null);
   const [hoveredProductCategory, setHoveredProductCategory] = useState(null);
+  const [filterBrands, setFilterBrands] = useState([]);
+  const [hoveredBrand, setHoveredBrand] = useState("");
+  const [currentBrand, setCurrentBrand] = useState("");
+  const [selectedRating, setSelectedRating] = useState("All");
+  const [selectedCategory, setSelectedCategory] = useState([]);
 
   // Fetch products from API
   useEffect(() => {
@@ -87,22 +94,42 @@ const SuperDeals = () => {
 
         // Extract categories from nested array
         const categories = [];
-        // Extract colors from variants
-        const colors = [];
-
-        // Extract sizes (if available in future data)
         const sizes = [];
 
-        // Extract age groups
-        const ages = [];
+        const genderOptions = [
+          { _id: 1, title: "Girls", sub_category: "Girls" },
+          { _id: 2, title: "Boys", sub_category: "Boys" },
+        ];
+
+        const fetchMaterial = async () => {
+          const result = await fetch(`${baseUrl}/material`);
+          const res = await result.json();
+          setMaterialCategory(
+            res.materials.map((r) => ({ _id: r._id, title: r.name }))
+          );
+        };
+        fetchMaterial();
 
         // Set state
         setClotheCategory(categories);
-        setMaterialCategory(unique({}, "material"));
-        setGenderCategory(unique({}, "gender"));
-        setColorCategory(colors);
-        setAgeCategory(ages);
+        setGenderCategory(genderOptions);
+        const fetchColor = async () => {
+          const result = await fetch(`${baseUrl}/color/colors`);
+          const res = await result.json();
+          setColorCategory(
+            res.map((r) => ({ _id: r._id, title: r.name, hexCode: r.hexCode }))
+          );
+        };
+        fetchColor();
+        const fetchAges = async () => {
+          const result = await fetch(`${baseUrl}/ages`);
+          const res = await result.json();
+          setAgeCategory(res.map((r) => ({ _id: r._id, title: r.ageRange })));
+        };
+        fetchAges();
         setSizeCategory(sizes);
+
+        setFilterBrands(unique(productItems, "brand"));
 
         // Hardcode sleeves since API doesn’t provide
         setSleevesCategory([
@@ -116,7 +143,7 @@ const SuperDeals = () => {
     };
 
     fetchProducts();
-  }, []);
+  }, [productItems]);
 
   const addProductToCart = (product, event) => {
     event.stopPropagation();
@@ -145,6 +172,7 @@ const SuperDeals = () => {
     setCurrentPriceCategory([]);
     setCurrentGenderCategory("");
     setCurrentSleevesCategory("");
+    setSelectedCategory([]);
   };
 
   return (
@@ -166,8 +194,8 @@ const SuperDeals = () => {
             headingTitle="Category"
             hoveredItem={hoveredProductCategory}
             setHoveredItem={setHoveredProductCategory}
-            selectedItem={""}
-            setSelectedItem={""}
+            selectedItem={selectedCategory}
+            setSelectedItem={setSelectedCategory}
           />
           <FilterCategory
             headingTitile={"Age Group"}
@@ -193,14 +221,14 @@ const SuperDeals = () => {
             selectedItems={currentGenderCategory}
             setSelectedItems={setCurrentGenderCategory}
           />
-          <FilterCategory
+          {/* <FilterCategory
             headingTitile={"Sleeves"}
             items={sleevesCategory}
             hoveredItem={hoveredSleevesCategory}
             setHoveredItem={setHoveredSleevesCategory}
             selectedItems={currentSleevesCategory}
             setSelectedItems={setCurrentSleevesCategory}
-          />
+          /> */}
           <FilterColorCategory
             headingTitile={"Colors"}
             items={colorCategory}
@@ -209,15 +237,30 @@ const SuperDeals = () => {
             selectedItems={currentColorCategory}
             setSelectedItems={setCurrenColorCategory}
           />
-          <FilterCategory
+          {/* <FilterCategory
             headingTitile={"Size"}
             items={sizeCategory}
             hoveredItem={hoveredSizeCategory}
             setHoveredItem={setHoveredSizeCategory}
             selectedItems={currentSizeCategory}
             setSelectedItems={setCurrentSizeCategory}
-          />
+          /> */}
           <PriceRangeSlider headingTitle="Price" min={0} max={20000} />
+          <FilterCategory
+            openFilter={openFilter}
+            headingTitile={"Brands"}
+            items={filterBrands}
+            hoveredItem={hoveredBrand}
+            setHoveredItem={setHoveredBrand}
+            selectedItems={currentBrand}
+            setSelectedItems={setCurrentBrand}
+          />
+          <RatingFilter
+            headingTitle="Rating"
+            selectedRating={selectedRating}
+            setSelectedRating={setSelectedRating}
+            groupName="rating"
+          />
         </div>
 
         {/* Product Grid */}
@@ -309,6 +352,82 @@ const SuperDeals = () => {
             ))}
           </div>
         </div>
+      </div>
+      <div
+        className={`fixed left-0 p-5 overflow-y-auto top-0 sm:w-96 w-[80%] bg-white flex flex-col gap-2 lg:hidden h-full z-50 transition-transform duration-300 ${
+          openFilter ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
+        <div
+          onClick={() => setOpenFilter(false)}
+          className="w-10 cursor-pointer hover:bg-gray-100 bg-transparent lg:hidden flex items-center justify-center h-10 border border-[#69778a] p-1 rounded-md"
+        >
+          <X className="w-6 h-6 text-[#69778a]" />
+        </div>
+        <FilterActiveComponent
+          items={product_categories}
+          headingTitle="Category"
+          hoveredItem={hoveredProductCategory}
+          setHoveredItem={setHoveredProductCategory}
+          selectedItem={selectedCategory}
+          setSelectedItem={setSelectedCategory}
+        />
+        <FilterCategory
+          headingTitile={"Age Group"}
+          items={ageCategory}
+          hoveredItem={hoveredAgeCategory}
+          setHoveredItem={setHoveredAgeCategory}
+          selectedItems={currentAgeCategory}
+          setSelectedItems={setCurrentAgeCategory}
+        />
+        <FilterCategory
+          headingTitile={"Gender"}
+          items={genderCategory}
+          hoveredItem={hoveredGenderCategory}
+          setHoveredItem={setHoveredGenderCategory}
+          selectedItems={currentGenderCategory}
+          setSelectedItems={setCurrentGenderCategory}
+        />
+        {/* <FilterCategory
+              headingTitile={"Size"}
+              items={sizeCategory}
+              hoveredItem={hoveredSizeCategory}
+              setHoveredItem={setHoveredSizeCategory}
+              selectedItems={currentSizeCategory}
+              setSelectedItems={setCurrentSizeCategory}
+            /> */}
+        <PriceRangeSlider headingTitle="Price" min={0} max={500} />
+        <FilterCategory
+          openFilter={openFilter}
+          headingTitile={"Brands"}
+          items={filterBrands}
+          hoveredItem={hoveredBrand}
+          setHoveredItem={setHoveredBrand}
+          selectedItems={currentBrand}
+          setSelectedItems={setCurrentBrand}
+        />
+        <FilterCategory
+          headingTitile={"Material Used"}
+          items={materialCategory}
+          hoveredItem={hoveredMaterialCategory}
+          setHoveredItem={setHoveredMaterialCategory}
+          selectedItems={currentMaterialCategory}
+          setSelectedItems={setCurrentMaterialCategory}
+        />
+        <FilterColorCategory
+          headingTitile={"Colors"}
+          items={colorCategory}
+          hoveredItem={hoveredColorCategory}
+          setHoveredItem={setHoveredColorCategory}
+          selectedItems={currentColorCategory}
+          setSelectedItems={setCurrenColorCategory}
+        />
+        <RatingFilter
+          headingTitle="Rating"
+          selectedRating={selectedRating}
+          setSelectedRating={setSelectedRating}
+          groupName="rating-mobile"
+        />
       </div>
     </div>
   );

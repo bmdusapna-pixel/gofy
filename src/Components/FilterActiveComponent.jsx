@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { MoveRight, ChevronDown } from "lucide-react";
 
 // This is a reusable, collapsible component for displaying an active filter list.
@@ -11,6 +12,28 @@ const FilterActiveComponent = ({
   setSelectedItem,
 }) => {
   const [isOpen, setIsOpen] = useState(true);
+  const [category, setCategory] = useState([]);
+  const [activeCategory, setActiveCategories] = useState([]);
+
+  const { slug } = useParams();
+  useEffect(() => {
+    if (slug) {
+      setActiveCategories(
+        category.filter(
+          (cat) => cat.collectionId.collectionName.toLowerCase() === slug
+        )
+      );
+    }
+  }, [category, slug]);
+
+  useEffect(() => {
+    const fetchCategory = async () => {
+      const result = await fetch(`${import.meta.env.VITE_BASE_URL}/categories`);
+      const res = await result.json();
+      setCategory(res.categories);
+    };
+    fetchCategory();
+  }, []);
 
   const handleToggle = () => {
     setIsOpen(!isOpen);
@@ -44,9 +67,12 @@ const FilterActiveComponent = ({
           onMouseLeave={() => setHoveredItem(null)}
           className="flex flex-col gap-2 w-full"
         >
-          {items.map((item) => {
+          {(activeCategory && activeCategory.length > 0
+            ? activeCategory
+            : category
+          ).map((item) => {
             const isActive =
-              hoveredItem === item._id || selectedItem === item.sub_category;
+              hoveredItem === item._id || selectedItem === item.categoryName;
             return (
               <div
                 key={item._id}
@@ -54,7 +80,7 @@ const FilterActiveComponent = ({
                   isActive ? "text-[#00bbae]" : "text-[#69778a]"
                 }`}
                 onMouseEnter={() => setHoveredItem(item._id)}
-                onClick={() => setSelectedItem(item.sub_category)}
+                onClick={() => setSelectedItem(item.categoryName)}
               >
                 <MoveRight
                   className={`w-5 h-5 ${isActive ? "block" : "hidden"}`}
@@ -64,7 +90,7 @@ const FilterActiveComponent = ({
                     isActive ? "translate-x-1" : "translate-x-0"
                   }`}
                 >
-                  {item.sub_category}
+                  {item.categoryName}
                 </p>
               </div>
             );
