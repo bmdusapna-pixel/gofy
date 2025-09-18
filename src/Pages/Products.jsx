@@ -21,6 +21,8 @@ import {
   slugToAgeGroup,
   toys_items,
   unslugify,
+  slugify,
+  classifySlug,
 } from "../assets/helper";
 
 import SuperBanner from "../assets/superBanner.png";
@@ -68,8 +70,42 @@ const Products = () => {
   const [currentBrand, setCurrentBrand] = useState("");
   const [selectedRating, setSelectedRating] = useState("All");
   const [selectedCategory, setSelectedCategory] = useState([]);
+  const [selectedCollection, setSelectedCollection] = useState("");
+  const [filterCategory, setFilterCategory] = useState([]);
 
   const [allProducts, setAllProducts] = useState([]);
+
+  useEffect(() => {
+    if (slug || category) {
+      const { age, collection } = classifySlug(slug);
+      setSelectedCollection(collection);
+      ageCategory.map((a) => {
+        if (slugify(a.title) === age) {
+          setCurrentAgeCategory(a.title);
+        }
+      });
+    }
+  }, [slug, category, ageCategory]);
+
+  useEffect(() => {
+    const fetchCollection = async () => {
+      const result = await fetch(`${baseUrl}/collections`);
+      const res = await result.json();
+      const allCollections = res.collections;
+      if (selectedCollection) {
+        const relatedCollection = allCollections.find(
+          (a) => slugify(a.collectionName) === selectedCollection
+        );
+        const result = await fetch(`${baseUrl}/categories`);
+        const res = await result.json();
+        const relatedCategories = res.categories.filter(
+          (c) => c.collectionId._id === relatedCollection._id
+        );
+        setFilterCategory(relatedCategories);
+      }
+    };
+    fetchCollection();
+  }, [selectedCollection]);
 
   useEffect(() => {
     const fetchProducts = async () => {

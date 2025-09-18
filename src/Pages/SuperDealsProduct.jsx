@@ -9,6 +9,23 @@ const SuperDeals = () => {
   const [products, setProducts] = useState([]);
   const [productHovered, setProductHoverd] = useState(null);
   const { addToCart, addFavouriteItems } = useContext(CartContext);
+  const [collection, setCollection] = useState([]);
+  const [categoryList, setCategoryList] = useState([]);
+  const [categoryBtCollection, setCategoryBtCollection] = useState([]);
+
+  useEffect(() => {
+    setCategoryBtCollection(
+      collection.map((collection) => {
+        return {
+          _id: collection._id,
+          collectionName: collection.collectionName,
+          categories: categoryList.filter(
+            (cat) => cat.collectionId._id === collection._id
+          ),
+        };
+      })
+    );
+  }, [categoryList, collection]);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -21,12 +38,27 @@ const SuperDeals = () => {
           return;
         }
 
-        setProducts(result.data);
+        setProducts(
+          result.data.filter((p) => p.promotions.includes("deal_of_the_day"))
+        );
       } catch (error) {
         console.error("Error fetching products:", error);
       }
     };
-
+    const fetchCollection = async () => {
+      const result = await fetch(
+        `${import.meta.env.VITE_BASE_URL}/collections`
+      );
+      const res = await result.json();
+      setCollection(res.collections);
+    };
+    fetchCollection();
+    const fetchCategory = async () => {
+      const result = await fetch(`${import.meta.env.VITE_BASE_URL}/categories`);
+      const res = await result.json();
+      setCategoryList(res.categories);
+    };
+    fetchCategory();
     fetchProducts();
   }, [category, slug]);
 
@@ -158,20 +190,23 @@ const SuperDeals = () => {
           className="object-cover h-full w-full"
         />
       </div>
-
-      <div className="w-full lg:px-12 px-5 mx-auto py-10">
-        {/* Toys Section (just heading + all products) */}
-        <h2 className="text-2xl font-bold mb-5">Toys</h2>
-        <div className="w-full grid lg:grid-cols-5 md:grid-cols-4 grid-cols-1 sm:grid-cols-2 gap-3 mb-10">
-          {products.map(renderProductCard)}
-        </div>
-
-        {/* Clothes Section (just heading + all products again) */}
-        <h2 className="text-2xl font-bold mb-5">Clothes</h2>
-        <div className="w-full grid lg:grid-cols-5 md:grid-cols-4 grid-cols-1 sm:grid-cols-2 gap-3">
-          {products.map(renderProductCard)}
-        </div>
-      </div>
+      {categoryBtCollection?.map((collection) => {
+        const collectionCategoriesId = collection.categories.map((c) => c._id);
+        const relatedProducts = products.filter((p) =>
+          p.categories.find((c) => collectionCategoriesId.includes(c._id))
+        );
+        if (relatedProducts.length === 0) return null;
+        return (
+          <div className="w-full lg:px-12 px-5 mx-auto py-10">
+            <h2 className="text-2xl font-bold mb-5">
+              {collection.collectionName}
+            </h2>
+            <div className="w-full grid lg:grid-cols-5 md:grid-cols-4 grid-cols-1 sm:grid-cols-2 gap-3 mb-10">
+              {relatedProducts.map(renderProductCard)}
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 };

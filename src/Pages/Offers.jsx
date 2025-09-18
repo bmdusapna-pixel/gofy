@@ -17,7 +17,9 @@ const SuperDeals = () => {
         const res = await fetch(`${baseUrl}/products`);
         const result = await res.json();
         if (result.data) {
-          setProducts(result.data); // API returns { message, data: [...] }
+          setProducts(
+            result.data.filter((p) => p.promotions.includes("offers"))
+          );
         }
       } catch (err) {
         console.error("Error fetching products:", err);

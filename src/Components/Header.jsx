@@ -389,7 +389,7 @@ const ThirdHeader = ({ isMobileMenuOpen, setIsMobileMenuOpen }) => {
         const collectionsMap = collectionData.collections.map((col) => ({
           _id: col._id,
           label: col.collectionName,
-          url: `/products/${col.collectionName.toLowerCase()}`,
+          url: `/products/${slugify(col.collectionName.toLowerCase())}`,
           items: [],
         }));
 

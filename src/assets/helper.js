@@ -2235,6 +2235,20 @@ const slugify = (str) => {
 const unslugify = (slug) => {
   return slug.replace(/-/g, " ").replace(/\b\w/g, (char) => char.toUpperCase());
 };
+function classifySlug(slug) {
+  let age = null;
+  let collection = null;
+
+  const agePattern = /^\d+-\d+-(months|month|years|year)$/;
+
+  if (agePattern.test(slug)) {
+    age = slug;
+  } else {
+    collection = slug;
+  }
+
+  return { age, collection };
+}
 
 const generateSubCategoryList = (clothes, toys) => {
   const subCategories = [];
@@ -2294,6 +2308,7 @@ export {
   priceRanges,
   slugify,
   unslugify,
+  classifySlug,
   sub_category_toys_clothes,
   slugToAgeGroup,
 };

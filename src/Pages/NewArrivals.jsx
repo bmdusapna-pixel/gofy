@@ -42,18 +42,9 @@ const Products = () => {
         const data = await res.json();
 
         if (data?.data) {
-          let items = data.data;
-
-          // ✅ Filter by category if provided
-          if (category === "new-arrivals") {
-            items = items.filter((p) => p.promotions?.includes("new_arrival"));
-          } else if (category) {
-            items = items.filter(
-              (p) =>
-                p.category?.toLowerCase() === category.toLowerCase() ||
-                p.sub_category?.toLowerCase() === slug?.toLowerCase()
-            );
-          }
+          let items = data.data.filter((p) =>
+            p.promotions.includes("new_arrival")
+          );
 
           setProductItems(items);
         }

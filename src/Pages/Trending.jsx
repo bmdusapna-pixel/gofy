@@ -77,7 +77,9 @@ const SuperDeals = () => {
       try {
         const res = await fetch(`${import.meta.env.VITE_BASE_URL}/products`);
         const data = await res.json();
-        setProductItems(data.data || []);
+        setProductItems(
+          data.data.filter((p) => p.promotions.includes("trending")) || []
+        );
 
         // Extract filter options from API response
         const unique = (arr, key) => {
