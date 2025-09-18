@@ -20,7 +20,12 @@ const FilterActiveComponent = ({
     if (slug) {
       setActiveCategories(
         category.filter(
-          (cat) => cat.collectionId.collectionName.toLowerCase() === slug
+          (cat) =>
+            cat.collectionId.collectionName
+              .toLowerCase()
+              .trim()
+              .replace(/\s+/g, "-")
+              .replace(/[^a-z0-9-]/g, "") === slug
         )
       );
     }
