@@ -69,13 +69,15 @@ const SuperDeals = () => {
   const [hoveredBrand, setHoveredBrand] = useState("");
   const [currentBrand, setCurrentBrand] = useState("");
   const [selectedRating, setSelectedRating] = useState("All");
-  const [selectedCategory, setSelectedCategory] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("");
+
+  const [allProducts, setAllProducts] = useState([]);
 
   // Fetch products from API
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await fetch(`${import.meta.env.VITE_BASE_URL}/products`);
+        const res = await fetch(`${baseUrl}/products`);
         const data = await res.json();
         setProductItems(
           data.data.filter((p) => p.promotions.includes("trending")) || []
@@ -174,8 +176,75 @@ const SuperDeals = () => {
     setCurrentPriceCategory([]);
     setCurrentGenderCategory("");
     setCurrentSleevesCategory("");
-    setSelectedCategory([]);
+    setSelectedCategory("");
   };
+
+  useEffect(() => {
+    const filters = {
+      selectedCategory,
+      currentAgeCategory,
+      currentColorCategory,
+      currentMaterialCategory,
+      currentBrand,
+      currentGenderCategory,
+    };
+    let filteredProducts = productItems;
+    filteredProducts = filteredProducts.filter((product) => {
+      const matchSelectedCategory =
+        !filters.selectedCategory ||
+        product.categories?.some(
+          (c) => c.categoryName === filters.selectedCategory
+        );
+
+      const matchAge =
+        !filters.currentAgeCategory?.length ||
+        product.variants?.some((variant) =>
+          variant.ageGroups?.some((ag) =>
+            filters.currentAgeCategory.includes(ag.ageGroup.ageRange)
+          )
+        );
+
+      const matchColor =
+        !filters.currentColorCategory?.length ||
+        product.variants?.some((variant) =>
+          filters.currentColorCategory.includes(variant.color?.name)
+        );
+
+      const matchMaterial =
+        !filters.currentMaterialCategory?.length ||
+        (product.material &&
+          filters.currentMaterialCategory.includes(product.material.name));
+
+      const matchBrand =
+        !filters.currentBrand?.length ||
+        (product.brand && filters.currentBrand.includes(product.brand));
+
+      const matchGender =
+        !filters.currentGenderCategory?.length ||
+        (product.gender &&
+          filters.currentGenderCategory.includes(product.gender));
+
+      return (
+        matchSelectedCategory &&
+        matchAge &&
+        matchColor &&
+        matchMaterial &&
+        matchBrand &&
+        matchGender
+      );
+    });
+    console.log(filteredProducts);
+    setAllProducts(filteredProducts);
+  }, [
+    selectedCategory,
+    currentAgeCategory,
+    currentColorCategory,
+    currentMaterialCategory,
+    currentBrand,
+    currentGenderCategory,
+    selectedRating,
+    productItems,
+  ]);
 
   return (
     <div className="w-full bg-[#f9f9f9]">
@@ -269,8 +338,8 @@ const SuperDeals = () => {
         <div className="lg:w-4/5 w-full bo">
           <div className="flex justify-between w-full items-center bg-white rounded-xl p-4 mb-5">
             <p className="text-[#69778a] text-[18px] font-semibold hidden lg:block">
-              Showing all {productItems.length} result
-              {productItems.length !== 1 ? "s" : ""}
+              Showing all {allProducts.length} result
+              {allProducts.length !== 1 ? "s" : ""}
             </p>
             <div className="flex gap-5 items-center">
               <p
@@ -296,7 +365,7 @@ const SuperDeals = () => {
           </div>
 
           <div className="w-full grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-3">
-            {productItems.map((product, index) => (
+            {allProducts.map((product, index) => (
               <Link
                 key={index}
                 to={`/product-details/${product.url}`}

@@ -69,13 +69,16 @@ const Products = () => {
   const [hoveredBrand, setHoveredBrand] = useState("");
   const [currentBrand, setCurrentBrand] = useState("");
   const [selectedRating, setSelectedRating] = useState("All");
-  const [selectedCategory, setSelectedCategory] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedCollection, setSelectedCollection] = useState("");
   const [filterCategory, setFilterCategory] = useState([]);
+  const [allCollections, setAllCollections] = useState([]);
+  const [categories, setCategories] = useState([]);
 
   const [allProducts, setAllProducts] = useState([]);
 
   useEffect(() => {
+    clearAllFilters();
     if (slug || category) {
       const { age, collection } = classifySlug(slug);
       setSelectedCollection(collection);
@@ -88,24 +91,31 @@ const Products = () => {
   }, [slug, category, ageCategory]);
 
   useEffect(() => {
+    if (selectedCollection) {
+      const relatedCollection = allCollections.find(
+        (a) => slugify(a.collectionName) === selectedCollection
+      );
+      const relatedCategories = categories.filter(
+        (c) => c.collectionId._id === relatedCollection._id
+      );
+      setFilterCategory(relatedCategories);
+    }
+  }, [selectedCollection, allCollections, categories]);
+
+  useEffect(() => {
     const fetchCollection = async () => {
       const result = await fetch(`${baseUrl}/collections`);
       const res = await result.json();
-      const allCollections = res.collections;
-      if (selectedCollection) {
-        const relatedCollection = allCollections.find(
-          (a) => slugify(a.collectionName) === selectedCollection
-        );
-        const result = await fetch(`${baseUrl}/categories`);
-        const res = await result.json();
-        const relatedCategories = res.categories.filter(
-          (c) => c.collectionId._id === relatedCollection._id
-        );
-        setFilterCategory(relatedCategories);
-      }
+      setAllCollections(res.collections);
     };
+    const fetchCategories = async () => {
+      const result = await fetch(`${baseUrl}/categories`);
+      const res = await result.json();
+      setCategories(res.categories);
+    };
+    fetchCategories();
     fetchCollection();
-  }, [selectedCollection]);
+  }, []);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -192,8 +202,85 @@ const Products = () => {
     setCurrenColorCategory([]);
     setCurrentSizeCategory([]);
     setCurrentPriceCategory([]);
-    setSelectedCategory([]);
+    setSelectedCategory("");
   };
+
+  useEffect(() => {
+    const filters = {
+      filterCategory,
+      selectedCategory,
+      currentAgeCategory,
+      currentColorCategory,
+      currentMaterialCategory,
+      currentBrand,
+      currentGenderCategory,
+    };
+    let filteredProducts = productItems;
+    if (filters.filterCategory?.length) {
+      filteredProducts = filteredProducts.filter((product) =>
+        product.categories?.some((c) =>
+          filters.filterCategory.some(
+            (fc) => fc.categoryName === c.categoryName
+          )
+        )
+      );
+    }
+    filteredProducts = filteredProducts.filter((product) => {
+      const matchSelectedCategory =
+        !filters.selectedCategory ||
+        product.categories?.some(
+          (c) => c.categoryName === filters.selectedCategory
+        );
+
+      const matchAge =
+        !filters.currentAgeCategory?.length ||
+        product.variants?.some((variant) =>
+          variant.ageGroups?.some((ag) =>
+            filters.currentAgeCategory.includes(ag.ageGroup.ageRange)
+          )
+        );
+
+      const matchColor =
+        !filters.currentColorCategory?.length ||
+        product.variants?.some((variant) =>
+          filters.currentColorCategory.includes(variant.color?.name)
+        );
+
+      const matchMaterial =
+        !filters.currentMaterialCategory?.length ||
+        (product.material &&
+          filters.currentMaterialCategory.includes(product.material.name));
+
+      const matchBrand =
+        !filters.currentBrand?.length ||
+        (product.brand && filters.currentBrand.includes(product.brand));
+
+      const matchGender =
+        !filters.currentGenderCategory?.length ||
+        (product.gender &&
+          filters.currentGenderCategory.includes(product.gender));
+
+      return (
+        matchSelectedCategory &&
+        matchAge &&
+        matchColor &&
+        matchMaterial &&
+        matchBrand &&
+        matchGender
+      );
+    });
+    setAllProducts(filteredProducts);
+  }, [
+    filterCategory,
+    selectedCategory,
+    currentAgeCategory,
+    currentColorCategory,
+    currentMaterialCategory,
+    currentBrand,
+    currentGenderCategory,
+    selectedRating,
+    productItems,
+  ]);
 
   // useEffect(() => {
   //   let items = [];
@@ -379,7 +466,7 @@ const Products = () => {
                 {/* <hr className="w-14 rounded-2xl bg-[#f88e0f] h-1 border-none" /> */}
               </div>
               <div className="flex flex-col gap-2 w-full">
-                {productItems.slice(0, 5).map((product) => {
+                {allProducts.slice(0, 5).map((product) => {
                   const imageSrc =
                     product.variants?.[0]?.images?.[0] ||
                     product.images?.[0] ||
@@ -496,8 +583,8 @@ const Products = () => {
           <div className="lg:w-4/5 w-full flex flex-col gap-5">
             <div className="flex justify-between w-full items-center bg-white rounded-xl p-4">
               <p className="text-[#69778a] text-[18px] leading-[24px] font-semibold lg:block hidden">
-                Showing all {productItems.length} result
-                {productItems.length !== 1 ? "s" : ""}
+                Showing all {allProducts.length} result
+                {allProducts.length !== 1 ? "s" : ""}
               </p>
               <div className="flex gap-5 items-center">
                 <div>
@@ -533,7 +620,7 @@ const Products = () => {
               </div>
             </div>
             <div className="w-full grid md:grid-cols-4 grid-cols-1 sm:grid-cols-2 gap-3">
-              {productItems?.map((product, index) => {
+              {allProducts?.map((product, index) => {
                 return (
                   <Link
                     to={`/product-details/${product.url}`}
