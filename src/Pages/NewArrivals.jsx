@@ -182,7 +182,7 @@ const Products = () => {
             <div className="w-full grid md:grid-cols-4 grid-cols-1 sm:grid-cols-2 gap-3">
               {productItems?.map((product) => (
                 <Link
-                  to={`/products/${product.category || "toys"}/${product.url}`}
+                  to={`/product-details/${product.url}`}
                   key={product._id}
                   onMouseEnter={() => setProductHoverd(product._id)}
                   onMouseLeave={() => setProductHoverd(null)}

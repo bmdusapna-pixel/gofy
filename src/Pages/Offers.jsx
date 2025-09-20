@@ -68,7 +68,7 @@ const SuperDeals = () => {
 
     return (
       <Link
-        to={`/products/${product.url}`}
+        to={`/product-details/${product.url}`}
         key={product._id || index}
         onMouseEnter={() => setProductHoverd(product._id)}
         onMouseLeave={() => setProductHoverd(null)}
