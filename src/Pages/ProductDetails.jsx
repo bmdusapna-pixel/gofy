@@ -478,23 +478,52 @@ const ProductDetails = () => {
         </div>
         <div className="w-full flex flex-col gap-5">
           <div className="flex gap-1 sm:gap-5 items-center border-b-[2px] border-gray-200">
-            {product_details.map((item) => (
+            {product_details.map((item) => {
+              if (item.title === "Wash Care" && productData.washCare[0] === "")
+                return;
+              return (
+                <div
+                  onClick={() => setCurrentMenu(item.title)}
+                  className={`cursor-pointer px-2 sm:px-4 py-2 transition-colors duration-300 ${
+                    currentMenu === item.title
+                      ? "bg-[#00bbae] text-white font-semibold"
+                      : "bg-gray-200 text-black hover:bg-[#00bbae] hover:text-white font-medium"
+                  }`}
+                  key={item._id}
+                >
+                  <p className="md:text-[18px] md:leading-[27px] text-[16px] leading-[24px]">
+                    {item.title}
+                  </p>
+                </div>
+              );
+            })}
+            {productData?.keyFeatures.map((item) => (
               <div
-                onClick={() => setCurrentMenu(item.title)}
+                onClick={() => setCurrentMenu(item.key)}
                 className={`cursor-pointer px-2 sm:px-4 py-2 transition-colors duration-300 ${
-                  currentMenu === item.title
+                  currentMenu === item.key
                     ? "bg-[#00bbae] text-white font-semibold"
                     : "bg-gray-200 text-black hover:bg-[#00bbae] hover:text-white font-medium"
                 }`}
                 key={item._id}
               >
                 <p className="md:text-[18px] md:leading-[27px] text-[16px] leading-[24px]">
-                  {item.title}
+                  {item.key}
                 </p>
               </div>
             ))}
           </div>
           <div className="w-full border border-gray-200 rounded-2xl p-6 bg-white">
+            {productData.keyFeatures.some((f) => f.key === currentMenu) && (
+              <ul>
+                {productData.keyFeatures
+                  .find((f) => f.key === currentMenu)
+                  .value.split(",")
+                  .map((v) => (
+                    <li>{v}</li>
+                  ))}
+              </ul>
+            )}
             {currentMenu === "Product Description" && (
               <ExpandableParagraph
                 ref={refDis}

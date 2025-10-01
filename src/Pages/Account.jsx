@@ -16,7 +16,6 @@ import Points from "../Components/Points.jsx";
 import Returns from "../Components/Returns.jsx";
 import Issues from "../Components/Issues.jsx";
 import ReferEarn from "../Components/ReferEarn.jsx";
-import Wallet from "../Components/Wallet.jsx";
 import SavedAddress from "../Components/SavedAddress.jsx";
 import { AuthContext } from "../Context/AuthContext.jsx";
 
@@ -58,29 +57,23 @@ const account_items = [
   {
     _id: 5,
     icon: "Coins",
-    link: "wallet",
-    title: "Wallet",
-  },
-  {
-    _id: 6,
-    icon: "Coins",
     link: "refer-earn",
     title: "Refer Earn",
   },
   {
-    _id: 7,
+    _id: 6,
     icon: "Undo2",
     link: "return",
     title: "Returns",
   },
   {
-    _id: 8,
+    _id: 7,
     icon: "CircleAlert",
     link: "issue",
     title: "Issues",
   },
   {
-    _id: 9,
+    _id: 8,
     icon: "LogOut",
     link: "logout",
     title: "LogOut",
@@ -291,7 +284,6 @@ const Account = () => {
             {activeItem === "return" && <Returns />}
             {activeItem === "issue" && <Issues />}
             {activeItem === "refer-earn" && <ReferEarn />}
-            {activeItem === "wallet" && <Wallet />}
           </div>
         </div>
       </div>
