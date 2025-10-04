@@ -18,6 +18,9 @@ import Issues from "../Components/Issues.jsx";
 import ReferEarn from "../Components/ReferEarn.jsx";
 import SavedAddress from "../Components/SavedAddress.jsx";
 import { AuthContext } from "../Context/AuthContext.jsx";
+import DelayedModal from "../Components/DelayedModal.jsx";
+import Log from "../assets/Log.webp";
+import sale from "../assets/sale.jpg";
 
 const IconComponents = {
   User,
@@ -92,6 +95,18 @@ const Account = () => {
     phone: "",
   });
   const { user, logout, token, updateUser } = useContext(AuthContext);
+
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  const [showDelayedModal, setShowDelayedModal] = useState(false);
+
+  useEffect(() => {
+    if (showDelayedModal) {
+      setTimeout(() => {
+        setShowDelayedModal(false);
+      }, 5000);
+    }
+  }, [showDelayedModal]);
+
   const profileInputChangeHandler = (event) => {
     const { name, value } = event.target;
     if (name === "phone") {
@@ -154,11 +169,18 @@ const Account = () => {
     }
   };
 
-  const handleLogout = () => {
-    console.log("Logging out...");
+  const handleLogoutClick = () => {
+    setShowDelayedModal(true);
+    setShowLogoutConfirm(true);
+  };
+
+  const confirmLogout = () => {
     logout();
-    alert("You have been logged out.");
     navigate("/sign-in");
+  };
+
+  const cancelLogout = () => {
+    setShowLogoutConfirm(false);
   };
 
   return (
@@ -184,7 +206,7 @@ const Account = () => {
                   <div
                     onClick={() => {
                       if (item.link === "logout") {
-                        handleLogout();
+                        handleLogoutClick();
                       } else {
                         setActiveItem(item.link);
                       }
@@ -287,6 +309,47 @@ const Account = () => {
           </div>
         </div>
       </div>
+      {showLogoutConfirm && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+          <div className="bg-white rounded-2xl shadow-xl w-96 flex flex-col overflow-hidden">
+            {/* Image Banner */}
+            <div className="w-full h-36 overflow-hidden">
+              <img
+                src={Log}
+                alt="Logout Banner"
+                className="w-full h-full object-cover"
+              />
+            </div>
+
+            {/* Content */}
+            <div className="px-6 py-6 flex flex-col gap-4 text-center">
+              <h3 className="text-gray-900 text-lg font-semibold">
+                Confirm Logout
+              </h3>
+              <p className="text-gray-600 text-[15px]">
+                Are you sure you want to logout? You will need to log in again
+                to access your account.
+              </p>
+
+              <div className="flex justify-center gap-3 mt-4">
+                <button
+                  onClick={cancelLogout}
+                  className="px-5 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 transition"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={confirmLogout}
+                  className="px-5 py-2 rounded-lg bg-[#00bbae] text-white hover:bg-[#009e9a] transition"
+                >
+                  Logout
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      {showDelayedModal && <DelayedModal imageUrl={sale} linkUrl="/" />}
     </div>
   );
 };

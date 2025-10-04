@@ -82,6 +82,7 @@ export function AuthProvider({ children }) {
     setUser(null);
     localStorage.removeItem("token");
     localStorage.removeItem("user");
+    localStorage.removeItem(`oneTimeModalShown_${user?.id}`);
   };
 
   const updateUser = (newUser) => {

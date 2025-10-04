@@ -32,6 +32,8 @@ import { CartContext } from "../Context/CartContext";
 import Notifications from "./Notifications.jsx";
 import { groupedCombined } from "../assets/helper.js";
 import { AuthContext } from "../Context/AuthContext.jsx";
+import OneTimeModal from "./OneTimeModal.jsx";
+import sale from "../assets/sale.jpg";
 
 const shop_collection = [
   {
@@ -766,6 +768,7 @@ const Header = () => {
           setIsMobileMenuOpen={setIsMobileMenuOpen}
         />
       </div>
+      <OneTimeModal imageUrl={sale} linkUrl="/" />
     </div>
   );
 };
