@@ -64,6 +64,8 @@ const Products = () => {
       name: product.name,
       price: product?.variants?.[0]?.ageGroups?.[0]?.price,
       images: product?.variants?.[0]?.images,
+      colorId: product?.variants?.[0].color._id,
+      ageGroupId: product?.variants[0]?.ageGroups[0]?.ageGroup._id,
     };
     addToCart(cartProduct);
   };
@@ -76,6 +78,8 @@ const Products = () => {
       name: product.name,
       price: product?.variants?.[0]?.ageGroups?.[0]?.price,
       images: product?.variants?.[0]?.images,
+      colorId: product?.variants?.[0].color._id,
+      ageGroupId: product?.variants[0]?.ageGroups[0]?.ageGroup._id,
     };
     addFavouriteItems(favProduct);
   };

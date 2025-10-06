@@ -70,6 +70,8 @@ const SuperDeals = () => {
       name: product.name,
       price: product?.variants?.[0]?.ageGroups?.[0]?.price,
       images: product?.variants?.[0]?.images,
+      colorId: product?.variants?.[0].color._id,
+      ageGroupId: product?.variants[0]?.ageGroups[0]?.ageGroup._id,
     };
     addToCart(cartProduct);
   };
@@ -77,12 +79,20 @@ const SuperDeals = () => {
   const addFavouriteItemsWishList = (product, event) => {
     event.stopPropagation();
     event.preventDefault();
-    addFavouriteItems(product);
+    const favProduct = {
+      _id: product._id,
+      name: product.name,
+      price: product?.variants?.[0]?.ageGroups?.[0]?.price,
+      images: product?.variants?.[0]?.images,
+      colorId: product?.variants?.[0].color._id,
+      ageGroupId: product?.variants[0]?.ageGroups[0]?.ageGroup._id,
+    };
+    addFavouriteItems(favProduct);
   };
 
   const renderProductCard = (product) => (
     <Link
-      to={`/products/details/${product.url}`}
+      to={`/product-details/${product.url}`}
       key={product._id}
       onMouseEnter={() => setProductHoverd(product._id)}
       onMouseLeave={() => setProductHoverd(null)}

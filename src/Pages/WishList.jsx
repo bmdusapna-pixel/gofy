@@ -67,7 +67,10 @@ const WishList = () => {
                         </span>
                       </div>
                       <div
-                        onClick={() => addToCart(item)}
+                        onClick={() => {
+                          addToCart(item);
+                          removeFavouriteItemsWishList(item);
+                        }}
                         className="flex-[0.2] flex justify-center cursor-pointer"
                       >
                         <p className="rounded-xl text-[16px] sm:text-[18px] font-semibold text-white hover:bg-[#f88e0f] transition-colors duration-300 px-3 h-12 bg-[#00bbae] flex gap-3 items-center justify-center">

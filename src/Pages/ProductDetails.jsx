@@ -163,11 +163,27 @@ const ProductDetails = () => {
     const cartProduct = {
       _id: productData._id,
       name: productData.name,
-      price: productData?.variants?.[0]?.ageGroups?.[0]?.price,
-      images: productData?.variants?.[0]?.images,
+      price: selectedAgeGroup.price,
+      images: variant.images,
+      colorId: variant.color._id,
+      ageGroupId: selectedAgeGroup.ageGroup._id,
     };
     if (productData && variant && selectedAgeGroup) {
       addingProductToCart(cartProduct, quantity, variant, selectedAgeGroup);
+    }
+  };
+
+  const addProductToWishlist = () => {
+    const wishProduct = {
+      _id: productData._id,
+      name: productData.name,
+      price: selectedAgeGroup.price,
+      images: variant.images,
+      colorId: variant.color._id,
+      ageGroupId: selectedAgeGroup.ageGroup._id,
+    };
+    if (productData && variant && selectedAgeGroup) {
+      addFavouriteItems(wishProduct, quantity, variant, selectedAgeGroup);
     }
   };
 
@@ -368,7 +384,7 @@ const ProductDetails = () => {
                 </p>
               </div>
               <div
-                onClick={() => addFavouriteItems(productData)}
+                onClick={addProductToWishlist}
                 className="cursor-pointer w-12 h-12 border border-gray-200 flex items-center justify-center rounded-2xl bg-white transition-colors hover:bg-[#00bbae] text-black hover:text-white"
               >
                 <Heart className="w-5 h-5" />
