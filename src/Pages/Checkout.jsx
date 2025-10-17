@@ -69,9 +69,11 @@ const Checkout = () => {
 
   const pointsToEarn = Math.floor(totalPrice / 100);
   const pointsDiscount = 50;
-  const discountedPrice = useGofyPoints
-    ? totalPrice - pointsDiscount
-    : totalPrice;
+  const giftPackagingPrice = 50;
+  const discountedPrice =
+    totalPrice -
+    (useGofyPoints ? pointsDiscount : 0) +
+    (isGift ? giftPackagingPrice : 0);
 
   const [sameAsBilling, setSameAsBilling] = useState(false);
 
@@ -530,6 +532,16 @@ const Checkout = () => {
                       </p>
                     </div>
                   ))}
+                {isGift && (
+                  <div className="flex gap-3 w-full px-3 justify-between items-center">
+                    <p className="text-[16px] leading-[24px] text-gray-700 font-medium">
+                      Gift Packaging
+                    </p>
+                    <p className="text-[16px] leading-[24px] text-gray-700 font-medium">
+                      ₹ {giftPackagingPrice}
+                    </p>
+                  </div>
+                )}
               </div>
 
               <div className="w-full h-[1px] bg-gray-200 border-none"></div>
