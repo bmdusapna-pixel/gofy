@@ -101,7 +101,7 @@ const Products = () => {
             <div className="border-gray-200 border bg-white rounded-xl p-6 flex flex-col gap-5">
               <div className="flex flex-col gap-2 w-full">
                 <p className="text-[18px] leading-[27px] font-semibold text-black">
-                  Products
+                  Related Products
                 </p>
               </div>
               <div className="flex flex-col gap-2 w-full">

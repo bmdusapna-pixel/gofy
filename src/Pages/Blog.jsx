@@ -1,52 +1,54 @@
 import React, { useState, useEffect, useRef } from "react";
-import BlogCard from "../components/BlogCard";
+import BlogCard from "../Components/BlogCard";
 import { Search, MoveRight } from "lucide-react";
 
-import BI1 from "../assets/blogimg/bi1.jpg";
-import BI2 from "../assets/blogimg/bi2.jpg";
-import BI3 from "../assets/blogimg/bi3.jpg";
-import BI4 from "../assets/blogimg/bi4.jpg";
-import BI5 from "../assets/blogimg/bi5.jpg";
-import BI6 from "../assets/blogimg/bi6.jpg";
-import BI7 from "../assets/blogimg/bi7.jpg";
-import BI8 from "../assets/blogimg/bi8.jpg";
-import BI9 from "../assets/blogimg/bi9.jpg";
-import BI10 from "../assets/blogimg/bi10.jpg";
-
-import PopularNews from "../components/PopularNews";
-import Archives from "../components/Archives";
-import PopularTags from "../components/PopularTags";
-import OfferSection from "../components/OfferSection";
+import PopularNews from "../Components/PopularNews";
+import Archives from "../Components/Archives";
+import PopularTags from "../Components/PopularTags";
+import OfferSection from "../Components/OfferSection";
+import api from "../api/axios";
 
 const Blog = () => {
-  const blogs = [
-    { Image: BI1, Tag: "Top Toys" },
-    { Image: BI2, Tag: "Family Fun" },
-    { Image: BI3, Tag: "Kids Activities" },
-    { Image: BI4, Tag: "Learn and Inspire" },
-    { Image: BI5, Tag: "Learn and Inspire" },
-    { Image: BI6, Tag: "Top Toys" },
-    { Image: BI7, Tag: "Family Fun" },
-    { Image: BI8, Tag: "Kids Activities" },
-    { Image: BI9, Tag: "Learn and Inspire" },
-    { Image: BI10, Tag: "Learn and Inspire" },
-    { Image: BI1, Tag: "Family Fun" },
-    { Image: BI3, Tag: "Kids Activities" },
-    { Image: BI6, Tag: "Top Toys" },
-    { Image: BI7, Tag: "Family Fun" },
-    { Image: BI8, Tag: "Kids Activities" },
-    { Image: BI9, Tag: "Learn and Inspire" },
-    { Image: BI10, Tag: "Learn and Inspire" },
-  ];
-
+  const [blogs, setBlogs] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const postsPerPage = 12;
-  const indexOfLast = currentPage * postsPerPage;
-  const indexOfFirst = indexOfLast - postsPerPage;
-  const currentBlogs = blogs.slice(indexOfFirst, indexOfLast);
-  const totalPages = Math.ceil(blogs.length / postsPerPage);
 
   const blogTopRef = useRef(null);
+
+  const fetchBlogs = async () => {
+    setLoading(true);
+    setError("");
+    try {
+      const res = await api.get("/blogs", {
+        params: { page: currentPage, limit: postsPerPage, search },
+      });
+      const data = res.data;
+      // Support multiple API shapes
+      const items = Array.isArray(data)
+        ? data
+        : data.items || data.results || data.data || [];
+      const total = data.total || data.count || items.length;
+      const pages =
+        data.totalPages || Math.max(1, Math.ceil(total / postsPerPage));
+      setBlogs(items);
+      setTotalPages(pages);
+    } catch (e) {
+      setError("Failed to load blogs");
+      setBlogs([]);
+      setTotalPages(1);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchBlogs();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPage, search]);
 
   useEffect(() => {
     if (blogTopRef.current) {
@@ -57,11 +59,27 @@ const Blog = () => {
   return (
     <div className="flex max-w-[1400px] w-full px-5 mx-auto flex-col bg-[#F9F9F9] lg:flex-row gap-10 py-10">
       {/* Left Section */}
-      <div ref={blogTopRef} className="w-full flex flex-col items-center lg:w-[70%]">
+      <div
+        ref={blogTopRef}
+        className="w-full flex flex-col items-center lg:w-[70%]"
+      >
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
-          {currentBlogs.map((blog, index) => (
-            <BlogCard key={index} Image={blog.Image} Tag={blog.Tag} />
-          ))}
+          {loading ? (
+            Array.from({ length: 6 }).map((_, i) => (
+              <div
+                key={i}
+                className="w-[300px] h-[330px] bg-white rounded-lg animate-pulse"
+              />
+            ))
+          ) : error ? (
+            <p className="text-red-600">{error}</p>
+          ) : blogs.length === 0 ? (
+            <p className="text-gray-600">No blogs found.</p>
+          ) : (
+            blogs.map((blog) => (
+              <BlogCard key={blog._id || blog.id} blog={blog} />
+            ))
+          )}
         </div>
 
         {/* Pagination */}
@@ -74,7 +92,7 @@ const Blog = () => {
             Prev
           </button>
 
-          {[...Array(totalPages)].map((_, i) => (
+          {Array.from({ length: totalPages }).map((_, i) => (
             <button
               key={i}
               onClick={() => setCurrentPage(i + 1)}
@@ -89,7 +107,9 @@ const Blog = () => {
           ))}
 
           <button
-            onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+            onClick={() =>
+              setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+            }
             className="px-3 py-2 bg-[#00BBAE] text-white rounded disabled:opacity-50"
             disabled={currentPage === totalPages}
           >
@@ -105,6 +125,11 @@ const Blog = () => {
           <input
             type="text"
             placeholder="Search blog..."
+            value={search}
+            onChange={(e) => {
+              setSearch(e.target.value);
+              setCurrentPage(1);
+            }}
             className="w-full pr-12 pl-4 py-3 border border-[#E8E6E6] bg-white text-black placeholder:text-gray-500 rounded-lg outline-none"
           />
           <button

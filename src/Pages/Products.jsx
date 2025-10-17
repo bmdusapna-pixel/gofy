@@ -465,7 +465,7 @@ const Products = () => {
             <div className="border-gray-200 border bg-white rounded-2xl p-6 flex flex-col gap-5">
               <div className="flex flex-col gap-2 w-full">
                 <p className="text-[18px] leading-[27px] font-semibold text-black">
-                  Products
+                  Related Products
                 </p>
                 {/* <hr className="w-14 rounded-2xl bg-[#f88e0f] h-1 border-none" /> */}
               </div>
