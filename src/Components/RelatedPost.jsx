@@ -11,7 +11,7 @@ import BI1 from "../assets/blogimg/bi1.jpg";
 import BI2 from "../assets/blogimg/bi2.jpg";
 import BI3 from "../assets/blogimg/bi3.jpg";
 import BI4 from "../assets/blogimg/bi4.jpg";
-import BlogCard from "../components/BlogCard";
+import BlogCard from "./BlogCard";
 
 const RelatedPost = () => {
   const prevRef = useRef(null);
@@ -46,50 +46,49 @@ const RelatedPost = () => {
 
       {/* Mobile/Tablet Swiper */}
       <div className="lg:hidden">
-       <Swiper
-  modules={[Navigation, Pagination]}
-  spaceBetween={16}
-  pagination={{ clickable: true }}
-  navigation={{
-    prevEl: prevRef.current,
-    nextEl: nextRef.current,
-  }}
-  onBeforeInit={(swiper) => {
-    swiper.params.navigation.prevEl = prevRef.current;
-    swiper.params.navigation.nextEl = nextRef.current;
-  }}
-  breakpoints={{
-    0: {
-      slidesPerView: 1,
-    },
-    768: {
-      slidesPerView: 2,
-    },
-  }}
-  className="!flex justify-center"
->
-  <SwiperSlide className="!flex justify-center">
-    <div className="w-fit mx-auto">
-      <BlogCard Image={BI1} Tag={"Top Toys"} />
-    </div>
-  </SwiperSlide>
-  <SwiperSlide className="!flex justify-center">
-    <div className="w-fit mx-auto">
-      <BlogCard Image={BI2} Tag={"Family Fun"} />
-    </div>
-  </SwiperSlide>
-  <SwiperSlide className="!flex justify-center">
-    <div className="w-fit mx-auto">
-      <BlogCard Image={BI3} Tag={"Learn and Inspire"} />
-    </div>
-  </SwiperSlide>
-  <SwiperSlide className="!flex justify-center">
-    <div className="w-fit mx-auto">
-      <BlogCard Image={BI4} Tag={"Kids Activities"} />
-    </div>
-  </SwiperSlide>
-</Swiper>
-
+        <Swiper
+          modules={[Navigation, Pagination]}
+          spaceBetween={16}
+          pagination={{ clickable: true }}
+          navigation={{
+            prevEl: prevRef.current,
+            nextEl: nextRef.current,
+          }}
+          onBeforeInit={(swiper) => {
+            swiper.params.navigation.prevEl = prevRef.current;
+            swiper.params.navigation.nextEl = nextRef.current;
+          }}
+          breakpoints={{
+            0: {
+              slidesPerView: 1,
+            },
+            768: {
+              slidesPerView: 2,
+            },
+          }}
+          className="!flex justify-center"
+        >
+          <SwiperSlide className="!flex justify-center">
+            <div className="w-fit mx-auto">
+              <BlogCard Image={BI1} Tag={"Top Toys"} />
+            </div>
+          </SwiperSlide>
+          <SwiperSlide className="!flex justify-center">
+            <div className="w-fit mx-auto">
+              <BlogCard Image={BI2} Tag={"Family Fun"} />
+            </div>
+          </SwiperSlide>
+          <SwiperSlide className="!flex justify-center">
+            <div className="w-fit mx-auto">
+              <BlogCard Image={BI3} Tag={"Learn and Inspire"} />
+            </div>
+          </SwiperSlide>
+          <SwiperSlide className="!flex justify-center">
+            <div className="w-fit mx-auto">
+              <BlogCard Image={BI4} Tag={"Kids Activities"} />
+            </div>
+          </SwiperSlide>
+        </Swiper>
       </div>
 
       {/* Desktop Grid View */}

@@ -4,7 +4,7 @@ import BTI2 from "../assets/blogtinyimg/bti2.jpg";
 import BTI3 from "../assets/blogtinyimg/bti3.jpg";
 import BTI4 from "../assets/blogtinyimg/bti4.jpg";
 import BTI5 from "../assets/blogtinyimg/bti5.jpg";
-import NewsCard from "../components/NewsCard";
+import NewsCard from "./NewsCard";
 
 const PopularNews = () => {
   return (
