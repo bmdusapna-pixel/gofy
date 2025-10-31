@@ -64,33 +64,38 @@ const footer_links = [
   },
   {
     _id: 7,
+    title: "Blog",
+    url: "/blog",
+  },
+  {
+    _id: 8,
     title: "About Us",
     url: "/about",
   },
   {
-    _id: 8,
+    _id: 9,
     title: "Contact Us",
     url: "/contact",
   },
   {
-    _id: 9,
+    _id: 10,
     title: "Privacy Policy",
     url: "/privacy-policy",
   },
   {
-    _id: 10,
+    _id: 11,
     title: "Refund and Returns",
     url: "/refund-returns",
-  },
-  {
-    _id: 11,
-    title: "Blog",
-    url: "/blog",
   },
   {
     _id: 12,
     title: "Terms and Conditions",
     url: "/terms-and-conditions",
+  },
+  {
+    _id: 13,
+    title: "Shipping and Delivery",
+    url: "/shipping-and-delivery",
   },
 ];
 
@@ -112,8 +117,8 @@ const Footer = () => {
   // };
 
   const length = footer_links?.length;
-  const firstHalf = footer_links.slice(0, 6);
-  const secondHalf = footer_links.slice(6, length);
+  const firstHalf = footer_links.slice(0, 7);
+  const secondHalf = footer_links.slice(7, length);
 
   return (
     <div className="w-full bg-[#f8f9fa]">
@@ -292,7 +297,7 @@ const Footer = () => {
           <img src={footer_boy} alt="" className="w-40 md:w-52" />
         </div>
         <p className="text-[#000] font-semibold absolute bottom-5 text-center text-[14px] leading-[21px] w-full">
-          © 2025 Gofy.app. All Rights Reserved Created by{" "}
+          © 2025 SKD GOFY LLP. All Rights Reserved Created by{" "}
           <a href="https://www.digitalutilization.com/" target="_blank">
             BMDU
           </a>

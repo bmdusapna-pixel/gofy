@@ -37,6 +37,7 @@ import WhatsAppContact from "./Components/WhatsAppContact";
 import Trending from "./Pages/Trending";
 import Offers from "./Pages/Offers";
 import BulkOrderModal from "./Components/BulkOrderModal"; // Import the new modal component
+import ShippingAndDelivery from "./Pages/ShippingAndDelivery";
 
 const product = {
   name: "Outdoor Swing Set",
@@ -169,6 +170,10 @@ const App = () => {
           {/* <Route path="/products/clothes/:url" element={<ClothesDetails />} /> */}
           <Route path="/faq" element={<Faq />} />
           <Route path="/contact" element={<Contact />} />
+          <Route
+            path="/shipping-and-delivery"
+            element={<ShippingAndDelivery />}
+          />
           <Route path="/cart" element={<CartDetails />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/refund-returns" element={<RefundReturns />} />

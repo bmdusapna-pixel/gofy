@@ -1,70 +1,145 @@
 import React from "react";
+import {
+  RotateCcw,
+  FileWarning,
+  Ban,
+  RefreshCcw,
+  Truck,
+  Package,
+  Headphones,
+  PencilLine,
+  CircleCheck,
+  CircleX,
+} from "lucide-react";
 
 const refund_returns = [
   {
-    heading: "Lorem ipsum dolor sit amet? Who we are",
-    description: "Lorem ipsum dolor sit amet. Our website address is: http://gofy.in.",
+    icon: <RotateCcw className="w-6 h-6 text-[#001430]" />,
+    heading: "Overview",
+    description: `At Gofy Kids Mall, customer satisfaction is our priority. We ensure all products are thoroughly checked and packed before dispatch. However, if you face any genuine issue with the product, we are here to assist you with returns or refunds as per the policy below.
+
+We do not offer order cancellation once the order is placed.`,
   },
   {
-    heading: "Lorem ipsum why do we collect comments? Comments",
-    description:
-      "Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. When visitors leave comments on the site we collect the data shown in the comments form, and also the visitor’s IP address and browser user agent string to help spam detection. An anonymized string created from your email address (also called a hash) may be provided to the Gravatar service to see if you are using it. The Gravatar service privacy policy is available here: https://automattic.com/privacy/. After approval of your comment, your profile picture is visible to the public in the context of your comment.",
+    icon: <FileWarning className="w-6 h-6 text-[#001430]" />,
+    heading: "Return Eligibility",
+    list: [
+      "Wrong product received",
+      "Damaged or defective product received",
+      "Missing items from the order",
+      "Product received in different size/color than ordered (for applicable items like fashion & footwear)",
+    ],
   },
   {
-    heading: "Lorem ipsum can images leak data? Media",
-    description:
-      "Lorem ipsum dolor sit amet consectetur adipiscing elit. If you upload images to the website, you should avoid uploading images with embedded location data (EXIF GPS) included. Visitors to the website can download and extract any location data from images on the website.",
+    icon: <Ban className="w-6 h-6 text-[#001430]" />,
+    heading: "Conditions for Return",
+    list: [
+      "It is unused and in original condition",
+      "All original tags, labels, box/packaging, and freebies (if any) are intact",
+      "Return request is raised within 48 hours of delivery",
+      "Damaged/defective proof (unboxing video & product photos) is provided",
+      "Unboxing video is mandatory to process damaged/defective claims",
+    ],
   },
   {
-    heading: "Lorem ipsum why do we use cookies? Cookies",
-    description:
-      "Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua ut enim ad minim veniam. If you leave a comment on our site you may opt-in to saving your name, email address and website in cookies. These are for your convenience so that you do not have to fill in your details again when you leave another comment. These cookies will last for one year. If you visit our login page, we will set a temporary cookie to determine if your browser accepts cookies. This cookie contains no personal data and is discarded when you close your browser. When you log in, we will also set up several cookies to save your login information and your screen display choices. Login cookies last for two days, and screen options cookies last for a year. If you select 'Remember Me', your login will persist for two weeks. If you log out of your account, the login cookies will be removed. If you edit or publish an article, an additional cookie will be saved in your browser. This cookie includes no personal data and simply indicates the post ID of the article you just edited. It expires after 1 day.",
+    icon: <CircleX className="w-6 h-6 text-[#d9534f]" />,
+    heading: "Items Not Eligible for Return",
+    list: [
+      "Products without unboxing video",
+      "Used or damaged products by customer",
+      "Products bought during clearance/sale",
+      "Hygiene products (baby care, personal care, feeders, toothbrushes, etc.)",
+      "Customised or personalised products",
+      "Toys or items damaged due to rough handling by the customer",
+      "Gift sets once opened",
+    ],
+    listIcon: <CircleX className="w-4 h-4 mt-1 text-red-500" />,
   },
   {
-    heading: "Lorem ipsum what about other websites? Embedded content from other websites",
-    description:
-      "Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Articles on this site may include embedded content (e.g. videos, images, articles, etc.). Embedded content from other websites behaves in the exact same way as if the visitor has visited the other website. These websites may collect data about you, use cookies, embed additional third-party tracking, and monitor your interaction with that embedded content, including tracking your interaction with the embedded content if you have an account and are logged in to that website.",
+    icon: <RefreshCcw className="w-6 h-6 text-[#001430]" />,
+    heading: "Refund Process",
+    list: [
+      "Once the returned product passes quality check, refund will be issued to the original mode of payment.",
+      "Processing time: 5–7 business days.",
+      "If the product fails quality check, refund/return will not be processed, and the item will be sent back to the customer (courier charge applicable).",
+    ],
   },
   {
-    heading: "Lorem ipsum who sees your data? Who we share your data with",
+    icon: <RotateCcw className="w-6 h-6 text-[#001430]" />,
+    heading: "Exchange Policy",
     description:
-      "Lorem ipsum dolor sit amet consectetur. If you request a password reset, your IP address will be included in the reset email.",
+      "Exchanges are allowed only for size or defective items (if stock is available). If replacement is not available, a refund will be provided as per policy.",
   },
   {
-    heading: "Lorem ipsum how long do we store your data? How long we retain your data",
-    description:
-      "Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. If you leave a comment, the comment and its metadata are retained indefinitely. This is so we can recognize and approve any follow-up comments automatically instead of holding them in a moderation queue. For users that register on our website (if any), we also store the personal information they provide in their user profile. All users can see, edit, or delete their personal information at any time (except they cannot change their username). Website administrators can also see and edit that information.",
+    icon: <Truck className="w-6 h-6 text-[#001430]" />,
+    heading: "Return Shipping",
+    list: [
+      "For damaged/incorrect items → Free return pickup",
+      "For size exchanges/customer reasons (if allowed) → Return shipping may be borne by customer",
+    ],
   },
   {
-    heading: "Lorem ipsum what control do you have? What rights you have over your data",
+    icon: <Package className="w-6 h-6 text-[#001430]" />,
+    heading: "Product Packaging",
     description:
-      "Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. If you have an account on this site, or have left comments, you can request to receive an exported file of the personal data we hold about you, including any data you have provided to us. You can also request that we erase any personal data we hold about you. This does not include any data we are obliged to keep for administrative, legal, or security purposes.",
+      "Please ensure the package is properly secured for return transit. We are not responsible for products damaged during return shipping due to poor packaging.",
   },
   {
-    heading: "Lorem ipsum where does your data go? Where your data is sent",
+    icon: <Headphones className="w-6 h-6 text-[#001430]" />,
+    heading: "Contact Support",
+    list: [
+      "Email: gofykidsmall@gmail.com",
+      "Phone/WhatsApp: 9711322443",
+      "Support hours: 10 AM – 7 PM (Mon–Sat)",
+    ],
+  },
+  {
+    icon: <PencilLine className="w-6 h-6 text-[#001430]" />,
+    heading: "Policy Amendments",
     description:
-      "Lorem ipsum dolor sit amet consectetur. Visitor comments may be checked through an automated spam detection service.",
+      "Gofy Kids Mall reserves the right to amend this policy at any time without prior notice. The latest policy will always be available on our website.",
   },
 ];
-
 
 const RefundReturns = () => {
   return (
     <div className="w-full h-full py-10 bg-[#f8f9fa]">
       <div className="w-full mx-auto flex flex-col gap-8 px-5 lg:px-12">
-      <p className="text-[32px] md:text-[38px] leading-[48px] md:leading-[57px] text-black font-semibold">Refund and Returns</p>
-        {
-          refund_returns.map((item, index) => (
-            <div className="flex flex-col gap-1 w-full" key={index}>
-              <p className="text-[#001430] text-[27px] leading-[40px] font-bold">
+        <p className="text-[32px] md:text-[38px] leading-[48px] md:leading-[57px] text-black font-semibold">
+          Refund & Return Policy
+        </p>
+
+        {refund_returns.map((item, index) => (
+          <div className="flex flex-col gap-3 w-full" key={index}>
+            <div className="flex items-center gap-2">
+              {item.icon}
+              <p className="text-[#001430] text-[24px] leading-[36px] font-bold">
                 {item.heading}
               </p>
-              <p className="text-[#69778a] text-[16px] leading-[24px] font-medium">
+            </div>
+
+            {item.description && (
+              <p className="text-[#69778a] text-[16px] leading-[26px] font-medium whitespace-pre-line">
                 {item.description}
               </p>
-            </div>
-          ))
-        }
+            )}
+
+            {item.list && (
+              <ul className="flex flex-col gap-2 pl-2">
+                {item.list.map((point, i) => (
+                  <li key={i} className="flex items-start gap-2">
+                    {item.listIcon || (
+                      <CircleCheck className="w-4 h-4 mt-1 text-green-600" />
+                    )}
+                    <span className="text-[#69778a] text-[16px] leading-[24px] font-medium">
+                      {point}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        ))}
       </div>
     </div>
   );
