@@ -264,7 +264,7 @@ const SecondHeader = ({
           <div className="flex flex-col">
             <p className="text-white font-normal text-sm">24/7 Support</p>
             <a
-              href="tel:+912347868907"
+              href="tel:+91-9711322433"
               className="text-white font-semibold text-base"
             >
               +91 234 786 8907
