@@ -89,7 +89,7 @@ We do not offer order cancellation once the order is placed.`,
     heading: "Contact Support",
     list: [
       "Email: gofykidsmall@gmail.com",
-      "Phone/WhatsApp: 9711322443",
+      "Phone/WhatsApp: +91-9711322433",
       "Support hours: 10 AM – 7 PM (Mon–Sat)",
     ],
   },

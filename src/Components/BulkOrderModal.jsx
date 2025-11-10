@@ -40,7 +40,7 @@ const BulkOrderModal = ({ isOpen, onClose, onConfirm }) => {
           </div>
           <div className="mt-4">
             <a
-              href="https://wa.me/9711322443?text=Hello%2C%20I%20would%20like%20to%20chat%20with%20you%20on%20WhatsApp"
+              href="https://wa.me/+91-9711322433?text=Hello%2C%20I%20would%20like%20to%20chat%20with%20you%20on%20WhatsApp"
               target="_blank"
             >
               Or chat with us on WhatsApp

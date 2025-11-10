@@ -98,7 +98,7 @@ We are not responsible for non-delivery due to incorrect or incomplete informati
     heading: "Contact for Shipping Queries",
     list: [
       "Email: gofykidsmall@gmail.com",
-      "Phone/WhatsApp: 9711322443",
+      "Phone/WhatsApp: +91-9711322433",
       "Support hours: 10 AM – 7 PM (Mon–Sat)",
     ],
   },
