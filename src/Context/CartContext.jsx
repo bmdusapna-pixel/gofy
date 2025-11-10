@@ -1,3 +1,4 @@
+import api from "../api/axios.js";
 import React, { createContext, useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 const CartContext = createContext();
@@ -5,7 +6,6 @@ import { AuthContext } from "./AuthContext";
 
 const CartContextProvider = ({ children }) => {
   const { user } = useContext(AuthContext);
-  const baseUrl = import.meta.env.VITE_BASE_URL;
   const [openCart, setOpenCart] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [itemDescriptions, setItemDescriptions] = useState([]);
@@ -63,12 +63,7 @@ const CartContextProvider = ({ children }) => {
       const body = productId
         ? { userId: user._id, productId, colorId, ageGroupId, quantity }
         : { userId: user._id };
-
-      await fetch(`${baseUrl}/user/cart/add`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      });
+      await api.post("/user/cart/add", body);
     } catch (err) {
       console.error("Cart add API failed:", err);
     }
@@ -78,15 +73,8 @@ const CartContextProvider = ({ children }) => {
     if (!user?._id) return;
 
     try {
-      await fetch(`${baseUrl}/user/cart/remove`, {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          userId: user._id,
-          productId,
-          colorId,
-          ageGroupId,
-        }),
+      await api.delete("/user/cart/remove", {
+        data: { productId, colorId, ageGroupId },
       });
     } catch (err) {
       console.error("Cart remove API failed:", err);
@@ -101,19 +89,11 @@ const CartContextProvider = ({ children }) => {
     if (!user?._id) return;
 
     try {
-      const body = {
-        userId: user._id,
-        productId,
-      };
+      const body = { productId };
 
       if (colorId) body.colorId = colorId;
       if (ageGroupId) body.ageGroupId = ageGroupId;
-
-      await fetch(`${baseUrl}/user/wishlist/add`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      });
+      await api.post("/user/wishlist/add", body);
     } catch (err) {
       console.error("Wishlist add API failed:", err);
     }
@@ -127,19 +107,11 @@ const CartContextProvider = ({ children }) => {
     if (!user?._id) return;
 
     try {
-      const body = {
-        userId: user._id,
-        productId,
-      };
+      const body = { productId };
 
       if (colorId) body.colorId = colorId;
       if (ageGroupId) body.ageGroupId = ageGroupId;
-
-      await fetch(`${baseUrl}/user/wishlist/remove`, {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      });
+      await api.delete("/user/wishlist/remove", { data: body });
     } catch (err) {
       console.error("Wishlist remove API failed:", err);
     }
