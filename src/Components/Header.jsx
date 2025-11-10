@@ -267,7 +267,7 @@ const SecondHeader = ({
               href="tel:+91-9711322433"
               className="text-white font-semibold text-base"
             >
-              +91 234 786 8907
+              +91-9711322433
             </a>
           </div>
         </div>
