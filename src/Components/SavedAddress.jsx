@@ -1,10 +1,10 @@
 import React, { useState, useContext } from "react";
 import { FaEdit, FaTrash, FaPlus } from "react-icons/fa";
 import { AuthContext } from "../Context/AuthContext.jsx";
+import api from "../api/axios.js";
 
 const SavedAddress = () => {
   const { user, updateUser } = useContext(AuthContext);
-  const baseUrl = import.meta.env.VITE_BASE_URL;
   // We'll use a unique 'id' for each address. In a real app, this would come from a database.
   // const [addresses, setAddresses] = useState([
   //   {
@@ -78,26 +78,14 @@ const SavedAddress = () => {
 
   const handleDeleteClick = async (id) => {
     try {
-      const response = await fetch(`${baseUrl}/user/auth/address`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          userId: user?._id,
-          addressId: id,
-        }),
+      const { data } = await api.post("/user/auth/address", {
+        userId: user?._id,
+        addressId: id,
       });
 
-      const data = await response.json();
-
-      if (response.ok) {
-        alert("Address deleted successfully!");
-        if (data.user) {
-          updateUser(data.user);
-        }
-      } else {
-        alert(data.message || "Failed to delete address");
+      alert("Address deleted successfully!");
+      if (data.user) {
+        updateUser(data.user);
       }
     } catch (error) {
       console.error("Error deleting address:", error);
@@ -109,64 +97,46 @@ const SavedAddress = () => {
     event.preventDefault();
 
     try {
-      let response;
+      let data;
 
       if (editingAddressId) {
-        response = await fetch(`${baseUrl}/user/auth/address`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
+        ({ data } = await api.post("/user/auth/address", {
+          userId: user?._id,
+          addressId: editingAddressId,
+          address: {
+            nickname: formData.name,
+            houseStreet: formData.houseAndStreet,
+            apartment: formData.apartments,
+            city: formData.town,
+            zipCode: formData.pinCode,
+            district: formData.district,
+            state: formData.state,
           },
-          body: JSON.stringify({
-            userId: user?._id,
-            addressId: editingAddressId,
-            address: {
-              nickname: formData.name,
-              houseStreet: formData.houseAndStreet,
-              apartment: formData.apartments,
-              city: formData.town,
-              zipCode: formData.pinCode,
-              district: formData.district,
-              state: formData.state,
-            },
-          }),
-        });
+        }));
       } else {
-        response = await fetch(`${baseUrl}/user/auth/address`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
+        ({ data } = await api.post("/user/auth/address", {
+          userId: user?._id,
+          address: {
+            nickname: formData.name,
+            houseStreet: formData.houseAndStreet,
+            apartment: formData.apartments,
+            city: formData.town,
+            zipCode: formData.pinCode,
+            district: formData.district,
+            state: formData.state,
           },
-          body: JSON.stringify({
-            userId: user?._id,
-            address: {
-              nickname: formData.name,
-              houseStreet: formData.houseAndStreet,
-              apartment: formData.apartments,
-              city: formData.town,
-              zipCode: formData.pinCode,
-              district: formData.district,
-              state: formData.state,
-            },
-          }),
-        });
+        }));
       }
 
-      const data = await response.json();
-
-      if (response.ok) {
-        if (data.user) {
-          updateUser(data.user);
-        }
-        alert(
-          editingAddressId
-            ? "Address updated successfully!"
-            : "Address added successfully!"
-        );
-        setShowForm(false);
-      } else {
-        alert(data.message || "Failed to save address");
+      if (data.user) {
+        updateUser(data.user);
       }
+      alert(
+        editingAddressId
+          ? "Address updated successfully!"
+          : "Address added successfully!"
+      );
+      setShowForm(false);
     } catch (error) {
       console.error("Error saving address:", error);
       alert("Something went wrong");

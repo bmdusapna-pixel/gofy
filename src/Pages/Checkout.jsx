@@ -5,6 +5,7 @@ import { FaEdit, FaTrash, FaPlus } from "react-icons/fa";
 import { CartContext } from "../Context/CartContext";
 import RelatedItems from "../Components/RelatedItems";
 import { AuthContext } from "../Context/AuthContext";
+import api from "../api/axios.js";
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
 
@@ -94,38 +95,24 @@ const Checkout = () => {
 
   const handleSaveAddress = async (event) => {
     event.preventDefault();
-
     try {
-      let response;
-      response = await fetch(`${baseUrl}/user/auth/address`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      const { data } = await api.post("/user/auth/address", {
+        userId: user?._id,
+        address: {
+          nickname: formData.name,
+          houseStreet: formData.houseAndStreet,
+          apartment: formData.apartments,
+          city: formData.town,
+          zipCode: formData.pinCode,
+          district: formData.district,
+          state: formData.state,
         },
-        body: JSON.stringify({
-          userId: user?._id,
-          address: {
-            nickname: formData.name,
-            houseStreet: formData.houseAndStreet,
-            apartment: formData.apartments,
-            city: formData.town,
-            zipCode: formData.pinCode,
-            district: formData.district,
-            state: formData.state,
-          },
-        }),
       });
-      const data = await response.json();
-
-      if (response.ok) {
-        if (data.user) {
-          updateUser(data.user);
-        }
-        alert("Address added successfully!");
-        setShowForm(false);
-      } else {
-        alert(data.message || "Failed to save address");
+      if (data.user) {
+        updateUser(data.user);
       }
+      alert("Address added successfully!");
+      setShowForm(false);
     } catch (error) {
       console.error("Error saving address:", error);
       alert("Something went wrong");
@@ -159,23 +146,10 @@ const Checkout = () => {
     };
 
     try {
-      const response = await fetch(`${baseUrl}/user/order`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(order),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        alert("Order placed successfully!");
-        emptyCart();
-        console.log("Order response:", data);
-      } else {
-        alert(data.message || "Failed to place order");
-      }
+      const { data } = await api.post("/user/order", order);
+      alert("Order placed successfully!");
+      emptyCart();
+      console.log("Order response:", data);
     } catch (error) {
       console.error("Error placing order:", error);
       alert("Something went wrong while placing order");
