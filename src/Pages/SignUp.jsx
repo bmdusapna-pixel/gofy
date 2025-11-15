@@ -11,6 +11,7 @@ import { FaWhatsapp } from "react-icons/fa";
 import LoginBanner from "../assets/signUp.jpeg";
 import LoginBannerMobile from "../assets/login-banner-mobile.jpeg";
 import { useNavigate, Link } from "react-router-dom";
+import api from "../api/axios";
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -78,14 +79,32 @@ const SignUp = () => {
       );
       return;
     }
+
     setOtpRequestLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    setOtpSent(true);
-    setOtpRequestLoading(false);
-    showMessage(
-      `OTP sent to +91${signUpData.phone} via ${otpMethod}. (Simulated)`,
-      "success"
-    );
+
+    try {
+      const response = await api.post("/user/auth/otp", {
+        phone: signUpData.phone,
+      });
+
+      setOtpSent(true);
+
+      showMessage(
+        response?.data?.message ||
+          `OTP sent to +91${signUpData.phone} via ${otpMethod}.`,
+        "success"
+      );
+    } catch (error) {
+      console.error("OTP request error:", error);
+
+      showMessage(
+        error?.response?.data?.message ||
+          "Failed to send OTP. Please try again.",
+        "error"
+      );
+    } finally {
+      setOtpRequestLoading(false);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -244,6 +263,7 @@ const SignUp = () => {
                     <div className="flex gap-4">
                       <button
                         type="button"
+                        disabled={true}
                         onClick={() => setOtpMethod("whatsapp")}
                         className={`flex-1 flex items-center justify-start gap-3 px-4 py-2 rounded-md border-2 transition-all duration-200 ${
                           otpMethod === "whatsapp"
@@ -322,8 +342,8 @@ const SignUp = () => {
                       name="otp"
                       onChange={inputChangeHandler}
                       type="text"
-                      placeholder="Enter 6-digit OTP"
-                      maxLength="6"
+                      placeholder="Enter 4-digit OTP"
+                      maxLength="4"
                       className="transition-colors duration-300 text-black text-[18px] leading-[27px] font-medium py-2 px-4 rounded-md border focus:border-[#00bbae] focus:outline-none w-full border-gray-200 bg-white"
                       autoComplete="one-time-code"
                     />
