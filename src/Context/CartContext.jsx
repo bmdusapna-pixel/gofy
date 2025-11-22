@@ -1,212 +1,309 @@
 import api from "../api/axios.js";
 import React, { createContext, useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-const CartContext = createContext();
 import { AuthContext } from "./AuthContext";
+
+const CartContext = createContext();
 
 const CartContextProvider = ({ children }) => {
   const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  // UI States
   const [openCart, setOpenCart] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [itemDescriptions, setItemDescriptions] = useState([]);
   const [isQuickBuyClicked, setIsQuickBuyClicked] = useState(null);
   const [formSubmit, setFormSubmit] = useState(false);
   const [isForgotPasswordOpen, setIsForgotPasswordOpen] = useState(true);
-
   const [isBulkOrderModalOpen, setIsBulkOrderModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const [totalFavouriteItems, setTotalFavouriteItems] = useState(() => {
-    const stored = localStorage.getItem("totalFavouriteItems");
-    return stored ? Number(JSON.parse(stored)) : 0;
-  });
-
-  const [favouriteItems, setFavouriteItems] = useState(() => {
-    const stored = localStorage.getItem("favouriteItems");
-    return stored ? JSON.parse(stored) : [];
-  });
-
-  const [cartItems, setCartItems] = useState(() => {
-    const stored = localStorage.getItem("cartItems");
-    return stored ? JSON.parse(stored) : [];
-  });
-
-  const [totalItems, setTotalItems] = useState(() => {
-    const stored = localStorage.getItem("totalItems");
-    return stored ? Number(JSON.parse(stored)) : 0;
-  });
-
-  const [totalPrice, setTotalPrice] = useState(() => {
-    const stored = localStorage.getItem("totalPrice");
-    return stored ? Number(JSON.parse(stored)) : 0;
-  });
-
+  // Cart & Wishlist States
+  const [cartItems, setCartItems] = useState([]);
+  const [favouriteItems, setFavouriteItems] = useState([]);
   const [savedForLaterItems, setSavedForLaterItems] = useState(() => {
     const stored = localStorage.getItem("savedForLaterItems");
     return stored ? JSON.parse(stored) : [];
   });
 
-  const navigate = useNavigate();
+  // Derived values (no need to store separately)
+  const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+  const totalPrice = cartItems.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0
+  );
+  const totalFavouriteItems = favouriteItems.length;
+
+  // Fetch cart from server
+  const fetchCart = async () => {
+    if (!user?._id) {
+      // Load from localStorage for guest users
+      const stored = localStorage.getItem("cartItems");
+      setCartItems(stored ? JSON.parse(stored) : []);
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      const response = await api.get("/user/cart/user");
+      const serverCart = response.data.map((item) => ({
+        _id: item.productId,
+        name: item.productName,
+        price: item.price,
+        cutPrice: item.cutPrice,
+        discount: item.discount,
+        product_type: item.brand || "",
+        image: item.productImage,
+        colorId: item.color,
+        ageGroupId: item.ageGroupId,
+        ageGroup: item.ageGroup,
+        quantity: item.quantity,
+        stock: item.stock,
+        tax: item.tax,
+      }));
+      setCartItems(serverCart);
+      localStorage.setItem("cartItems", JSON.stringify(serverCart));
+    } catch (err) {
+      console.error("Failed to fetch cart:", err);
+      // Fallback to localStorage
+      const stored = localStorage.getItem("cartItems");
+      setCartItems(stored ? JSON.parse(stored) : []);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Fetch wishlist from server
+  const fetchWishlist = async () => {
+    if (!user?._id) {
+      const stored = localStorage.getItem("favouriteItems");
+      setFavouriteItems(stored ? JSON.parse(stored) : []);
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      const response = await api.get("/user/wishlist/user");
+      const serverWishlist = response.data.map((item) => ({
+        _id: item.productId,
+        name: item.productName,
+        price: item.price,
+        cutPrice: item.cutPrice,
+        discount: item.discount,
+        product_type: item.brand || "",
+        images: [item.productImage],
+        colorId: item.color,
+        ageGroupId: item.ageGroup,
+        stock: item.stock,
+        tax: item.tax,
+      }));
+      setFavouriteItems(serverWishlist);
+      localStorage.setItem("favouriteItems", JSON.stringify(serverWishlist));
+    } catch (err) {
+      console.error("Failed to fetch wishlist:", err);
+      const stored = localStorage.getItem("favouriteItems");
+      setFavouriteItems(stored ? JSON.parse(stored) : []);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Sync cart and wishlist on user login/change
+  useEffect(() => {
+    if (user?._id) {
+      fetchCart();
+      fetchWishlist();
+    } else {
+      // Guest mode: load from localStorage
+      const storedCart = localStorage.getItem("cartItems");
+      const storedWishlist = localStorage.getItem("favouriteItems");
+      setCartItems(storedCart ? JSON.parse(storedCart) : []);
+      setFavouriteItems(storedWishlist ? JSON.parse(storedWishlist) : []);
+    }
+  }, [user?._id]);
+
+  // Save to localStorage whenever cart/wishlist changes
+  useEffect(() => {
+    localStorage.setItem("cartItems", JSON.stringify(cartItems));
+  }, [cartItems]);
+
+  useEffect(() => {
+    localStorage.setItem("favouriteItems", JSON.stringify(favouriteItems));
+  }, [favouriteItems]);
+
+  useEffect(() => {
+    localStorage.setItem("savedForLaterItems", JSON.stringify(savedForLaterItems));
+  }, [savedForLaterItems]);
 
   const handleBulkOrderAlert = () => {
     setIsBulkOrderModalOpen(true);
   };
 
-  const syncAddToCart = async (
-    productId,
-    colorId,
-    ageGroupId,
-    quantity = 1
-  ) => {
+  // API sync functions
+  const syncAddToCart = async (productId, colorId, ageGroupId, quantityDelta) => {
     if (!user?._id) return;
-
     try {
-      const body = productId
-        ? { userId: user._id, productId, colorId, ageGroupId, quantity }
-        : { userId: user._id };
-      await api.post("/user/cart/add", body);
-    } catch (err) {
-      console.error("Cart add API failed:", err);
-    }
-  };
-
-  const syncRemoveFromCart = async (productId, colorId, ageGroupId) => {
-    if (!user?._id) return;
-
-    try {
-      await api.delete("/user/cart/remove", {
-        data: { productId, colorId, ageGroupId },
+      await api.post("/user/cart/add", {
+        productId,
+        colorId,
+        ageGroupId,
+        quantity: quantityDelta, // This is the delta (+1, -1, etc.)
       });
     } catch (err) {
-      console.error("Cart remove API failed:", err);
+      console.error("Cart add API failed:", err);
+      throw err;
     }
   };
 
-  const syncAddToWishlist = async (
-    productId,
-    colorId = null,
-    ageGroupId = null
-  ) => {
+  const syncRemoveFromCart = async (productId = null, colorId = null, ageGroupId = null) => {
     if (!user?._id) return;
+    try {
+      if (productId) {
+        // Remove specific item
+        await api.delete("/user/cart/remove", {
+          data: { productId, colorId, ageGroupId },
+        });
+      } else {
+        // Empty entire cart - send empty body
+        await api.delete("/user/cart/remove", {
+          data: {},
+        });
+      }
+    } catch (err) {
+      console.error("Cart remove API failed:", err);
+      throw err;
+    }
+  };
 
+  const syncAddToWishlist = async (productId, colorId = null, ageGroupId = null) => {
+    if (!user?._id) return;
     try {
       const body = { productId };
-
       if (colorId) body.colorId = colorId;
       if (ageGroupId) body.ageGroupId = ageGroupId;
       await api.post("/user/wishlist/add", body);
     } catch (err) {
       console.error("Wishlist add API failed:", err);
+      throw err;
     }
   };
 
-  const syncRemoveFromWishlist = async (
-    productId,
-    colorId = null,
-    ageGroupId = null
-  ) => {
+  const syncRemoveFromWishlist = async (productId, colorId = null, ageGroupId = null) => {
     if (!user?._id) return;
-
     try {
       const body = { productId };
-
       if (colorId) body.colorId = colorId;
       if (ageGroupId) body.ageGroupId = ageGroupId;
       await api.delete("/user/wishlist/remove", { data: body });
     } catch (err) {
       console.error("Wishlist remove API failed:", err);
+      throw err;
     }
   };
 
-  const addToCart = (product) => {
-    const existingItemIndex = cartItems.findIndex(
-      (item) =>
-        item._id === product._id &&
-        item.colorId === product.colorId &&
-        item.ageGroupId === product.ageGroupId
-    );
+  // Cart operations
+  const addToCart = async (product) => {
+    try {
+      const existingItemIndex = cartItems.findIndex(
+        (item) =>
+          item._id === product._id &&
+          item.colorId === product.colorId &&
+          item.ageGroupId === product.ageGroupId
+      );
 
-    if (existingItemIndex !== -1) {
-      const updatedCart = cartItems.map((item, index) => {
-        if (index === existingItemIndex) {
-          if (item.quantity + 1 > 5) handleBulkOrderAlert();
-          return { ...item, quantity: item.quantity + 1 };
-        }
-        return item;
-      });
-      setCartItems(updatedCart);
-      syncAddToCart(product._id, product.colorId, product.ageGroupId, 1);
-    } else {
-      // Add new variant to cart
-      const newCartItem = {
-        _id: product._id,
-        name: product.name,
-        price: product.price,
-        product_type: product.product_type,
-        image: product.images[0],
-        colorId: product.colorId,
-        ageGroupId: product.ageGroupId,
-        quantity: 1,
-      };
-      setCartItems([...cartItems, newCartItem]);
-      syncAddToCart(product._id, product.colorId, product.ageGroupId, 1);
+      if (existingItemIndex !== -1) {
+        const existingItem = cartItems[existingItemIndex];
+        const newQuantity = existingItem.quantity + 1;
+
+        if (newQuantity > 5) handleBulkOrderAlert();
+
+        const updatedCart = cartItems.map((item, index) =>
+          index === existingItemIndex ? { ...item, quantity: newQuantity } : item
+        );
+
+        setCartItems(updatedCart);
+        // Send +1 as delta
+        await syncAddToCart(product._id, product.colorId, product.ageGroupId, 1);
+      } else {
+        const newCartItem = {
+          _id: product._id,
+          name: product.name,
+          price: product.price,
+          cutPrice: product.cutPrice,
+          discount: product.discount,
+          product_type: product.product_type,
+          image: product.images[0],
+          colorId: product.colorId,
+          ageGroupId: product.ageGroupId,
+          quantity: 1,
+          stock: product.stock,
+        };
+
+        setCartItems([...cartItems, newCartItem]);
+        // Send 1 as initial quantity
+        await syncAddToCart(product._id, product.colorId, product.ageGroupId, 1);
+      }
+
+      setOpenCart(true);
+    } catch (error) {
+      console.error("Failed to add to cart:", error);
+      // Rollback on error
+      await fetchCart();
     }
-
-    setTotalItems((prev) => prev + 1);
-    setTotalPrice((prev) => prev + product.price);
-    setOpenCart(true);
   };
 
-  const addingProductToCart = (product, quantity) => {
-    const existingItemIndex = cartItems.findIndex(
-      (item) =>
-        item._id === product._id &&
-        item.colorId === product.colorId &&
-        item.ageGroupId === product.ageGroupId
-    );
-
-    if (existingItemIndex !== -1) {
-      const updatedCart = cartItems.map((item, index) => {
-        if (index === existingItemIndex) {
-          const quantityDiff = quantity - item.quantity;
-          setTotalItems((prev) => prev + quantityDiff);
-          setTotalPrice((prev) => prev + product.price * quantityDiff);
-          if (quantity > 5) handleBulkOrderAlert();
-          return { ...item, quantity };
-        }
-        return item;
-      });
-      setCartItems(updatedCart);
-      syncAddToCart(product._id, product.colorId, product.ageGroupId, quantity);
-    } else {
+  const addingProductToCart = async (product, quantity) => {
+    try {
       if (quantity > 5) handleBulkOrderAlert();
-      const newCartItem = {
-        _id: product._id,
-        name: product.name,
-        price: product.price,
-        product_type: product.product_type,
-        image: product.images[0],
-        colorId: product.colorId,
-        ageGroupId: product.ageGroupId,
-        quantity,
-      };
-      setCartItems([...cartItems, newCartItem]);
-      syncAddToCart(product._id, product.colorId, product.ageGroupId, quantity);
-      setTotalItems((prev) => prev + quantity);
-      setTotalPrice((prev) => prev + product.price * quantity);
+
+      const existingItemIndex = cartItems.findIndex(
+        (item) =>
+          item._id === product._id &&
+          item.colorId === product.colorId &&
+          item.ageGroupId === product.ageGroupId
+      );
+
+      if (existingItemIndex !== -1) {
+        const existingItem = cartItems[existingItemIndex];
+        const quantityDelta = quantity - existingItem.quantity;
+
+        const updatedCart = cartItems.map((item, index) =>
+          index === existingItemIndex ? { ...item, quantity } : item
+        );
+        setCartItems(updatedCart);
+        
+        // Send the delta, not absolute quantity
+        await syncAddToCart(product._id, product.colorId, product.ageGroupId, quantityDelta);
+      } else {
+        const newCartItem = {
+          _id: product._id,
+          name: product.name,
+          price: product.price,
+          cutPrice: product.cutPrice,
+          discount: product.discount,
+          product_type: product.product_type,
+          image: product.images[0],
+          colorId: product.colorId,
+          ageGroupId: product.ageGroupId,
+          quantity,
+          stock: product.stock,
+        };
+        setCartItems([...cartItems, newCartItem]);
+        
+        // Send initial quantity
+        await syncAddToCart(product._id, product.colorId, product.ageGroupId, quantity);
+      }
+
+      setOpenCart(true);
+    } catch (error) {
+      console.error("Failed to add product to cart:", error);
+      await fetchCart();
     }
-    setOpenCart(true);
   };
 
-  const removeProductFromCart = (product) => {
-    const existingItemIndex = cartItems.findIndex(
-      (item) =>
-        item._id === product._id &&
-        item.colorId === product.colorId &&
-        item.ageGroupId === product.ageGroupId
-    );
-
-    if (existingItemIndex !== -1) {
-      const itemToRemove = cartItems[existingItemIndex];
+  const removeProductFromCart = async (product) => {
+    try {
       const updatedCart = cartItems.filter(
         (item) =>
           !(
@@ -217,58 +314,55 @@ const CartContextProvider = ({ children }) => {
       );
 
       setCartItems(updatedCart);
-      syncRemoveFromCart(product._id, product.colorId, product.ageGroupId);
+      await syncRemoveFromCart(product._id, product.colorId, product.ageGroupId);
 
-      setTotalItems((prev) => prev - itemToRemove.quantity);
-      setTotalPrice(
-        (prev) => prev - itemToRemove.price * itemToRemove.quantity
-      );
-      if (totalItems - itemToRemove.quantity <= 0) setOpenCart(false);
+      if (updatedCart.length === 0) setOpenCart(false);
+    } catch (error) {
+      console.error("Failed to remove from cart:", error);
+      // Rollback on error
+      await fetchCart();
     }
   };
 
-  const increaseQuantityFromCart = (product) => {
-    const updatedCart = cartItems.map((item) => {
-      if (
-        item._id === product._id &&
-        item.colorId === product.colorId &&
-        item.ageGroupId === product.ageGroupId
-      ) {
-        if (item.quantity + 1 > 5) handleBulkOrderAlert();
-        setTotalItems((prev) => prev + 1);
-        setTotalPrice((prev) => prev + product.price);
-        syncAddToCart(product._id, product.colorId, product.ageGroupId, 1);
-        return { ...item, quantity: item.quantity + 1 };
-      }
-      return item;
-    });
-    setCartItems(updatedCart);
+  const increaseQuantityFromCart = async (product) => {
+    try {
+      const updatedCart = cartItems.map((item) => {
+        if (
+          item._id === product._id &&
+          item.colorId === product.colorId &&
+          item.ageGroupId === product.ageGroupId
+        ) {
+          const newQuantity = item.quantity + 1;
+          if (newQuantity > 5) handleBulkOrderAlert();
+          return { ...item, quantity: newQuantity };
+        }
+        return item;
+      });
+
+      setCartItems(updatedCart);
+
+      // Send +1 as delta to increase quantity
+      await syncAddToCart(product._id, product.colorId, product.ageGroupId, 1);
+    } catch (error) {
+      console.error("Failed to increase quantity:", error);
+      await fetchCart();
+    }
   };
 
-  const decreaseQuantityFromCart = (product) => {
-    const existingItemIndex = cartItems.findIndex(
-      (item) =>
-        item._id === product._id &&
-        item.colorId === product.colorId &&
-        item.ageGroupId === product.ageGroupId
-    );
+  const decreaseQuantityFromCart = async (product) => {
+    try {
+      const existingItem = cartItems.find(
+        (item) =>
+          item._id === product._id &&
+          item.colorId === product.colorId &&
+          item.ageGroupId === product.ageGroupId
+      );
 
-    if (existingItemIndex !== -1) {
-      const item = cartItems[existingItemIndex];
-      if (item.quantity === 1) {
-        const updatedCart = cartItems.filter(
-          (i) =>
-            !(
-              i._id === product._id &&
-              i.colorId === product.colorId &&
-              i.ageGroupId === product.ageGroupId
-            )
-        );
-        setCartItems(updatedCart);
-        syncRemoveFromCart(product._id, product.colorId, product.ageGroupId);
-        setTotalItems((prev) => prev - 1);
-        setTotalPrice((prev) => prev - product.price);
-        if (totalItems - 1 <= 0) setOpenCart(false);
+      if (!existingItem) return;
+
+      if (existingItem.quantity === 1) {
+        // Remove item completely
+        await removeProductFromCart(product);
       } else {
         const updatedCart = cartItems.map((item) => {
           if (
@@ -280,65 +374,83 @@ const CartContextProvider = ({ children }) => {
           }
           return item;
         });
+
         setCartItems(updatedCart);
-        syncAddToCart(product._id, product.colorId, product.ageGroupId, -1);
-        setTotalItems((prev) => prev - 1);
-        setTotalPrice((prev) => prev - product.price);
+
+        // Send -1 as delta to decrease quantity
+        await syncAddToCart(product._id, product.colorId, product.ageGroupId, -1);
       }
+    } catch (error) {
+      console.error("Failed to decrease quantity:", error);
+      await fetchCart();
     }
   };
 
-  const addFavouriteItems = (product) => {
-    const alreadyExists = favouriteItems.some(
-      (item) =>
-        item._id === product._id &&
-        item.colorId === product.colorId &&
-        item.ageGroupId === product.ageGroupId
-    );
-
-    if (alreadyExists) return;
-
-    const newFavourite = {
-      _id: product._id,
-      name: product.name,
-      price: product.price,
-      product_type: product.product_type,
-      images: product.images,
-      colorId: product.colorId || null,
-      ageGroupId: product.ageGroupId || null,
-    };
-
-    const updatedFavourites = [...favouriteItems, newFavourite];
-    setFavouriteItems(updatedFavourites);
-    syncAddToWishlist(product._id, product.colorId, product.ageGroupId);
-
-    setTotalFavouriteItems(updatedFavourites.length);
+  const emptyCart = async () => {
+    try {
+      // Call remove without productId to clear all items
+      await syncRemoveFromCart();
+      setCartItems([]);
+      setOpenCart(false);
+    } catch (error) {
+      console.error("Failed to empty cart:", error);
+      await fetchCart();
+    }
   };
 
-  const removeFavouriteItemsWishList = (product) => {
-    const updatedFavourites = favouriteItems.filter(
-      (item) =>
-        !(
+  // Wishlist operations
+  const addFavouriteItems = async (product) => {
+    try {
+      const alreadyExists = favouriteItems.some(
+        (item) =>
           item._id === product._id &&
           item.colorId === product.colorId &&
           item.ageGroupId === product.ageGroupId
-        )
-    );
+      );
 
-    setFavouriteItems(updatedFavourites);
-    syncRemoveFromWishlist(product._id, product.colorId, product.ageGroupId);
+      if (alreadyExists) return;
 
-    setTotalFavouriteItems(updatedFavourites.length);
+      const newFavourite = {
+        _id: product._id,
+        name: product.name,
+        price: product.price,
+        cutPrice: product.cutPrice,
+        discount: product.discount,
+        product_type: product.product_type,
+        images: product.images,
+        colorId: product.colorId || null,
+        ageGroupId: product.ageGroupId || null,
+        stock: product.stock,
+      };
+
+      setFavouriteItems([...favouriteItems, newFavourite]);
+      await syncAddToWishlist(product._id, product.colorId, product.ageGroupId);
+    } catch (error) {
+      console.error("Failed to add to wishlist:", error);
+      await fetchWishlist();
+    }
   };
 
-  const emptyCart = () => {
-    syncRemoveFromCart();
-    setCartItems([]);
-    setTotalItems(0);
-    setTotalPrice(0);
-    setOpenCart(false);
+  const removeFavouriteItemsWishList = async (product) => {
+    try {
+      const updatedFavourites = favouriteItems.filter(
+        (item) =>
+          !(
+            item._id === product._id &&
+            item.colorId === product.colorId &&
+            item.ageGroupId === product.ageGroupId
+          )
+      );
+
+      setFavouriteItems(updatedFavourites);
+      await syncRemoveFromWishlist(product._id, product.colorId, product.ageGroupId);
+    } catch (error) {
+      console.error("Failed to remove from wishlist:", error);
+      await fetchWishlist();
+    }
   };
 
+  // Save for later operations (local only)
   const saveForLater = (product) => {
     const alreadySaved = savedForLaterItems.some(
       (item) =>
@@ -350,7 +462,6 @@ const CartContextProvider = ({ children }) => {
     if (alreadySaved) return;
 
     removeProductFromCart(product);
-
     setSavedForLaterItems((prev) => [
       ...prev,
       {
@@ -382,7 +493,6 @@ const CartContextProvider = ({ children }) => {
       ...product,
       images: [product.image],
     };
-
     addingProductToCart(productWithImages, product.quantity);
   };
 
@@ -399,70 +509,52 @@ const CartContextProvider = ({ children }) => {
     );
   };
 
-  useEffect(() => {
-    localStorage.setItem("cartItems", JSON.stringify(cartItems));
-    localStorage.setItem("totalItems", JSON.stringify(totalItems));
-    localStorage.setItem("totalPrice", JSON.stringify(totalPrice));
-    localStorage.setItem("favouriteItems", JSON.stringify(favouriteItems));
-    localStorage.setItem(
-      "totalFavouriteItems",
-      JSON.stringify(totalFavouriteItems)
-    );
-    localStorage.setItem(
-      "savedForLaterItems",
-      JSON.stringify(savedForLaterItems)
-    );
-  }, [
-    cartItems,
-    totalItems,
-    totalPrice,
-    favouriteItems,
-    totalFavouriteItems,
-    savedForLaterItems,
-  ]);
-
   const contextValues = {
+    // UI States
     isMobileMenuOpen,
     setIsMobileMenuOpen,
     itemDescriptions,
     setItemDescriptions,
     isQuickBuyClicked,
     setIsQuickBuyClicked,
-    totalItems,
-    setTotalItems,
-    totalPrice,
-    setTotalPrice,
+    formSubmit,
+    setFormSubmit,
+    isForgotPasswordOpen,
+    setIsForgotPasswordOpen,
+    isBulkOrderModalOpen,
+    setIsBulkOrderModalOpen,
+    isLoading,
+
+    // Cart
     cartItems,
     setCartItems,
+    totalItems,
+    totalPrice,
     openCart,
     setOpenCart,
     addToCart,
-    formSubmit,
-    setFormSubmit,
     addingProductToCart,
     removeProductFromCart,
     increaseQuantityFromCart,
     decreaseQuantityFromCart,
     emptyCart,
-    addFavouriteItems,
-    totalFavouriteItems,
+    fetchCart,
+
+    // Wishlist
     favouriteItems,
+    totalFavouriteItems,
+    addFavouriteItems,
     removeFavouriteItemsWishList,
-    isForgotPasswordOpen,
-    setIsForgotPasswordOpen,
-    isBulkOrderModalOpen,
-    setIsBulkOrderModalOpen,
+    fetchWishlist,
+
+    // Save for Later
     savedForLaterItems,
     saveForLater,
     moveToCartFromSaved,
     removeSavedForLaterItem,
   };
 
-  return (
-    <CartContext.Provider value={contextValues}>
-      {children}
-    </CartContext.Provider>
-  );
+  return <CartContext.Provider value={contextValues}>{children}</CartContext.Provider>;
 };
 
 export { CartContext, CartContextProvider };

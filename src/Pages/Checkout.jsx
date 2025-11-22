@@ -12,16 +12,14 @@ const baseUrl = import.meta.env.VITE_BASE_URL;
 const Checkout = () => {
   const { user, updateUser } = useContext(AuthContext);
   const [openCoupon, setOpenCoupon] = useState(false);
-  const { cartItems, formSubmit, totalPrice, emptyCart } =
-    useContext(CartContext);
+  const { formSubmit, emptyCart } = useContext(CartContext);
 
-  const [couponCode, setCouponeCode] = useState("");
+  const [couponCode, setCouponCode] = useState("");
   const [useGofyPoints, setUseGofyPoints] = useState(false);
 
   const [billingEditable, setBillingEditable] = useState(false);
   const [shippingEditable, setShippingEditable] = useState(false);
 
-  const [gofyPoints, setGofyPoints] = useState(500);
   const [deliveryOption, setDeliveryOption] = useState("");
   const [message, setMessage] = useState("");
 
@@ -29,6 +27,12 @@ const Checkout = () => {
   const [isGift, setIsGift] = useState(false);
   const [selectedMessage, setSelectedMessage] = useState("");
   const [giftNote, setGiftNote] = useState("");
+  
+  // Checkout details from API
+  const [checkoutData, setCheckoutData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
   const [addresses, setAddresses] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState({
@@ -40,16 +44,20 @@ const Checkout = () => {
     district: "",
     state: "",
   });
+
   const handleAddNewClick = () => {
     setShowForm(true);
   };
+
   const handleFormChange = (event) => {
     const { name, value } = event.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
+
   const handleCancel = () => {
     setShowForm(false);
   };
+
   useEffect(() => {
     setAddresses(() =>
       user?.addresses.map((addr, index) => ({
@@ -68,15 +76,35 @@ const Checkout = () => {
   const [billingAddressId, setBillingAddressId] = useState(defaultBillingId);
   const [shippingAddressId, setShippingAddressId] = useState(defaultShippingId);
 
-  const pointsToEarn = Math.floor(totalPrice / 100);
-  const pointsDiscount = 50;
-  const giftPackagingPrice = 50;
-  const discountedPrice =
-    totalPrice -
-    (useGofyPoints ? pointsDiscount : 0) +
-    (isGift ? giftPackagingPrice : 0);
-
   const [sameAsBilling, setSameAsBilling] = useState(false);
+
+  // Fetch checkout details from API
+  const fetchCheckoutDetails = async () => {
+    setLoading(true);
+    try {
+      const { data } = await api.post("/user/checkout/checkout-details", {
+        couponCode: couponCode || undefined,
+        deliveryType: deliveryOption || "NORMAL",
+        points: useGofyPoints ? user?.gofyPoints || 0 : 0,
+        giftPack: isGift,
+      });
+      
+      if (data.success) {
+        setCheckoutData(data);
+        setError(null);
+      }
+    } catch (err) {
+      console.error("Error fetching checkout details:", err);
+      setError("Failed to load checkout details");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Fetch checkout details on mount and when relevant fields change
+  useEffect(() => {
+    fetchCheckoutDetails();
+  }, [couponCode, deliveryOption, useGofyPoints, isGift]);
 
   const handleSameAsBillingChange = () => {
     const newValue = !sameAsBilling;
@@ -90,6 +118,7 @@ const Checkout = () => {
 
   const submitFormCoupon = (event) => {
     event.preventDefault();
+    // Coupon will be automatically applied through the useEffect
     console.log("Applying coupon:", couponCode);
   };
 
@@ -118,8 +147,14 @@ const Checkout = () => {
       alert("Something went wrong");
     }
   };
+
   const placeOrderForm = async (event) => {
     event.preventDefault();
+
+    if (!deliveryOption) {
+      alert("Please select a delivery option");
+      return;
+    }
 
     const billingAddress = savedBillingAddresses.find(
       (addr) => addr.id === billingAddressId
@@ -131,17 +166,16 @@ const Checkout = () => {
 
     const order = {
       userId: user?._id,
-      orderItems: cartItems,
-      totalPrice,
-      pointsToEarn,
-      discountedPrice,
+      orderItems: checkoutData?.items,
+      totalPrice: checkoutData?.pricing?.total,
       billingAddress,
       shippingAddress,
-      useGofyPoints,
-      isGift,
+      couponCode: couponCode || undefined,
+      deliveryType: deliveryOption,
+      points: useGofyPoints ? checkoutData?.pointsUsed : 0,
+      giftPack: isGift,
       giftNote,
       giftMessage: selectedMessage,
-      deliveryOption,
       additionalInformation: message,
     };
 
@@ -155,6 +189,35 @@ const Checkout = () => {
       alert("Something went wrong while placing order");
     }
   };
+
+  const getDeliveryLabel = (type) => {
+    switch (type) {
+      case "STORE_PICKUP":
+        return "Store-pickup & Earn Gofy Points";
+      case "UNDER_30_MIN":
+        return "Get under 30 minutes";
+      case "NORMAL":
+        return "Normal Delivery 2–3 days";
+      default:
+        return type;
+    }
+  };
+
+  if (loading && !checkoutData) {
+    return (
+      <div className="w-full h-screen flex items-center justify-center">
+        <Loader className="w-8 h-8 text-[#00bbae] animate-spin" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="w-full h-screen flex items-center justify-center">
+        <p className="text-red-500 text-lg">{error}</p>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full h-full py-10 bg-[#f8f9fa]">
@@ -186,6 +249,11 @@ const Checkout = () => {
                     <p className="text-[16px] leading-[24px] font-semibold text-black">
                       If you have a coupon code, please apply it below.
                     </p>
+                    {checkoutData?.couponError && (
+                      <p className="text-red-500 text-sm">
+                        {checkoutData.couponError}
+                      </p>
+                    )}
                     <form
                       onSubmit={submitFormCoupon}
                       className="w-full sm:w-[50%] items-center gap-3 flex sm:flex-row flex-col"
@@ -193,7 +261,7 @@ const Checkout = () => {
                       <input
                         required
                         name="couponCode"
-                        onChange={(event) => setCouponeCode(event.target.value)}
+                        onChange={(event) => setCouponCode(event.target.value)}
                         value={couponCode}
                         type="text"
                         className="transition-colors duration-300 w-full text-[18px] leading-[27px] rounded-2xl border border-gray-200 p-3 focus:outline-none focus:border-[#00bbae]"
@@ -203,11 +271,7 @@ const Checkout = () => {
                         type="submit"
                         className="rounded-xl w-full text-[18px] leading-[24px] font-semibold text-white transition-colors duration-300 hover:bg-[#f88e0f] cursor-pointer px-3 h-12 bg-[#00bbae] flex gap-3 items-center justify-center"
                       >
-                        {formSubmit ? (
-                          <Loader className="w-6 h-6 text-white animate-spin" />
-                        ) : (
-                          "Apply coupon"
-                        )}
+                        Apply coupon
                       </button>
                     </form>
                   </div>
@@ -349,6 +413,7 @@ const Checkout = () => {
               </div>
               {!showForm && (
                 <button
+                  type="button"
                   onClick={handleAddNewClick}
                   className="mt-4 flex items-center justify-center gap-2 rounded-xl h-10 px-4 text-white bg-[#00bbae] hover:bg-[#f88e0f] transition-colors duration-300"
                 >
@@ -424,7 +489,7 @@ const Checkout = () => {
                   </div>
                   <div className="flex gap-2 mt-4">
                     <button
-                      type="submit"
+                      type="button"
                       onClick={handleSaveAddress}
                       className="rounded-xl w-24 h-10 text-white bg-[#00bbae] hover:bg-[#f88e0f] transition-colors duration-300"
                     >
@@ -483,26 +548,20 @@ const Checkout = () => {
 
               {/* Cart Items */}
               <div className="flex flex-col gap-2 w-full">
-                {cartItems &&
-                  cartItems.length > 0 &&
-                  cartItems.map((item) => (
+                {checkoutData?.items &&
+                  checkoutData.items.length > 0 &&
+                  checkoutData.items.map((item) => (
                     <div
                       className="flex gap-3 w-full px-3 justify-between"
-                      key={item._id}
+                      key={item.cartId}
                     >
                       <div className="flex gap-1 flex-wrap mb-3">
                         <p className="text-[16px] leading-[24px] text-[#001430]">
-                          {item.name} X ({item?.quantity} items)
+                          {item.productName} X ({item.quantity} items)
                         </p>
-                        {/* <div className="flex gap-1 items-center">
-                          <X className="w-4 h-4 text-[#001430]" />
-                          <p className="text-[16px] leading-[24px] text-[#001430]">
-                            ({item?.quantity} items)
-                          </p>
-                        </div> */}
                       </div>
                       <p className="text-[16px] leading-[24px] whitespace-nowrap text-[#001430]">
-                        ₹ {item.price}
+                        ₹ {item.totalPrice}
                       </p>
                     </div>
                   ))}
@@ -512,7 +571,7 @@ const Checkout = () => {
                       Gift Packaging
                     </p>
                     <p className="text-[16px] leading-[24px] text-gray-700 font-medium">
-                      ₹ {giftPackagingPrice}
+                      ₹ {checkoutData?.pricing?.giftPackCharges || 0}
                     </p>
                   </div>
                 )}
@@ -526,19 +585,68 @@ const Checkout = () => {
                   Subtotal
                 </p>
                 <p className="text-[18px] leading-[27px] text-[#001430] font-semibold ">
-                  ₹ {totalPrice}
+                  ₹ {checkoutData?.pricing?.subtotal || 0}
                 </p>
               </div>
 
-              {/* Earned Points */}
-              <div className="flex gap-3 w-full p-3 justify-between items-center">
-                <p className="text-[18px] leading-[27px] text-[#00bbae] font-semibold ">
-                  You will earn
-                </p>
-                <p className="text-[18px] leading-[27px] text-[#00bbae] font-semibold ">
-                  {pointsToEarn} Gofy points
-                </p>
-              </div>
+              {/* Discounts */}
+              {checkoutData?.pricing?.totalDiscount > 0 && (
+                <div className="flex gap-3 w-full p-3 justify-between items-center">
+                  <p className="text-[16px] leading-[24px] text-green-600 font-medium">
+                    Product Discount
+                  </p>
+                  <p className="text-[16px] leading-[24px] text-green-600 font-medium">
+                    - ₹ {checkoutData.pricing.totalDiscount}
+                  </p>
+                </div>
+              )}
+
+              {checkoutData?.pricing?.couponDiscount > 0 && (
+                <div className="flex gap-3 w-full p-3 justify-between items-center">
+                  <p className="text-[16px] leading-[24px] text-green-600 font-medium">
+                    Coupon Discount
+                  </p>
+                  <p className="text-[16px] leading-[24px] text-green-600 font-medium">
+                    - ₹ {checkoutData.pricing.couponDiscount}
+                  </p>
+                </div>
+              )}
+
+              {checkoutData?.pricing?.pointsDiscount > 0 && (
+                <div className="flex gap-3 w-full p-3 justify-between items-center">
+                  <p className="text-[16px] leading-[24px] text-green-600 font-medium">
+                    Points Discount
+                  </p>
+                  <p className="text-[16px] leading-[24px] text-green-600 font-medium">
+                    - ₹ {checkoutData.pricing.pointsDiscount}
+                  </p>
+                </div>
+              )}
+
+              {checkoutData?.pricing?.deliveryCharges > 0 && (
+                <div className="flex gap-3 w-full p-3 justify-between items-center">
+                  <p className="text-[16px] leading-[24px] text-[#001430] font-medium">
+                    Delivery Charges
+                  </p>
+                  <p className="text-[16px] leading-[24px] text-[#001430] font-medium">
+                    ₹ {checkoutData.pricing.deliveryCharges}
+                  </p>
+                </div>
+              )}
+
+              <div className="w-full h-[1px] bg-gray-200 border-none"></div>
+
+              {/* Total Savings */}
+              {checkoutData?.pricing?.totalSavings > 0 && (
+                <div className="flex gap-3 w-full p-3 justify-between items-center bg-green-50">
+                  <p className="text-[18px] leading-[27px] text-green-700 font-semibold ">
+                    Total Savings
+                  </p>
+                  <p className="text-[18px] leading-[27px] text-green-700 font-semibold ">
+                    ₹ {checkoutData.pricing.totalSavings}
+                  </p>
+                </div>
+              )}
 
               <div className="w-full h-[1px] bg-gray-200 border-none"></div>
 
@@ -548,17 +656,13 @@ const Checkout = () => {
                   Total
                 </p>
                 <p className="text-[20px] leading-[30px] text-[#001430] font-bold ">
-                  ₹ {discountedPrice}
+                  ₹ {checkoutData?.pricing?.total || 0}
                 </p>
               </div>
             </div>
 
-            <p className="text-[16px] leading-[24px] text-[#00bbae] font-medium">
-              Offers and promotions will be applied at the next step.
-            </p>
-
             {/* Delivery Options */}
-            <div className="space-y-4">
+            <div className="space-y-4 mt-4">
               <h2 className="text-[20px] leading-[30px] font-semibold text-black">
                 Choose Delivery Option
               </h2>
@@ -568,8 +672,8 @@ const Checkout = () => {
                 <input
                   type="radio"
                   name="delivery"
-                  value="pickup"
-                  checked={deliveryOption === "pickup"}
+                  value="STORE_PICKUP"
+                  checked={deliveryOption === "STORE_PICKUP"}
                   onChange={(e) => setDeliveryOption(e.target.value)}
                   className="mt-1 h-5 w-5 text-blue-500 border-gray-400 focus:ring-blue-500"
                 />
@@ -589,8 +693,8 @@ const Checkout = () => {
                 <input
                   type="radio"
                   name="delivery"
-                  value="fast"
-                  checked={deliveryOption === "fast"}
+                  value="UNDER_30_MIN"
+                  checked={deliveryOption === "UNDER_30_MIN"}
                   onChange={(e) => setDeliveryOption(e.target.value)}
                   className="h-5 w-5 text-blue-500 border-gray-400 focus:ring-blue-500"
                 />
@@ -605,21 +709,13 @@ const Checkout = () => {
                 <input
                   type="radio"
                   name="delivery"
-                  value="normal"
-                  checked={deliveryOption === "normal"}
+                  value="NORMAL"
+                  checked={deliveryOption === "NORMAL"}
                   onChange={(e) => setDeliveryOption(e.target.value)}
                   className="h-5 w-5 text-blue-500 border-gray-400 focus:ring-blue-500"
                 />
                 <span className="text-gray-700">Normal Delivery 2–3 days</span>
               </label>
-
-              {/* Debug / Show Selected */}
-              <p className="mt-4 text-sm text-gray-600">
-                Selected:{" "}
-                <span className="font-semibold">
-                  {deliveryOption || "None"}
-                </span>
-              </p>
             </div>
 
             {/* Gofy Points and Gift */}
@@ -634,14 +730,20 @@ const Checkout = () => {
                   name="useGofyPoints"
                   checked={useGofyPoints}
                   onChange={() => setUseGofyPoints(!useGofyPoints)}
+                  disabled={!user?.gofyPoints || user.gofyPoints === 0}
                   className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
                 />
                 <label
                   htmlFor="useGofyPoints"
                   className="text-[16px] leading-[24px] text-gray-700"
                 >
-                  Use **{gofyPoints}** Gofy points to get a ₹{pointsDiscount}{" "}
-                  discount
+                  Use {user?.gofyPoints || 0} Gofy points to get a discount
+                  {checkoutData?.pricing?.pointsDiscount > 0 && (
+                    <span className="text-green-600 font-semibold">
+                      {" "}
+                      (₹{checkoutData.pricing.pointsDiscount} off)
+                    </span>
+                  )}
                 </label>
               </div>
 
@@ -652,7 +754,10 @@ const Checkout = () => {
                   onChange={(e) => setIsGift(e.target.checked)}
                   className="h-5 w-5 text-blue-500 border-gray-400 rounded focus:ring-blue-500"
                 />
-                <span className="text-gray-700">Add Gift Packaging</span>
+                <span className="text-gray-700">
+                  Add Gift Packaging (₹
+                  {checkoutData?.pricing?.giftPackCharges || 50})
+                </span>
               </label>
 
               {isGift && (
@@ -680,9 +785,10 @@ const Checkout = () => {
 
             <button
               onClick={placeOrderForm}
-              className="rounded-xl w-full text-[18px] leading-[24px] font-semibold text-white transition-colors duration-300 hover:bg-[#f88e0f] cursor-pointer px-3 h-12 bg-[#00bbae] flex gap-3 items-center justify-center mt-4"
+              disabled={loading || !deliveryOption}
+              className="rounded-xl w-full text-[18px] leading-[24px] font-semibold text-white transition-colors duration-300 hover:bg-[#f88e0f] cursor-pointer px-3 h-12 bg-[#00bbae] flex gap-3 items-center justify-center mt-4 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {formSubmit ? (
+              {formSubmit || loading ? (
                 <Loader className="w-6 h-6 text-white animate-spin" />
               ) : (
                 "Proceed to Payment"
@@ -697,7 +803,9 @@ const Checkout = () => {
         <div className="mt-12">
           <RelatedItems
             heading={
-              cartItems.length > 0 ? "You might also like" : "Specially for You"
+              checkoutData?.items?.length > 0
+                ? "You might also like"
+                : "Specially for You"
             }
           />
         </div>
