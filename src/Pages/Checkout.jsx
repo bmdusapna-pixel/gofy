@@ -60,8 +60,8 @@ const Checkout = () => {
 
   useEffect(() => {
     setAddresses(() =>
-      user?.addresses.map((addr, index) => ({
-        id: index + 1,
+      user?.addresses.map((addr) => ({
+        id: addr._id,
         details: `${addr.nickname}\n${addr.houseStreet}, ${addr.apartment}, ${addr.city}, ${addr.district}, ${addr.state}, ${addr.zipCode}, India\nPhone number: ${user?.phone}`,
       }))
     );
@@ -70,11 +70,19 @@ const Checkout = () => {
   const savedBillingAddresses = [...addresses];
   const savedShippingAddresses = [...addresses];
 
-  const defaultBillingId = 1;
-  const defaultShippingId = 1;
+  const defaultBillingId = addresses[0]?.id;
+  const defaultShippingId = addresses[0]?.id;
 
-  const [billingAddressId, setBillingAddressId] = useState(defaultBillingId);
-  const [shippingAddressId, setShippingAddressId] = useState(defaultShippingId);
+  const [billingAddressId, setBillingAddressId] = useState(null);
+  const [shippingAddressId, setShippingAddressId] = useState(null);
+
+  // Set default addresses when addresses are loaded
+  useEffect(() => {
+    if (addresses.length > 0 && !billingAddressId) {
+      setBillingAddressId(addresses[0].id);
+      setShippingAddressId(addresses[0].id);
+    }
+  }, [addresses]);
 
   const [sameAsBilling, setSameAsBilling] = useState(false);
 
@@ -112,7 +120,7 @@ const Checkout = () => {
     if (newValue) {
       setShippingAddressId(billingAddressId);
     } else {
-      setShippingAddressId(defaultShippingId);
+      setShippingAddressId(addresses[0]?.id);
     }
   };
 
@@ -156,37 +164,41 @@ const Checkout = () => {
       return;
     }
 
-    const billingAddress = savedBillingAddresses.find(
-      (addr) => addr.id === billingAddressId
-    )?.details;
+    if (!billingAddressId || !shippingAddressId) {
+      alert("Please select billing and shipping addresses");
+      return;
+    }
 
-    const shippingAddress = savedShippingAddresses.find(
-      (addr) => addr.id === shippingAddressId
-    )?.details;
-
-    const order = {
-      userId: user?._id,
-      orderItems: checkoutData?.items,
-      totalPrice: checkoutData?.pricing?.total,
-      billingAddress,
-      shippingAddress,
+    const orderData = {
+      shippingAddressId: shippingAddressId,
+      billingAddressId: billingAddressId,
+      paymentMethod: "COD",
       couponCode: couponCode || undefined,
       deliveryType: deliveryOption,
-      points: useGofyPoints ? checkoutData?.pointsUsed : 0,
+      points: useGofyPoints ? (user?.gofyPoints || 0) : 0,
       giftPack: isGift,
-      giftNote,
-      giftMessage: selectedMessage,
-      additionalInformation: message,
+      giftMessage: selectedMessage || undefined,
+      giftNote: giftNote || undefined,
+      otherNote: message || undefined,
     };
 
     try {
-      const { data } = await api.post("/user/order", order);
-      alert("Order placed successfully!");
-      emptyCart();
-      console.log("Order response:", data);
+      const { data } = await api.post("/user/order/create", orderData);
+      
+      if (data.success) {
+        alert("Order placed successfully!");
+        emptyCart();
+        console.log("Order response:", data);
+        // Optional: Redirect to order confirmation page
+        // navigate('/order-confirmation');
+      } else {
+        alert(data.message || "Failed to place order");
+      }
     } catch (error) {
       console.error("Error placing order:", error);
-      alert("Something went wrong while placing order");
+      alert(
+        error.response?.data?.message || "Something went wrong while placing order"
+      );
     }
   };
 
