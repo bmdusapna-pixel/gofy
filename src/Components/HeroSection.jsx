@@ -115,8 +115,8 @@ const HeroSection = () => {
           vulputate eget dolor.
         </p>
         <div
-          className="flex max-w-[1200px] my-10 relative"
-          style={{ width: collection.length * 300 }}
+          className="flex w-full max-w-[1200px] my-10 relative"
+          // style={{ width: collection.length * 300 }}
         >
           <div className="w-full bg-[#e9f9fc] rounded-full category-swiper">
             <Swiper
