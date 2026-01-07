@@ -38,6 +38,10 @@ const CartDetails = () => {
     saveForLater,
     moveToCartFromSaved,
     removeSavedForLaterItem,
+    totalMrp,
+    totalProductDiscount,
+    totalCouponDiscount,
+    payableAmount,
   } = useContext(CartContext);
   const [couponCode, setCouponCode] = useState("");
   const [copiedCode, setCopiedCode] = useState(null);
@@ -127,7 +131,7 @@ const CartDetails = () => {
                               ₹ {item.price * item.quantity}
                             </span>
                             <span className="text-sm text-gray-500 line-through">
-                              ₹ {item.price}
+                              ₹ {item.cutPrice}
                             </span>
                             <span className="text-red-600">30% Off</span>
                           </div>
@@ -366,25 +370,25 @@ const CartDetails = () => {
                       Total MRP ({cartItems.length} items)
                     </span>
                     <span className="text-base font-medium">
-                      ₹ {totalPrice}
+                      ₹ {totalMrp}
                     </span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-base">Discount on MRP</span>
                     <span className="text-base font-medium text-red-500">
-                      - ₹ 100
+                      {totalProductDiscount}
                     </span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-base">Coupon Discount</span>
                     <span className="text-base font-medium text-red-500">
-                      - ₹ 10
+                      {totalCouponDiscount}
                     </span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-base">Delivery Charges</span>
                     <span className="text-base font-medium text-green-600">
-                      {totalPrice >= 500 ? "Free" : "₹ 50"}
+                      {totalMrp >= 500 ? "Free" : "₹ 50"}
                     </span>
                   </div>
                 </div>
@@ -393,7 +397,7 @@ const CartDetails = () => {
                 <div className="flex justify-between items-center font-bold text-gray-900 mb-6">
                   <span className="text-xl">Total Amount</span>
                   <span className="text-xl">
-                    ₹ {totalPrice - 100 - 10 + (totalPrice >= 500 ? 0 : 50)}
+                    ₹ {payableAmount + (totalPrice >= 500 ? 0 : 50)}
                   </span>
                 </div>
                 <div className="mt-6 w-full text-center bg-[#00bbae] text-white text-lg font-bold rounded-xl transition-colors duration-300 hover:bg-[#f88e0f]">

@@ -29,10 +29,31 @@ const CartContextProvider = ({ children }) => {
 
   // Derived values (no need to store separately)
   const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+
+  // Total selling price (after product-level discount, before coupon)
   const totalPrice = cartItems.reduce(
-    (sum, item) => sum + item.price * item.quantity,
+    (sum, item) => sum + (item.price || 0) * item.quantity,
     0
   );
+
+  // Total MRP (original price) – fall back to price if cutPrice is missing
+  const totalMrp = cartItems.reduce(
+    (sum, item) =>
+      sum + ((item.cutPrice != null ? item.cutPrice : item.price || 0) * item.quantity),
+    0
+  );
+
+  // Discount coming from product pricing (MRP - selling price)
+  const totalProductDiscount = Math.max(totalMrp - totalPrice, 0);
+
+  // Total coupon discount coming from backend per cart line (if provided)
+  const totalCouponDiscount = cartItems.reduce(
+    (sum, item) => sum + (item.coupanDiscont || 0) * (item.quantity || 1),
+    0
+  );
+
+  // Final payable amount after all discounts
+  const payableAmount = Math.max(totalPrice - totalCouponDiscount, 0);
   const totalFavouriteItems = favouriteItems.length;
 
   // Fetch cart from server
@@ -61,7 +82,9 @@ const CartContextProvider = ({ children }) => {
         quantity: item.quantity,
         stock: item.stock,
         tax: item.tax,
+        coupanDiscont:item.coupanDiscount
       }));
+      console.log("cart",cartItems)
       setCartItems(serverCart);
       localStorage.setItem("cartItems", JSON.stringify(serverCart));
     } catch (err) {
@@ -530,6 +553,10 @@ const CartContextProvider = ({ children }) => {
     setCartItems,
     totalItems,
     totalPrice,
+    totalMrp,
+    totalProductDiscount,
+    totalCouponDiscount,
+    payableAmount,
     openCart,
     setOpenCart,
     addToCart,

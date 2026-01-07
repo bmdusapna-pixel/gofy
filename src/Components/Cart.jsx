@@ -21,8 +21,11 @@ const Cart = () => {
     removeProductFromCart,
     increaseQuantityFromCart,
     decreaseQuantityFromCart,
-    totalPrice,
+    totalMrp,
     emptyCart,
+    totalProductDiscount,
+    totalCouponDiscount,
+    payableAmount,
   } = useContext(CartContext);
   const [copiedCode, setCopiedCode] = useState(null);
 
@@ -129,7 +132,7 @@ const Cart = () => {
                       <p className="text-[18px] leading-[27px] text-pink-600 font-semibold">
                         ₹ {item.price}{" "}
                         <span className="text-[14px] line-through text-gray-500">
-                          ₹ {item.price - 100}
+                          ₹ {item.cutPrice}
                         </span>
                       </p>
                     </div>
@@ -223,7 +226,7 @@ const Cart = () => {
                   Total MRP
                 </p>
                 <p className="text-[16px] leading-[24px] text-[#212121]">
-                  ₹ {totalPrice}
+                  ₹ {totalMrp}
                 </p>
               </div>
 
@@ -233,7 +236,7 @@ const Cart = () => {
                   Discount on MRP
                 </p>
                 <p className="text-[16px] leading-[24px] text-[#d9534f]">
-                  - ₹ 100
+                  - ₹ {totalProductDiscount}
                 </p>
               </div>
               <div className="flex justify-between items-center w-full">
@@ -241,7 +244,7 @@ const Cart = () => {
                   Coupon Discount
                 </p>
                 <p className="text-[16px] leading-[24px] text-[#d9534f]">
-                  - ₹ 10
+                  - ₹ {totalCouponDiscount}
                 </p>
               </div>
 
@@ -251,7 +254,7 @@ const Cart = () => {
                   Total Amount
                 </p>
                 <p className="text-[18px] leading-[27px] text-black font-semibold">
-                  ₹ {totalPrice - 100}
+                  ₹ {payableAmount}
                 </p>
               </div>
             </div>
