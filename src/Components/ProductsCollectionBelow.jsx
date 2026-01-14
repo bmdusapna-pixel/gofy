@@ -226,7 +226,7 @@ const ProductsCollectionBelow = ({ color }) => {
                             ? "Save for later"
                             : "Add To Cart"}
                         </button>
-                        <button className="text-[14] leading-[24px] px-2 w-1/2 font-semibold cursor-pointer py-2 rounded-md bg-[#00bbae] text-white hover:text-black hover:bg-[#e9ecef] transition duration-300">
+                        <button className="leading-[24px] px-2 w-1/2 font-semibold cursor-pointer py-2 rounded-md bg-[#00bbae] text-white hover:text-black hover:bg-[#e9ecef] transition duration-300">
                           {product.status === "Out of Stock"
                             ? "Notify Me"
                             : "Buy Now"}

@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Loader, X, MapPin, Truck } from "lucide-react";
 import { FaEdit, FaTrash, FaPlus } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 import { CartContext } from "../Context/CartContext";
 import RelatedItems from "../Components/RelatedItems";
 import { AuthContext } from "../Context/AuthContext";
@@ -10,6 +11,7 @@ import api from "../api/axios.js";
 const baseUrl = import.meta.env.VITE_BASE_URL;
 
 const Checkout = () => {
+  const navigate = useNavigate();
   const { user, updateUser } = useContext(AuthContext);
   const [openCoupon, setOpenCoupon] = useState(false);
   const { formSubmit, emptyCart } = useContext(CartContext);
@@ -22,6 +24,7 @@ const Checkout = () => {
 
   const [deliveryOption, setDeliveryOption] = useState("");
   const [message, setMessage] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState("COD"); // 'COD' or 'ONLINE'
 
   // Gift packaging states
   const [isGift, setIsGift] = useState(false);
@@ -172,7 +175,7 @@ const Checkout = () => {
     const orderData = {
       shippingAddressId: shippingAddressId,
       billingAddressId: billingAddressId,
-      paymentMethod: "COD",
+      paymentMethod: paymentMethod,
       couponCode: couponCode || undefined,
       deliveryType: deliveryOption,
       points: useGofyPoints ? (user?.gofyPoints || 0) : 0,
@@ -186,11 +189,19 @@ const Checkout = () => {
       const { data } = await api.post("/user/order/create", orderData);
       
       if (data.success) {
-        alert("Order placed successfully!");
-        emptyCart();
-        console.log("Order response:", data);
-        // Optional: Redirect to order confirmation page
-        // navigate('/order-confirmation');
+        // If payment method is ONLINE, redirect to payment page
+        if (paymentMethod === "ONLINE") {
+          const orderId = data.order._id || data.order.id;
+          const amount = data.order.pricing?.total || checkoutData?.pricing?.total;
+          navigate(`/payment?orderId=${orderId}&amount=${amount}`);
+        } else {
+          // For COD, show success message and clear cart
+          alert("Order placed successfully!");
+          emptyCart();
+          console.log("Order response:", data);
+          // Optional: Redirect to order confirmation page
+          // navigate('/order-confirmation');
+        }
       } else {
         alert(data.message || "Failed to place order");
       }
@@ -793,6 +804,45 @@ const Checkout = () => {
                   />
                 </div>
               )}
+            </div>
+
+            {/* Payment Method Selection */}
+            <div className="space-y-4 mt-4">
+              <h2 className="text-[20px] leading-[30px] font-semibold text-black">
+                Payment Method
+              </h2>
+
+              {/* Cash on Delivery */}
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="paymentMethod"
+                  value="COD"
+                  checked={paymentMethod === "COD"}
+                  onChange={(e) => setPaymentMethod(e.target.value)}
+                  className="h-5 w-5 text-blue-500 border-gray-400 focus:ring-blue-500"
+                />
+                <div>
+                  <p className="text-gray-700 font-medium">Cash on Delivery (COD)</p>
+                  <p className="text-sm text-gray-500">Pay when you receive your order</p>
+                </div>
+              </label>
+
+              {/* Online Payment */}
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="paymentMethod"
+                  value="ONLINE"
+                  checked={paymentMethod === "ONLINE"}
+                  onChange={(e) => setPaymentMethod(e.target.value)}
+                  className="h-5 w-5 text-blue-500 border-gray-400 focus:ring-blue-500"
+                />
+                <div>
+                  <p className="text-gray-700 font-medium">Online Payment</p>
+                  <p className="text-sm text-gray-500">Pay securely with Zoho Payments</p>
+                </div>
+              </label>
             </div>
 
             <button

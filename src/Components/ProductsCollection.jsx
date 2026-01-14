@@ -27,6 +27,7 @@ const ProductsCollection = ({ color }) => {
       try {
         const response = await fetch(`${baseUrl}/products`);
         const result = await response.json();
+        console.log(result)
         setProductList(result.data);
       } catch (error) {
         console.error("Error fetching products:", error);
