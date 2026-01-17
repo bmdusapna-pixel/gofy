@@ -10,6 +10,7 @@ console.log("apiKey", apiKey);
 export const Payment = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [PaymentId,setPaymentId] = useState(null);
   const [paymentStatus, setPaymentStatus] = useState(null); // 'pending', 'success', 'failed'
   const hasStartedPaymentRef = useRef(false);
   const [searchParams] = useSearchParams();
@@ -219,7 +220,7 @@ export const Payment = () => {
           currency_symbol: "₹",
           business: "Gofy",
           invoice_number: invoiceNumber || `INV-${orderId}`,
-          address: {
+          customer: {
             name: customer?.name || "Customer",
             email: customer?.email || "",
             phone: customer?.phone || "",
@@ -232,14 +233,17 @@ export const Payment = () => {
           .then(async (data) => {
             console.log("Payment success:", data);
             setPaymentStatus("success");
+            setPaymentId(data.payment_id)
             setLoading(false);
 
             // Verify payment with backend
             try {
               const verifyRes = await api.post("/user/payment/verify", {
-                paymentSessionId,
-                orderId,
+                paymentId:PaymentId, 
+                orderId:orderId
               });
+
+              console.log(verifyRes)
 
               if (verifyRes.data.success) {
                 // Redirect to order confirmation or success page
@@ -290,8 +294,8 @@ export const Payment = () => {
         // Verify payment with backend
         try {
           const verifyRes = await api.post("/user/payment/verify", {
-            paymentSessionId,
-            orderId,
+            paymentId:PaymentId, 
+            orderId:orderId
           });
 
           if (verifyRes.data.success) {
