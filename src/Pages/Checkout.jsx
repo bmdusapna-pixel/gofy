@@ -812,6 +812,24 @@ const Checkout = () => {
                 Payment Method
               </h2>
 
+              
+
+              {/* Online Payment */}
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="paymentMethod"
+                  value="ONLINE"
+                  checked={paymentMethod === "ONLINE"}
+                  onChange={(e) => setPaymentMethod(e.target.value)}
+                  className="h-5 w-5 text-blue-500 border-gray-400 focus:ring-blue-500"
+                />
+                <div>
+                  <p className="text-gray-700 font-medium">Online Payment (Recommeded)</p>
+                  <p className="text-sm text-gray-500">Pay securely with Zoho Payments</p>
+                </div>
+              </label>
+
               {/* Cash on Delivery */}
               <label className="flex items-center gap-2 cursor-pointer">
                 <input
@@ -825,22 +843,6 @@ const Checkout = () => {
                 <div>
                   <p className="text-gray-700 font-medium">Cash on Delivery (COD)</p>
                   <p className="text-sm text-gray-500">Pay when you receive your order</p>
-                </div>
-              </label>
-
-              {/* Online Payment */}
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="radio"
-                  name="paymentMethod"
-                  value="ONLINE"
-                  checked={paymentMethod === "ONLINE"}
-                  onChange={(e) => setPaymentMethod(e.target.value)}
-                  className="h-5 w-5 text-blue-500 border-gray-400 focus:ring-blue-500"
-                />
-                <div>
-                  <p className="text-gray-700 font-medium">Online Payment</p>
-                  <p className="text-sm text-gray-500">Pay securely with Zoho Payments</p>
                 </div>
               </label>
             </div>
