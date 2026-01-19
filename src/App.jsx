@@ -22,6 +22,7 @@ import BulkOrder from "./Pages/BulkOrder";
 import NewArrivals from "./Pages/NewArrivals";
 import Checkout from "./Pages/Checkout";
 import Payment from "./Pages/Payment";
+import OrderConfirmation from "./Pages/OrderConfirmation";
 import Blog from "./Pages/Blog";
 import SignUp from "./Pages/SignUp";
 import SignIn from "./Pages/SignIn";
@@ -184,6 +185,7 @@ const App = () => {
           <Route path="/sign-in" element={<SignIn />} />
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/payment" element={<Payment />} />
+          <Route path="/order-confirmation" element={<OrderConfirmation />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/wishList" element={<WishList />} />
           <Route path="/account" element={<Account />} />
