@@ -2,19 +2,25 @@ import React, { useEffect, useState } from "react";
 import SubmitReview from "./SubmitReview.jsx";
 import Invoice from "./Invoice.jsx";
 import IssueForm from "./IssueForm.jsx";
-import { ShoppingBag, Download, LogOut, Eye, ArrowLeft } from "lucide-react";
-import axios from "axios";
+import { ShoppingBag, Download, LogOut, Eye, ArrowLeft, Package, MapPin, CreditCard, Receipt, FileText, Loader2 } from "lucide-react";
+import api from "../api/axios.js";
 import { VITE_BASE_URL } from "../config.js";
 
 
 const Orders = () => {
   const [selectedOrder, setSelectedOrder] = useState(null);
+  const [detailedOrder, setDetailedOrder] = useState(null);
+  const [invoiceData, setInvoiceData] = useState(null);
   const [showInvoiceModal, setShowInvoiceModal] = useState(false);
   const [showIssueModal, setShowIssueModal] = useState(false);
   const [isIssue, setIsissue] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState("All");
   const [selectedTime, setSelectedTime] = useState("all");
   const [orders,setorders] = useState([]);
+  const [loadingOrderDetails, setLoadingOrderDetails] = useState(false);
+  const [loadingInvoice, setLoadingInvoice] = useState(false);
+  const [orderDetailsError, setOrderDetailsError] = useState(null);
+  const [invoiceError, setInvoiceError] = useState(null);
 
   // const orders = [
   //   {
@@ -140,13 +146,7 @@ const Orders = () => {
 
   const fetchMyOrders = async() => {
     try {
-      const response = await axios.get(`${VITE_BASE_URL}/order/myOrders`,
-        {
-          headers:{
-            Authorization: `Bearer ${usertoken}`
-          }
-        }
-      )
+      const response = await api.get(`/order/myOrders`);
       if(response.data.success)
       {
         setorders(response.data.data)
@@ -156,6 +156,43 @@ const Orders = () => {
       console.log(error)
     }
   }
+
+  const fetchDetailedOrder = async (orderId) => {
+    setLoadingOrderDetails(true);
+    setOrderDetailsError(null);
+    try {
+      const response = await api.get(`/order/${orderId}`);
+      console.log("response",response.data)
+      if (response.data.success) {
+        setDetailedOrder(response.data.order);
+      } else {
+        setOrderDetailsError(response.data.message || "Failed to load order details");
+      }
+    } catch (error) {
+      console.error("Error fetching order details:", error);
+      setOrderDetailsError(error.response?.data?.message || "Failed to load order details");
+    } finally {
+      setLoadingOrderDetails(false);
+    }
+  };
+
+  const fetchInvoiceData = async (orderId) => {
+    setLoadingInvoice(true);
+    setInvoiceError(null);
+    try {
+      const response = await api.get(`/invoice/order/${orderId}`);
+      if (response.data.success) {
+        setInvoiceData(response.data.invoice);
+      } else {
+        setInvoiceError(response.data.message || "Invoice not available");
+      }
+    } catch (error) {
+      console.error("Error fetching invoice:", error);
+      setInvoiceError(error.response?.data?.message || "Invoice not available");
+    } finally {
+      setLoadingInvoice(false);
+    }
+  };
   
 useEffect(()=>{
   fetchMyOrders();
@@ -166,17 +203,26 @@ useEffect(()=>{
     setSelectedOrder(order);
     setShowInvoiceModal(false);
     setShowIssueModal(false);
+    setDetailedOrder(null);
+    setInvoiceData(null);
+    setOrderDetailsError(null);
+    setInvoiceError(null);
+    // Fetch detailed order and invoice data
+    if (order._id) {
+      fetchDetailedOrder(order._id);
+      fetchInvoiceData(order._id);
+    }
   };
 
   const getStatusProgress = (status) => {
     switch (status) {
-      case "Processing":
+      case "CONFIRMED":
         return 25;
-      case "Shipped":
+      case "SHIPPED":
         return 50;
-      case "Delivered":
-      case "Refunded":
-      case "Cancelled":
+      case "DELIVERED":
+      case "REFUNDED":
+      case "CANCELLED":
         return 100;
       default:
         return 0;
@@ -184,9 +230,9 @@ useEffect(()=>{
   };
 
   const statusSteps = {
-    Processing: "Order Placed",
-    Shipped: "Shipped",
-    Delivered: "Delivered",
+    CONFIRMED: "Order Placed",
+    SHIPPED: "Shipped",
+    DELIVERED: "Delivered",
   };
 
   const handleReorder = () => {
@@ -201,18 +247,22 @@ useEffect(()=>{
   const renderOrderDetails = () => {
     if (!selectedOrder) {
       return (
-        <div className="bg-white rounded-lg p-6">
-          <h2 className="text-xl font-semibold mb-4">
+        <div className="bg-white rounded-lg p-6 shadow-sm">
+          <h2 className="text-xl font-semibold mb-4 text-gray-700">
             Select an order to view details
           </h2>
         </div>
       );
     }
 
-    const progressValue = getStatusProgress(selectedOrder.orderStatus);
-    const isCancelled = selectedOrder.orderStatus === "Cancelled";
-    const isRefunded = selectedOrder.orderStatus === "Refunded";
-    const isDelivered = selectedOrder.orderStatus === "Delivered";
+    // Use detailed order if available, otherwise fall back to selectedOrder
+    const displayOrder = detailedOrder || selectedOrder;
+    const isDetailed = !!detailedOrder;
+
+    const progressValue = getStatusProgress(displayOrder.orderStatus || selectedOrder.orderStatus);
+    const isCancelled = (displayOrder.orderStatus || selectedOrder.orderStatus) === "Cancelled";
+    const isRefunded = (displayOrder.orderStatus || selectedOrder.orderStatus) === "Refunded";
+    const isDelivered = (displayOrder.orderStatus || selectedOrder.orderStatus) === "Delivered";
 
     let statusColor = "orange";
     if (isDelivered) {
@@ -223,187 +273,403 @@ useEffect(()=>{
       statusColor = "green";
     }
 
-    const subtotal =
-      selectedOrder.pricing.total -
-      selectedOrder.pricing.deliveryCharges +
-      selectedOrder.pricing.totalDiscount +
-      selectedOrder.pricing.couponDiscount;
-
-      const {
-        orderId,
-        createdAt,
-        orderStatus,
-        pricing,
-        items,
-        paymentMethod,
-      } = selectedOrder;
-    
+    const orderId = displayOrder.orderId || selectedOrder.orderId;
+    const createdAt = displayOrder.createdAt || selectedOrder.createdAt;
+    const orderStatus = displayOrder.orderStatus || selectedOrder.orderStatus;
+    const pricing = displayOrder.pricing || selectedOrder.pricing;
+    const items = displayOrder.items || selectedOrder.items;
+    const paymentMethod = displayOrder.paymentMethod || selectedOrder.paymentMethod;
+    const shippingAddress = displayOrder.shippingAddress || null;
+    const billingAddress = displayOrder.billingAddress || null;
+    const deliveryType = displayOrder.deliveryType || null;
 
     return (
-      <div className="overflow-x-auto max-h-[400px]">
-        {isDelivered && (
-          <div className="flex flex-col sm:flex-row gap-4 mb-6">
+      <div className="space-y-6">
+        {/* Loading States */}
+        {loadingOrderDetails && (
+          <div className="bg-white rounded-xl shadow-sm p-6 flex items-center justify-center gap-3">
+            <Loader2 className="animate-spin text-[#00bbae]" size={24} />
+            <span className="text-gray-600">Loading order details...</span>
+          </div>
+        )}
+
+        {orderDetailsError && (
+          <div className="bg-red-50 border border-red-200 rounded-xl p-4 text-red-700">
+            <p className="font-medium">Error loading order details:</p>
+            <p className="text-sm">{orderDetailsError}</p>
+          </div>
+        )}
+
+        {/* Action Buttons */}
+        {isDelivered && !loadingOrderDetails && (
+          <div className="flex flex-col sm:flex-row gap-4">
             <button
               onClick={handleReorder}
-              className="bg-[#00bbae] hover:bg-[#02a499] text-white font-medium py-2 px-4 rounded-lg flex-1 transition-colors flex items-center justify-center gap-2"
+              className="bg-[#00bbae] hover:bg-[#02a499] text-white font-medium py-3 px-6 rounded-lg flex-1 transition-colors flex items-center justify-center gap-2 shadow-sm"
             >
               <ShoppingBag size={20} /> Order Again
             </button>
             <button
               onClick={handleDownloadInvoice}
-              className="border border-gray-300 text-gray-700 hover:bg-gray-100 font-medium py-2 px-4 rounded-lg flex-1 transition-colors flex items-center justify-center gap-2"
+              className="border-2 border-[#00bbae] text-[#00bbae] hover:bg-[#00bbae] hover:text-white font-medium py-3 px-6 rounded-lg flex-1 transition-colors flex items-center justify-center gap-2 shadow-sm"
             >
-              <Download size={20} /> Download Invoice
+              <Download size={20} /> {invoiceData ? "View Invoice" : "Download Invoice"}
             </button>
           </div>
         )}
 
-        <div className="mb-6">
-          <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
-            <span>Order #</span>
-            <span className="font-semibold">{orderId}</span>
-            <span>was placed on</span>
-            <span className="font-semibold"> 
-            {new Date(createdAt).toLocaleString("en-IN", {
-            day: "2-digit",
-            month: "short",
-            year: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
-            hour12: true,
-          })}</span>
-            <span>and is currently</span>
-            <span
-              className={`bg-${statusColor}-100 text-${statusColor}-600 px-2 py-1 rounded font-semibold`}
-            >
-              {orderStatus}
-            </span>
-          </div>
-        </div>
-
-        <div className="mb-8">
-          <h2 className="text-lg font-semibold mb-4">Shipment Status</h2>
-          {isCancelled || isRefunded ? (
-            <div
-              className={`p-3 rounded-lg text-sm font-medium flex items-center gap-2 ${
-                isCancelled
-                  ? "bg-red-100 text-red-700"
-                  : "bg-teal-100 text-teal-700"
-              }`}
-            >
-              {isCancelled ? <LogOut size={20} /> : <ShoppingBag size={20} />}
-              {isCancelled
-                ? "This order has been cancelled."
-                : "This order has been successfully refunded."}
-            </div>
-          ) : (
-            <>
-              <div className="w-full bg-gray-300 h-2.5 rounded-full overflow-hidden">
-                <div
-                  className="bg-teal-500 h-full transition-all duration-500 ease-in-out"
-                  style={{ width: `${progressValue}%` }}
-                ></div>
+        {/* Order Summary Card */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+          <div className="bg-gradient-to-r from-[#00bbae] to-[#02a499] p-6 text-white">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+              <div>
+                <h2 className="text-2xl font-bold mb-2">Order #{orderId}</h2>
+                <p className="text-white/90 text-sm">
+                  Placed on {new Date(createdAt).toLocaleString("en-IN", {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    hour12: true,
+                  })}
+                </p>
               </div>
-              <div className="flex justify-between mt-3 text-sm font-medium">
-                {Object.keys(statusSteps).map((step, index) => (
+              <div className="flex items-center gap-3">
+                <span className={`bg-white/20 backdrop-blur-sm px-4 py-2 rounded-lg font-semibold text-sm`}>
+                  {orderStatus}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Order Status Progress */}
+          <div className="p-6 border-b border-gray-100">
+            <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+              <Package size={20} className="text-[#00bbae]" />
+              Shipment Status
+            </h3>
+            {isCancelled || isRefunded ? (
+              <div
+                className={`p-4 rounded-lg text-sm font-medium flex items-center gap-3 ${
+                  isCancelled
+                    ? "bg-red-50 text-red-700 border border-red-200"
+                    : "bg-teal-50 text-teal-700 border border-teal-200"
+                }`}
+              >
+                {isCancelled ? <LogOut size={20} /> : <ShoppingBag size={20} />}
+                {isCancelled
+                  ? "This order has been cancelled."
+                  : "This order has been successfully refunded."}
+              </div>
+            ) : (
+              <>
+                <div className="w-full bg-gray-200 h-3 rounded-full overflow-hidden">
                   <div
-                    key={index}
-                    className={`flex flex-col items-center ${
-                      selectedOrder.status === step
-                        ? "text-teal-600"
-                        : "text-gray-500"
-                    }`}
-                  >
-                    <span>{statusSteps[step]}</span>
-                    {selectedOrder.statusDates &&
-                      selectedOrder.statusDates[step] && (
-                        <span className="text-xs text-gray-400">
-                          {selectedOrder.statusDates[step]}
-                        </span>
-                      )}
-                  </div>
-                ))}
-              </div>
-            </>
-          )}
-        </div>
-
-         {/* Items */}
-      <h2 className="text-[18px] font-semibold mb-4">Order Details</h2>
-      <hr className="mb-4" />
-
-      <div className="space-y-4">
-        {items.map((item) => (
-          <div key={item.productId} className="flex justify-between">
-            <div>
-              <p className="font-semibold">{item.productName}</p>
-              <p className="text-sm text-gray-500">
-                Color: {item.colorName} | Qty: {item.quantity}
-              </p>
-            </div>
-            <p className="font-semibold">₹{item.totalPrice}</p>
+                    className="bg-gradient-to-r from-[#00bbae] to-[#02a499] h-full transition-all duration-500 ease-in-out"
+                    style={{ width: `${progressValue}%` }}
+                  ></div>
+                </div>
+                <div className="flex justify-between mt-4 text-sm font-medium">
+                  {Object.keys(statusSteps).map((step, index) => (
+                    <div
+                      key={index}
+                      className={`flex flex-col items-center ${
+                        orderStatus === step
+                          ? "text-[#00bbae]"
+                          : "text-gray-500"
+                      }`}
+                    >
+                      <span className="font-semibold">{statusSteps[step]}</span>
+                      {selectedOrder.statusDates &&
+                        selectedOrder.statusDates[step] && (
+                          <span className="text-xs text-gray-400 mt-1">
+                            {selectedOrder.statusDates[step]}
+                          </span>
+                        )}
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
           </div>
-        ))}
 
-        <hr />
+          {/* Addresses Section */}
+          {shippingAddress && (
+            <div className="p-6 border-b border-gray-100 bg-gray-50">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="bg-white p-5 rounded-lg border border-gray-200">
+                  <h4 className="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
+                    <MapPin size={16} className="text-[#00bbae]" />
+                    Shipping Address
+                  </h4>
+                  <div className="text-sm text-gray-600 space-y-1">
+                    <p className="font-medium text-gray-800">{shippingAddress.nickname}</p>
+                    <p>{shippingAddress.houseStreet}</p>
+                    {shippingAddress.apartment && <p>{shippingAddress.apartment}</p>}
+                    <p>
+                      {shippingAddress.city}, {shippingAddress.district}, {shippingAddress.state} - {shippingAddress.zipCode}
+                    </p>
+                  </div>
+                </div>
+                {billingAddress ? (
+                  <div className="bg-white p-5 rounded-lg border border-gray-200">
+                    <h4 className="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
+                      <MapPin size={16} className="text-[#00bbae]" />
+                      Billing Address
+                    </h4>
+                    <div className="text-sm text-gray-600 space-y-1">
+                      <p className="font-medium text-gray-800">{billingAddress.nickname}</p>
+                      <p>{billingAddress.houseStreet}</p>
+                      {billingAddress.apartment && <p>{billingAddress.apartment}</p>}
+                      <p>
+                        {billingAddress.city}, {billingAddress.district}, {billingAddress.state} - {billingAddress.zipCode}
+                      </p>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="bg-white p-5 rounded-lg border border-gray-200">
+                    <h4 className="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
+                      <MapPin size={16} className="text-[#00bbae]" />
+                      Billing Address
+                    </h4>
+                    <p className="text-sm text-gray-500 italic">Same as shipping address</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
 
-        {/* Pricing */}
-        <div className="flex justify-between">
-          <span>Subtotal</span>
-          <span>₹{pricing.subtotal}</span>
+          {/* Order Items */}
+          <div className="p-6">
+            <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+              <Package size={20} className="text-[#00bbae]" />
+              Order Items
+            </h3>
+            <div className="space-y-4">
+              {items.map((item, index) => (
+                <div key={item.productId || index} className="flex items-start gap-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                  {item.image && (
+                    <img 
+                      src={item.image} 
+                      alt={item.productName}
+                      className="w-20 h-20 object-cover rounded-lg"
+                    />
+                  )}
+                  <div className="flex-1">
+                    <p className="font-semibold text-gray-800 mb-1">{item.productName}</p>
+                    <div className="flex flex-wrap gap-3 text-sm text-gray-600">
+                      <span>Color: <span className="font-medium">{item.colorName}</span></span>
+                      <span>•</span>
+                      <span>Age Group: <span className="font-medium">{item.ageGroupName || "N/A"}</span></span>
+                      <span>•</span>
+                      <span>Quantity: <span className="font-medium">{item.quantity}</span></span>
+                    </div>
+                    {item.brand && (
+                      <p className="text-xs text-gray-500 mt-1">Brand: {item.brand}</p>
+                    )}
+                  </div>
+                  <div className="text-right">
+                    <p className="font-bold text-gray-800">₹{item.totalPrice?.toFixed(2) || item.totalPrice}</p>
+                    {item.cutPricePerUnit && item.pricePerUnit < item.cutPricePerUnit && (
+                      <p className="text-xs text-gray-500 line-through">
+                        ₹{(item.cutPricePerUnit * item.quantity).toFixed(2)}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Pricing Summary */}
+          <div className="p-6 bg-gray-50 border-t border-gray-200">
+            <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+              <Receipt size={20} className="text-[#00bbae]" />
+              Pricing Summary
+            </h3>
+            <div className="space-y-3 bg-white p-5 rounded-lg border border-gray-200">
+              <div className="flex justify-between text-gray-700">
+                <span>Subtotal</span>
+                <span className="font-semibold">₹{pricing.subtotal?.toFixed(2) || pricing.subtotal}</span>
+              </div>
+              
+              {pricing.totalDiscount > 0 && (
+                <div className="flex justify-between text-green-600">
+                  <span>Discount</span>
+                  <span className="font-semibold">- ₹{pricing.totalDiscount?.toFixed(2) || pricing.totalDiscount}</span>
+                </div>
+              )}
+
+              {pricing.couponDiscount > 0 && (
+                <div className="flex justify-between text-green-600">
+                  <span>Coupon Discount</span>
+                  <span className="font-semibold">- ₹{pricing.couponDiscount?.toFixed(2) || pricing.couponDiscount}</span>
+                </div>
+              )}
+
+              {pricing.pointsDiscount > 0 && (
+                <div className="flex justify-between text-green-600">
+                  <span>Points Used</span>
+                  <span className="font-semibold">- ₹{pricing.pointsDiscount?.toFixed(2) || pricing.pointsDiscount}</span>
+                </div>
+              )}
+
+              {pricing.deliveryCharges > 0 && (
+                <div className="flex justify-between text-gray-700">
+                  <span>Delivery Charges</span>
+                  <span className="font-semibold">+ ₹{pricing.deliveryCharges?.toFixed(2) || pricing.deliveryCharges}</span>
+                </div>
+              )}
+
+              {pricing.giftPackCharges > 0 && (
+                <div className="flex justify-between text-gray-700">
+                  <span>Gift Pack Charges</span>
+                  <span className="font-semibold">+ ₹{pricing.giftPackCharges?.toFixed(2) || pricing.giftPackCharges}</span>
+                </div>
+              )}
+
+              <div className="border-t border-gray-300 pt-3 mt-3">
+                <div className="flex justify-between items-center">
+                  <span className="text-lg font-bold text-gray-800">Total Amount</span>
+                  <span className="text-2xl font-bold text-[#00bbae]">₹{pricing.total?.toFixed(2) || pricing.total}</span>
+                </div>
+              </div>
+
+              <div className="flex justify-between items-center pt-3 border-t border-gray-200 mt-3">
+                <span className="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                  <CreditCard size={16} className="text-[#00bbae]" />
+                  Payment Method
+                </span>
+                <span className="text-sm font-medium text-gray-800">{paymentMethod || "N/A"}</span>
+              </div>
+
+              {deliveryType && (
+                <div className="flex justify-between items-center pt-2">
+                  <span className="text-sm font-semibold text-gray-700">Delivery Type</span>
+                  <span className="text-sm font-medium text-gray-800">{deliveryType}</span>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
 
-        <div className="flex justify-between text-green-600">
-          <span>Discount</span>
-          <span>- ₹{pricing.totalDiscount}</span>
-        </div>
+        {/* Invoice Section */}
+        {loadingInvoice && (
+          <div className="bg-white rounded-xl shadow-sm p-6 flex items-center justify-center gap-3 border border-gray-100">
+            <Loader2 className="animate-spin text-[#00bbae]" size={24} />
+            <span className="text-gray-600">Loading invoice...</span>
+          </div>
+        )}
 
-        <div className="flex justify-between">
-          <span>Delivery Charges</span>
-          <span>₹{pricing.deliveryCharges}</span>
-        </div>
+        {invoiceError && !loadingInvoice && (
+          <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 text-yellow-700">
+            <p className="font-medium flex items-center gap-2">
+              <FileText size={18} />
+              Invoice Information
+            </p>
+            <p className="text-sm mt-1">{invoiceError}</p>
+          </div>
+        )}
 
-        <hr />
+        {invoiceData && !loadingInvoice && (
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+            <div className="bg-gradient-to-r from-blue-500 to-blue-600 p-6 text-white">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-xl font-bold mb-1 flex items-center gap-2">
+                    <FileText size={24} />
+                    Invoice Details
+                  </h3>
+                  {invoiceData.invoiceId && (
+                    <p className="text-white/90 text-sm">
+                      Invoice ID: {invoiceData.invoiceId}
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
 
-        <div className="flex justify-between font-bold text-lg">
-          <span>Total Amount</span>
-          <span>₹{pricing.total}</span>
-        </div>
+            <div className="p-6 space-y-4">
+              {invoiceData.invoiceDate && (
+                <div className="flex justify-between py-2 border-b border-gray-200">
+                  <span className="text-gray-600 font-medium">Invoice Date</span>
+                  <span className="text-gray-800 font-semibold">
+                    {new Date(invoiceData.invoiceDate).toLocaleDateString("en-IN", {
+                      day: "2-digit",
+                      month: "long",
+                      year: "numeric",
+                    })}
+                  </span>
+                </div>
+              )}
 
-        <hr />
+              {invoiceData.status && (
+                <div className="flex justify-between py-2 border-b border-gray-200">
+                  <span className="text-gray-600 font-medium">Invoice Status</span>
+                  <span className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                    invoiceData.status === "PAID" 
+                      ? "bg-green-100 text-green-700" 
+                      : invoiceData.status === "PENDING"
+                      ? "bg-yellow-100 text-yellow-700"
+                      : "bg-gray-100 text-gray-700"
+                  }`}>
+                    {invoiceData.status}
+                  </span>
+                </div>
+              )}
 
-        <div className="flex justify-between">
-          <span className="font-semibold">Payment Method</span>
-          <span>{paymentMethod}</span>
-        </div>
-      </div>
-        {isDelivered && (
+              {invoiceData.paymentStatus && (
+                <div className="flex justify-between py-2 border-b border-gray-200">
+                  <span className="text-gray-600 font-medium">Payment Status</span>
+                  <span className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                    invoiceData.paymentStatus === "PAID" 
+                      ? "bg-green-100 text-green-700" 
+                      : invoiceData.paymentStatus === "PENDING"
+                      ? "bg-yellow-100 text-yellow-700"
+                      : "bg-gray-100 text-gray-700"
+                  }`}>
+                    {invoiceData.paymentStatus}
+                  </span>
+                </div>
+              )}
+
+              {invoiceData.posInvoiceId && (
+                <div className="flex justify-between py-2">
+                  <span className="text-gray-600 font-medium">POS Invoice ID</span>
+                  <span className="text-gray-800 font-semibold">{invoiceData.posInvoiceId}</span>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Action Buttons for Delivered Orders */}
+        {isDelivered && !loadingOrderDetails && (
           <>
-            <hr className="text-gray-200 my-4" />
             <div className="flex flex-col sm:flex-row gap-4">
               <button
                 onClick={() => {
                   setShowIssueModal(true);
                   setIsissue(true);
                 }}
-                className="border border-gray-300 text-gray-700 hover:bg-gray-100 font-medium py-2 px-4 rounded-lg flex-1 transition-colors flex items-center justify-center gap-2"
+                className="border-2 border-gray-300 text-gray-700 hover:bg-gray-50 font-medium py-3 px-6 rounded-lg flex-1 transition-colors flex items-center justify-center gap-2 shadow-sm"
               >
-                <LogOut size={20} className="transform rotate-180" /> Raise an
-                Issue
+                <LogOut size={20} className="transform rotate-180" /> Raise an Issue
               </button>
               <button
                 onClick={() => {
                   setShowIssueModal(true);
                   setIsissue(false);
                 }}
-                className="border border-gray-300 text-gray-700 hover:bg-gray-100 font-medium py-2 px-4 rounded-lg flex-1 transition-colors flex items-center justify-center gap-2"
+                className="border-2 border-gray-300 text-gray-700 hover:bg-gray-50 font-medium py-3 px-6 rounded-lg flex-1 transition-colors flex items-center justify-center gap-2 shadow-sm"
               >
-                <ArrowLeft size={20} className="transform rotate-180" /> Return
-                Order
+                <ArrowLeft size={20} className="transform rotate-180" /> Return Order
               </button>
             </div>
-            <hr className="text-gray-200 my-4" />
-            <SubmitReview />
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+              <SubmitReview />
+            </div>
           </>
         )}
       </div>
@@ -449,39 +715,44 @@ useEffect(()=>{
           </thead>
           <tbody>
             {filteredOrders.map((order) => {
-              let statusColor = "orange";
-              if (order.status === "Delivered") {
-                statusColor = "teal";
-              } else if (order.status === "Cancelled") {
-                statusColor = "red";
-              } else if (order.status === "Refunded") {
-                statusColor = "green";
+              let statusBgColor = "bg-orange-100";
+              let statusTextColor = "text-orange-600";
+              if (order.orderStatus === "Delivered") {
+                statusBgColor = "bg-teal-100";
+                statusTextColor = "text-teal-600";
+              } else if (order.orderStatus === "Cancelled") {
+                statusBgColor = "bg-red-100";
+                statusTextColor = "text-red-600";
+              } else if (order.orderStatus === "Refunded") {
+                statusBgColor = "bg-green-100";
+                statusTextColor = "text-green-600";
               }
               return (
-                <tr key={order._id} className="border-b border-gray-200">
+                <tr key={order._id} className="border-b border-gray-200 hover:bg-gray-50 transition-colors">
                   <td className="px-6 py-4 text-sm font-medium text-gray-900">
                     #{order.orderId}
                   </td>
                   <td className="px-6 py-4 text-sm font-medium text-gray-900 max-w-[75px] whitespace-nowrap overflow-hidden text-ellipsis">
-                    {order.items[0].productName}
+                    {order.items[0]?.productName || "N/A"}
                   </td>
                   <td className="px-6 py-4 text-sm text-gray-600">
                   {new Date(order.createdAt).toLocaleString("en-IN")}
                   </td>
                   <td className="px-6 py-4">
                     <span
-                      className={`bg-${statusColor}-100 text-${statusColor}-600 px-2 py-1 rounded text-sm font-medium`}
+                      className={`${statusBgColor} ${statusTextColor} px-3 py-1 rounded-full text-xs font-semibold`}
                     >
                       {order.orderStatus}
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-sm text-gray-900">
-                    ₹{order.pricing.total.toFixed(2)}
+                  <td className="px-6 py-4 text-sm text-gray-900 font-semibold">
+                    ₹{order.pricing?.total?.toFixed(2) || "0.00"}
                   </td>
                   <td className="px-6 py-4">
                     <button
                       onClick={() => handleOrderView(order)}
-                      className="bg-teal-500 hover:bg-teal-600 text-white p-2 rounded-full transition-colors"
+                      className="bg-[#00bbae] hover:bg-[#02a499] text-white p-2 rounded-full transition-colors shadow-sm"
+                      title="View Order Details"
                     >
                       <Eye size={16} />
                     </button>
@@ -503,10 +774,16 @@ useEffect(()=>{
             {selectedOrder ? (
               <div>
                 <button
-                  onClick={() => setSelectedOrder(null)}
-                  className="mb-4 text-teal-500 hover:text-teal-600 flex font-medium"
+                  onClick={() => {
+                    setSelectedOrder(null);
+                    setDetailedOrder(null);
+                    setInvoiceData(null);
+                    setOrderDetailsError(null);
+                    setInvoiceError(null);
+                  }}
+                  className="mb-6 text-[#00bbae] hover:text-[#02a499] flex items-center gap-2 font-medium transition-colors"
                 >
-                  <ArrowLeft /> Back to Orders
+                  <ArrowLeft size={20} /> Back to Orders
                 </button>
                 {renderOrderDetails()}
               </div>
@@ -556,15 +833,15 @@ useEffect(()=>{
             className="fixed inset-0 flex items-center justify-center p-4 z-50"
             style={{ background: "rgba(0,0,0,0.5)" }}
           >
-            <div className="bg-white rounded-lg p-6 max-w-2xl w-full relative overflow-y-auto max-h-[90vh]">
+            <div className="bg-white rounded-lg p-6 max-w-4xl w-full relative overflow-y-auto max-h-[90vh] shadow-2xl">
               <button
                 onClick={() => setShowInvoiceModal(false)}
-                className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 text-2xl"
+                className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 text-2xl font-bold w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors"
                 aria-label="Close invoice"
               >
                 &times;
               </button>
-              <Invoice orderDetails={selectedOrder} />
+              <Invoice orderDetails={detailedOrder || selectedOrder} invoiceData={invoiceData} />
             </div>
           </div>
         )}

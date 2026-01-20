@@ -40,17 +40,18 @@ const account_items = [
     title: "My Profile",
   },
   {
-    _id: 2,
-    icon: "Map",
-    link: "address",
-    title: "Address",
-  },
-  {
     _id: 3,
     icon: "Package",
     link: "orders",
     title: "My Orders",
   },
+  {
+    _id: 2,
+    icon: "Map",
+    link: "address",
+    title: "Address",
+  },
+  
   {
     _id: 4,
     icon: "Coins",
@@ -300,7 +301,6 @@ const Account = () => {
             )}
 
             {activeItem === "address" && <SavedAddress />}
-
             {activeItem === "orders" && <Orders />}
             {activeItem === "points" && <Points />}
             {activeItem === "return" && <Returns />}

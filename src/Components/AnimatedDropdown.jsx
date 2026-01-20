@@ -19,30 +19,37 @@ import {
 } from "lucide-react";
 import product_list from "../assets/product-list";
 import { slugify } from "../assets/helper";
+import api from "../api/axios";
 
-const IconComponents = {
-  Baby,
-  BookOpenCheck,
-  Puzzle,
-  Home,
-  Book,
-  Sun,
-  Bike,
-  Car,
-  User,
+// const IconComponents = {
+//   Baby,
+//   BookOpenCheck,
+//   Puzzle,
+//   Home,
+//   Book,
+//   Sun,
+//   Bike,
+//   Car,
+//   User,
+// };
+
+const getCategories = async () => {
+  const response = await api.get("/categories");
+  console.log("response",response.data)
+  return response.data.categories
 };
 
-const categories_items = [
-  { _id: 1, title: "Dolls", icon: "Baby" },
-  { _id: 2, title: "Educational Toy", icon: "BookOpenCheck" },
-  { _id: 3, title: "Games and puzzle", icon: "Puzzle" },
-  { _id: 4, title: "Indoor Play", icon: "Home" },
-  { _id: 5, title: "Kids Books", icon: "Book" },
-  { _id: 6, title: "Outdoor Toy", icon: "Sun" },
-  { _id: 7, title: "Rockers & Rides", icon: "Bike" },
-  { _id: 8, title: "Toy Figures", icon: "User" },
-  { _id: 9, title: "Vehicles Toys", icon: "Car" },
-];
+// const categories_items = [
+//   { _id: 1, title: "Dolls", icon: "Baby" },
+//   { _id: 2, title: "Educational Toy", icon: "BookOpenCheck" },
+//   { _id: 3, title: "Games and puzzle", icon: "Puzzle" },
+//   { _id: 4, title: "Indoor Play", icon: "Home" },
+//   { _id: 5, title: "Kids Books", icon: "Book" },
+//   { _id: 6, title: "Outdoor Toy", icon: "Sun" },
+//   { _id: 7, title: "Rockers & Rides", icon: "Bike" },
+//   { _id: 8, title: "Toy Figures", icon: "User" },
+//   { _id: 9, title: "Vehicles Toys", icon: "Car" },
+// ];
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -271,6 +278,13 @@ const DropDownMobileTablet = ({ items }) => {
 };
 
 const AllCategories = () => {
+  const [categories_items, setCategoriesItems] = useState([]);
+  useEffect(() => {
+    getCategories().then((categories) => {
+      console.log("categories",categories)
+      setCategoriesItems(categories);
+    });
+  }, []);
   return (
     <AnimatePresence>
       <motion.div
@@ -282,18 +296,18 @@ const AllCategories = () => {
       >
         <div className="flex flex-col border-[2px] border-gray-300">
           {categories_items.map((item) => {
-            const Icon = IconComponents[item.icon];
+            // const Icon = IconComponents[item.icon];
             return (
               <div
-                key={item._id}
+                key={item.categoryId}
                 className="group flex gap-3 justify-start text-black hover:text-white relative overflow-hidden transition-colors duration-300 items-center w-full px-3 py-2 border-b-[2px] border-gray-300"
               >
                 <span className="absolute top-0 left-0 w-0 h-full bg-[#00bbae] z-[-1] transition-all duration-700 group-hover:w-full" />
                 <div className="w-8 h-8 flex items-center justify-center">
-                  <Icon className="w-5 h-5" />
+                  {/* <Icon className="w-5 h-5" /> */}
                 </div>
                 <p className="text-[16px] leading-[24px] font-semibold">
-                  {item.title}
+                  {item.categoryName}
                 </p>
               </div>
             );
@@ -307,6 +321,7 @@ const AllCategories = () => {
 const SearchProducts = ({ searchProduct, debouncedSearch, onSearch }) => {
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [recentSearches, setRecentSearches] = useState([]);
+  const [productList, setProductList] = useState([]);
   const isTyping = searchProduct !== debouncedSearch;
 
   useEffect(() => {
@@ -315,25 +330,41 @@ const SearchProducts = ({ searchProduct, debouncedSearch, onSearch }) => {
     setRecentSearches(storedSearches);
   }, []);
 
+  const fetchProducts = async () => {
+    const response = await api.get("/products");
+    console.log("response",response.data)
+    setProductList(response.data.products)
+  };
   useEffect(() => {
-    const query = debouncedSearch.toLowerCase().trim();
-    if (query === "") {
+    fetchProducts();
+  }, []);
+
+  useEffect(() => {
+    if (!debouncedSearch || !Array.isArray(productList)) {
       setFilteredProducts([]);
       return;
     }
-    const results = product_list.filter(
-      (product) =>
-        product.name.toLowerCase().includes(query) ||
-        product.product_type.toLowerCase().includes(query)
-    );
+  
+    const query = debouncedSearch.toLowerCase().trim();
+  
+    const results = productList.filter((product) => {
+      return (
+        product?.name?.toLowerCase().includes(query) ||
+        product?.categories?.some((category) =>
+          category?.categoryName?.toLowerCase().includes(query)
+        )
+      );
+    });
+  
     setFilteredProducts(results);
-
+  
     if (!recentSearches.includes(debouncedSearch) && query.length > 1) {
       const updatedSearches = [debouncedSearch, ...recentSearches].slice(0, 6);
       setRecentSearches(updatedSearches);
       localStorage.setItem("recentSearches", JSON.stringify(updatedSearches));
     }
-  }, [debouncedSearch]);
+  }, [debouncedSearch, productList]);
+  
 
   const deleteSearch = (search) => {
     const updated = recentSearches.filter((s) => s !== search);
@@ -358,9 +389,6 @@ const SearchProducts = ({ searchProduct, debouncedSearch, onSearch }) => {
               <div className="flex flex-col gap-1">
                 <p className="text-black font-semibold transition-colors duration-300 text-[16px] leading-[24px] hover:text-[#00bbae]">
                   {product.name}
-                </p>
-                <p className="text-gray-600 font-semibold text-[16px] leading-[24px]">
-                  ₹ {product.price}
                 </p>
               </div>
             </div>
