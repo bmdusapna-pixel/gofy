@@ -17,7 +17,7 @@ import { Countdown } from "./AnimatedDropdown.jsx";
 
 const ProductsCollection = ({ color }) => {
   const [hoveredId, setHoveredId] = useState(null);
-  const { addToCart, addFavouriteItems } = useContext(CartContext);
+  const { addToCart, addFavouriteItems,saveForLater } = useContext(CartContext);
   const baseUrl = import.meta.env.VITE_BASE_URL;
 
   const [products, setProductList] = useState([]);
@@ -50,6 +50,21 @@ const ProductsCollection = ({ color }) => {
     addToCart(cartProduct);
   };
 
+  const saveProduct = (product, event) => {
+    console.log("called")
+    event.stopPropagation();
+    event.preventDefault();
+    const productsave = {
+      _id: product._id,
+      name: product.name,
+      price: product?.variants?.[0]?.ageGroups?.[0]?.price,
+      images: product?.variants?.[0]?.images,
+      colorId: product?.variants?.[0].color._id,
+      ageGroupId: product?.variants[0]?.ageGroups[0]?.ageGroup._id,
+    };
+    saveForLater(productsave);
+  };
+
   const addFavouriteItemsWishList = (product, event) => {
     event.stopPropagation();
     event.preventDefault();
@@ -62,6 +77,14 @@ const ProductsCollection = ({ color }) => {
       ageGroupId: product?.variants[0]?.ageGroups[0]?.ageGroup._id,
     };
     addFavouriteItems(favProduct);
+  };
+
+  const getProductStockStatus = (product) => {
+    return product.variants?.some(variant =>
+      variant.ageGroups?.some(ag => ag.stock > 0)
+    )
+      ? "In Stock"
+      : "Out of Stock";
   };
 
   return (
@@ -110,6 +133,9 @@ const ProductsCollection = ({ color }) => {
                 return null;
               }
 
+              const stockStatus = getProductStockStatus(product);
+
+
               const images = firstVariant.images;
               const price = firstAgeGroup.price;
               const cutPrice = firstAgeGroup.cutPrice;
@@ -124,7 +150,7 @@ const ProductsCollection = ({ color }) => {
                     onMouseLeave={() => setHoveredId(null)}
                   >
                     <div className="flex relative">
-                      {product.status === "Out of Stock" && (
+                      {stockStatus === "Out of Stock" && (
                         <p className="absolute top-0 -left-3 bg-red-400 ribbon pl-2 pr-5 text-white z-[3]">
                           Sold Out
                         </p>
@@ -135,22 +161,20 @@ const ProductsCollection = ({ color }) => {
                             <img
                               src={images[0]}
                               alt={product.name}
-                              className={`absolute top-0 left-0 w-72 h-full ease-in-out ${
-                                isHovered
+                              className={`absolute top-0 left-0 w-72 h-full ease-in-out ${isHovered
                                   ? "opacity-0 scale-105 duration-300"
                                   : "opacity-100 scale-100 duration-100"
-                              }`}
+                                }`}
                               draggable={false}
                             />
                             {images.length > 1 && (
                               <img
                                 src={images[1]}
                                 alt={product.name + " hover"}
-                                className={`absolute top-0 left-0 w-72 h-full ease-in-out ${
-                                  isHovered
+                                className={`absolute top-0 left-0 w-72 h-full ease-in-out ${isHovered
                                     ? "opacity-100 scale-100 duration-300"
                                     : "opacity-0 scale-95 duration-100"
-                                }`}
+                                  }`}
                                 draggable={false}
                               />
                             )}
@@ -160,11 +184,10 @@ const ProductsCollection = ({ color }) => {
                     </div>
                     {hoveredId === product._id && (
                       <div
-                        className={`absolute right-4 top-4 transform transition-all duration-300 z-20 ${
-                          isHovered
+                        className={`absolute right-4 top-4 transform transition-all duration-300 z-20 ${isHovered
                             ? "translate-y-0 opacity-100"
                             : "translate-y-8 opacity-0"
-                        }`}
+                          }`}
                       >
                         <div className="flex flex-col gap-2 items-center">
                           <div
@@ -220,15 +243,18 @@ const ProductsCollection = ({ color }) => {
                       </div>
                       <div className="flex items-center gap-4 mt-2">
                         <button
-                          onClick={(event) => addProductToCart(product, event)}
-                          className="text-[14] leading-[24px] px-2 w-1/2 font-semibold cursor-pointer py-2 rounded-md hover:bg-[#00bbae] bg-[#e9ecef] hover:text-white transition duration-300"
+                          onClick={(event) =>
+                            stockStatus === "Out of Stock"
+                              ? saveProduct(product, event)
+                              : addProductToCart(product, event)
+                          } className="text-[14] leading-[24px] px-2 w-1/2 font-semibold cursor-pointer py-2 rounded-md hover:bg-[#00bbae] bg-[#e9ecef] hover:text-white transition duration-300"
                         >
-                          {product.status === "Out of Stock"
-                            ? "Save for later"
+                          {stockStatus === "Out of Stock"
+                            ? "Save"
                             : "Add To Cart"}
                         </button>
                         <button className="text-[14] leading-[24px] px-2 w-1/2 font-semibold cursor-pointer py-2 rounded-md bg-[#00bbae] text-white hover:text-black hover:bg-[#e9ecef] transition duration-300">
-                          {product.status === "Out of Stock"
+                          {stockStatus === "Out of Stock"
                             ? "Notify Me"
                             : "Buy Now"}
                         </button>

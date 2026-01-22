@@ -119,7 +119,7 @@ const CartDetails = () => {
                             </h3>
                           </Link>
                           <p className="text-sm text-gray-500 mt-1">
-                            Product ID: #{item._id}
+                            size - {item.ageGroup}
                           </p>
                         </div>
 
@@ -133,7 +133,7 @@ const CartDetails = () => {
                             <span className="text-sm text-gray-500 line-through">
                               ₹ {item.cutPrice}
                             </span>
-                            <span className="text-red-600">30% Off</span>
+                            <span className="text-red-600">{item.discount}%</span>
                           </div>
 
                           {/* Quantity Control */}

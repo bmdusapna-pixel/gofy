@@ -484,7 +484,7 @@ const CartContextProvider = ({ children }) => {
 
     if (alreadySaved) return;
 
-    removeProductFromCart(product);
+    // removeProductFromCart(product);
     setSavedForLaterItems((prev) => [
       ...prev,
       {

@@ -102,6 +102,7 @@ const Checkout = () => {
       
       if (data.success) {
         setCheckoutData(data);
+        console.log(data)
         setError(null);
       }
     } catch (err) {
@@ -584,7 +585,7 @@ const Checkout = () => {
                         </p>
                       </div>
                       <p className="text-[16px] leading-[24px] whitespace-nowrap text-[#001430]">
-                        ₹ {item.cutPrice}
+                        ₹ {item.totalCutPrice}
                       </p>
                     </div>
                   ))}
@@ -608,7 +609,7 @@ const Checkout = () => {
                   Subtotal
                 </p>
                 <p className="text-[18px] leading-[27px] text-[#001430] font-semibold ">
-                  ₹ {checkoutData?.pricing?.total || 0}
+                  ₹ {checkoutData?.pricing?.totalCutPrice || 0}
                 </p>
               </div>
 
@@ -826,7 +827,7 @@ const Checkout = () => {
                 />
                 <div>
                   <p className="text-gray-700 font-medium">Online Payment (Recommeded)</p>
-                  <p className="text-sm text-gray-500">Pay securely with Zoho Payments</p>
+                  <p className="text-sm text-gray-500">Pay securely</p>
                 </div>
               </label>
 

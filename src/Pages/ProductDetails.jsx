@@ -82,6 +82,7 @@ const ProductDetails = () => {
   const [variant, setVariant] = useState(null);
   const [ages, setAges] = useState([]);
   const [selectedAgeGroup, setSelectedAgeGroup] = useState(null);
+  const [sizechart,setsizechart] = useState(null);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -93,7 +94,9 @@ const ProductDetails = () => {
           const firstVariant = result.data.variants[0];
           setVariant(firstVariant);
           if (firstVariant.ageGroups && firstVariant.ageGroups.length > 0) {
-            setSelectedAgeGroup(firstVariant.ageGroups[0]);
+            // Select first available age group (with stock > 0) or fallback to first one
+            const availableAgeGroup = firstVariant.ageGroups.find(ag => ag.stock > 0) || firstVariant.ageGroups[0];
+            setSelectedAgeGroup(availableAgeGroup);
           }
         }
       } catch (error) {
@@ -222,12 +225,14 @@ const ProductDetails = () => {
               <p className="text-[32px] md:text-[38px] leading-[48px] md:leading-[57px] font-semibold">
                 {productData.name}
               </p>
-              {selectedAgeGroup.stock > 0 && selectedAgeGroup.stock <= 10 && (
+              {selectedAgeGroup.stock > 0 && selectedAgeGroup.stock < 5 && (
                 <p
-                  className="text-[14px] text-red-600 animate-blink"
-                  style={{ animation: "blink 1s step-end infinite" }}
+                  className="text-[14px] text-red-600 font-semibold"
+                  style={{ 
+                    animation: "blink 1s step-end infinite",
+                  }}
                 >
-                  Only {selectedAgeGroup.stock} items left!
+                  ⚠️ Only {selectedAgeGroup.stock} items left!
                 </p>
               )}
               <div className="flex gap-1 items-center">
@@ -295,46 +300,104 @@ const ProductDetails = () => {
                 </p>
               )}
             </div>
-            <div className="flex sm:flex-row flex-col w-full gap-3 sm:gap-10">
-              {variant.ageGroups.length > 1 && (
-                <div className="flex flex-col gap-2 w-full">
-                  <div className="flex justify-between items-center">
-                    <p className="text-[16px] leading-[24px] text-blank font-medium mr-5">
-                      Ages
-                    </p>
-                    <p
-                      onClick={() => setOpenSizeChart(true)}
-                      className="text-[16px] leading-[24px] text-[#dc3545] transition-colors duration-300 hover:text-[#00bbae] hover:font-semibold cursor-pointer font-medium mr-5"
-                    >
-                      SIZE CHART
-                    </p>
-                  </div>
-                  <div className="w-full flex gap-2 flex-wrap">
-                    {variant.ageGroups.map((age) => (
+            {/* Size Selection */}
+            {variant.ageGroups && variant.ageGroups.length > 0 && (
+              <div className="flex flex-col gap-3 w-full">
+                <div className="flex justify-between items-center">
+                  <p className="text-[16px] leading-[24px] text-black font-semibold">
+                    Size
+                  </p>
+                  {productData.sizeChart && 
+                  (<p
+                    onClick={() => {setOpenSizeChart(true);setsizechart(productData.sizeChart)}}
+                    className="text-[14px] leading-[21px] text-[#dc3545] transition-colors duration-300 hover:text-[#00bbae] hover:font-semibold cursor-pointer font-medium"
+                  >
+                    SIZE CHART
+                  </p>)
+                  }
+                  
+                </div>
+                <div className="w-full grid grid-cols-4 sm:grid-cols-5 gap-2">
+                  {variant.ageGroups.map((age) => {
+                    const isSelected =
+                      selectedAgeGroup?.ageGroup?._id === age.ageGroup._id;
+                    const isOutOfStock = age.stock === 0;
+                    const isLowStock = age.stock > 0 && age.stock < 5;
+                    const isAvailable = age.stock > 0;
+
+                    return (
                       <div
                         key={age.ageGroup._id}
-                        className={`py-1 px-2 rounded-sm gap-3 ${
-                          selectedAgeGroup.ageGroup._id === age.ageGroup._id
-                            ? "bg-[#00BBAE] text-white"
-                            : "bg-[#e9ecef]"
-                        } transition-colors duration-300 hover:text-white hover:bg-[#00BBAE] cursor-pointer flex items-center justify-center`}
-                        onClick={() => setSelectedAgeGroup(age)}
+                        className="flex flex-col gap-1"
                       >
-                        <p className="text-[14px] leading-[21px] font-medium">
-                          {age.ageGroup.ageRange}
-                        </p>
+                        <button
+                          disabled={isOutOfStock}
+                          onClick={() => {
+                            if (isAvailable) {
+                              setSelectedAgeGroup(age);
+                            }
+                          }}
+                          className={`relative py-2.5 px-3 rounded-md text-sm font-medium transition-all duration-200 ${
+                            isOutOfStock
+                              ? "bg-gray-100 text-gray-400 cursor-not-allowed border border-gray-300 opacity-60"
+                              : isSelected
+                              ? "bg-black text-white border-2 border-black"
+                              : "bg-white text-black border border-gray-300 hover:border-black hover:bg-gray-50"
+                          }`}
+                          style={
+                            isOutOfStock
+                              ? {
+                                  backgroundImage:
+                                    "linear-gradient(to bottom right, transparent calc(50% - 1px), #9ca3af calc(50% - 1px), #9ca3af calc(50% + 1px), transparent calc(50% + 1px))",
+                                  backgroundSize: "100% 100%",
+                                }
+                              : {}
+                          }
+                        >
+                          <span className="text-[13px] leading-[18px] font-semibold">
+                            {age.ageGroup.ageRange}
+                          </span>
+                        </button>
+                        {/* Stock Indicator */}
+                        {isOutOfStock ? (
+                          <p className="text-[10px] text-gray-400 text-center">
+                            Out of Stock
+                          </p>
+                        ) : isLowStock ? (
+                          <p
+                            className="text-[10px] text-red-600 text-center font-semibold"
+                            style={{
+                              animation: "blink 1s step-end infinite",
+                            }}
+                          >
+                            ⚠️ Only {age.stock} left!
+                          </p>
+                        ) : (
+                          <p className="text-[10px] text-gray-500 text-center">
+                            {age.stock} in stock
+                          </p>
+                        )}
                       </div>
-                    ))}
-                  </div>
+                    );
+                  })}
                 </div>
-              )}
-            </div>
-            <ColorFilter
-              selectedColor={variant.color}
-              setVariant={setVariant}
-              variants={productData.variants}
-              setSelectedAgeGroup={setSelectedAgeGroup}
-            />
+              </div>
+            )}
+
+            {/* Color Selection */}
+            {productData.variants && productData.variants.length > 1 && (
+              <div className="flex flex-col gap-3 w-full">
+                <p className="text-[16px] leading-[24px] text-black font-semibold">
+                  Color
+                </p>
+                <ColorFilter
+                  selectedColor={variant.color}
+                  setVariant={setVariant}
+                  variants={productData.variants}
+                  setSelectedAgeGroup={setSelectedAgeGroup}
+                />
+              </div>
+            )}
             <div className="flex flex-wrap gap-5 items-center">
               <div className="flex w-28 h-12 rounded-2xl border border-gray-200 overflow-hidden">
                 <div className="flex flex-col items-center justify-between bg-white w-1/2 border-r border-gray-200">
@@ -613,6 +676,7 @@ const ProductDetails = () => {
       <SizeChart
         openSizeChart={openSizeChart}
         setOpenSizeChart={setOpenSizeChart}
+        sizechart = {sizechart}
       />
     </div>
   );
