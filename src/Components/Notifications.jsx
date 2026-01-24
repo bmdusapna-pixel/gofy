@@ -1,34 +1,50 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { X } from "lucide-react";
 import NoNotificationImage from "../assets/no-notifications.png";
+import api from "../api/axios";
 
 const Notifications = ({ show, onClose }) => {
-  const [notifications, setNotifications] = useState([
-    {
-      id: 1,
-      message: "Your order #1234 has been shipped!",
-      timestamp: "2 hours ago",
-      image: "https://via.placeholder.com/150/00bbae/ffffff?text=Shipped",
-    },
-    {
-      id: 2,
-      message: "New product alert: Check out our latest collection!",
-      timestamp: "1 day ago",
-      image: "https://via.placeholder.com/150/b3d4f4/000000?text=New+Product",
-    },
-    {
-      id: 3,
-      message: "Your wishlist item 'Bluetooth Speaker' is now in stock.",
-      timestamp: "3 days ago",
-      image: "https://via.placeholder.com/150/d3d3d3/000000?text=In+Stock",
-    },
-    {
-      id: 4,
-      message: "Don't miss out! Flash sale ends tonight.",
-      timestamp: "5 days ago",
-      image: "https://via.placeholder.com/150/ff6347/ffffff?text=Sale",
-    },
-  ]);
+  const [notifications, setNotifications] = useState([])
+  //   [
+  //   {
+  //     id: 1,
+  //     message: "Your order #1234 has been shipped!",
+  //     timestamp: "2 hours ago",
+  //     image: "https://via.placeholder.com/150/00bbae/ffffff?text=Shipped",
+  //   },
+  //   {
+  //     id: 2,
+  //     message: "New product alert: Check out our latest collection!",
+  //     timestamp: "1 day ago",
+  //     image: "https://via.placeholder.com/150/b3d4f4/000000?text=New+Product",
+  //   },
+  //   {
+  //     id: 3,
+  //     message: "Your wishlist item 'Bluetooth Speaker' is now in stock.",
+  //     timestamp: "3 days ago",
+  //     image: "https://via.placeholder.com/150/d3d3d3/000000?text=In+Stock",
+  //   },
+  //   {
+  //     id: 4,
+  //     message: "Don't miss out! Flash sale ends tonight.",
+  //     timestamp: "5 days ago",
+  //     image: "https://via.placeholder.com/150/ff6347/ffffff?text=Sale",
+  //   },
+  // ]);
+
+  useEffect(()=>{
+    const fetchNotifications = async () => {
+      try {
+        const res = await api.get('customer/notifications')  
+        console.log(res)
+        setNotifications(res.data.notifications)
+      }
+      catch (error) {
+        console.log(error)
+      }
+    }
+    fetchNotifications()
+  }, []);
 
   const clearAllNotifications = () => {
     setNotifications([]);

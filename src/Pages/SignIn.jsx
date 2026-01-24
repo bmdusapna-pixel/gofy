@@ -11,10 +11,11 @@ import { AuthContext } from "../Context/AuthContext";
 import { FaWhatsapp } from "react-icons/fa";
 import LoginBanner from "../assets/login-banner.jpeg";
 import LoginBannerMobile from "../assets/login-banner-mobile.jpeg";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 
 const SignIn = () => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [loginData, setLoginData] = useState({
     phone: "",
@@ -66,6 +67,7 @@ const SignIn = () => {
       const response = await api.post("/user/auth/otp", {
         phone: loginData.phone,
       });
+      console.log(response)
 
       // If API responds successfully
       setOtpSent(true);
@@ -92,7 +94,44 @@ const SignIn = () => {
 
     if (res.success) {
       showMessage("Login successful!", "success");
-      navigate("/");
+      
+      // Check if there's a pending "Save for Later" action
+      const pendingSaveForLater = localStorage.getItem("pendingSaveForLater");
+      if (pendingSaveForLater) {
+        try {
+          const productData = JSON.parse(pendingSaveForLater);
+          // Call the wishlist API to save the product
+          const wishlistResponse = await fetch(
+            `${import.meta.env.VITE_BASE_URL}/user/wishlist/add`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${res.data.token}`,
+              },
+              body: JSON.stringify({
+                productId: productData.productId,
+                colorId: productData.colorId,
+                ageGroupId: productData.ageGroupId,
+              }),
+            }
+          );
+          
+          if (wishlistResponse.ok) {
+            showMessage("Product saved for later!", "success");
+          }
+          localStorage.removeItem("pendingSaveForLater");
+        } catch (error) {
+          console.error("Failed to save product for later:", error);
+        }
+      }
+      
+      // Navigate based on where user came from
+      if (location.state?.from === "saveForLater") {
+        navigate(-1); // Go back to product page
+      } else {
+        navigate("/");
+      }
     } else {
       showMessage(res.message || "Invalid credentials", "error");
     }

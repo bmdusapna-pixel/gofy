@@ -8,7 +8,7 @@ import {
   ShoppingBag,
   X,
 } from "lucide-react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useSearchParams } from "react-router-dom";
 import { CartContext } from "../Context/CartContext";
 import FilterActiveComponent from "../Components/FilterActiveComponent.jsx";
 import FilterCategory from "../Components/FilterCategory";
@@ -43,6 +43,8 @@ const product_categories = [
 
 const Products = () => {
   const { category, slug } = useParams();
+  const [searchParams] = useSearchParams();
+  const searchQuery = searchParams.get("search");
   const [productItems, setProductItems] = useState([]);
   const [hoveredProductCategory, setHoveredProductCategory] = useState(null);
   const [productHovered, setProductHoverd] = useState(null);
@@ -120,16 +122,40 @@ const Products = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await fetch(`${baseUrl}/products`);
-        const results = await res.json();
-        setAllProducts(results.data);
-        setProductItems(results.data);
+        if (searchQuery && searchQuery.trim()) {
+          // Use search API if search query exists
+          const res = await fetch(`${baseUrl}/product-search/query?query=${encodeURIComponent(searchQuery)}`);
+          const results = await res.json();
+          if (results.success) {
+            // Convert search results to match product format
+            const formattedProducts = results.products.map((product) => ({
+              _id: product.productId,
+              name: product.name,
+              url: product.url,
+              images: product.image ? [product.image] : [],
+              price: product.price,
+              cutPrice: product.cutPrice,
+              discount: product.discount,
+            }));
+            setAllProducts(formattedProducts);
+            setProductItems(formattedProducts);
+          } else {
+            setAllProducts([]);
+            setProductItems([]);
+          }
+        } else {
+          // Normal product fetch
+          const res = await fetch(`${baseUrl}/products`);
+          const results = await res.json();
+          setAllProducts(results.data);
+          setProductItems(results.data);
+        }
       } catch (err) {
         console.error("Error fetching products:", err);
       }
     };
     fetchProducts();
-  }, []);
+  }, [searchQuery]);
 
   useEffect(() => {
     const extractUnique = (items, key) => {

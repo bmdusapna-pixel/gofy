@@ -10,14 +10,19 @@ import {
   Heart,
   ShoppingBag,
   Star,
+  Save,
+  Bell,
 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { CartContext } from "../Context/CartContext.jsx";
+import { AuthContext } from "../Context/AuthContext.jsx";
 import { Countdown } from "./AnimatedDropdown.jsx";
 
 const ProductsCollectionBelow = ({ color }) => {
   const [hoveredId, setHoveredId] = useState(null);
-  const { addToCart, addFavouriteItems } = useContext(CartContext);
+  const { addToCart, addFavouriteItems, saveForLater } = useContext(CartContext);
+  const { isAuthenticated } = useContext(AuthContext);
+  const navigate = useNavigate();
   const baseUrl = import.meta.env.VITE_BASE_URL;
 
   const [products, setProductList] = useState([]);
@@ -61,6 +66,62 @@ const ProductsCollectionBelow = ({ color }) => {
       ageGroupId: product?.variants[0]?.ageGroups[0]?.ageGroup._id,
     };
     addFavouriteItems(favProduct);
+  };
+
+  const getProductStockStatus = (product) => {
+    return product.variants?.some(variant =>
+      variant.ageGroups?.some(ag => ag.stock > 0)
+    )
+      ? "In Stock"
+      : "Out of Stock";
+  };
+
+  const handleSaveForLater = async (product, event) => {
+    event.stopPropagation();
+    event.preventDefault();
+    
+    // Check if user is authenticated
+    if (!isAuthenticated) {
+      // Store product info and redirect to login
+      const productsave = {
+        _id: product._id,
+        name: product.name,
+        price: product?.variants?.[0]?.ageGroups?.[0]?.price,
+        images: product?.variants?.[0]?.images,
+        colorId: product?.variants?.[0].color._id,
+        ageGroupId: product?.variants[0]?.ageGroups[0]?.ageGroup._id,
+      };
+      localStorage.setItem("pendingSaveForLater", JSON.stringify({
+        productId: product._id,
+        name: product.name,
+        price: productsave.price,
+        images: productsave.images,
+        colorId: productsave.colorId,
+        ageGroupId: productsave.ageGroupId,
+      }));
+      navigate("/sign-in", { state: { from: "saveForLater" } });
+      return;
+    }
+
+    // User is authenticated, save to wishlist
+    const productsave = {
+      _id: product._id,
+      name: product.name,
+      price: product?.variants?.[0]?.ageGroups?.[0]?.price,
+      images: product?.variants?.[0]?.images,
+      colorId: product?.variants?.[0].color._id,
+      ageGroupId: product?.variants[0]?.ageGroups[0]?.ageGroup._id,
+    };
+    await saveForLater(productsave);
+    alert("Product saved for later!");
+  };
+
+  const handleNotifyMe = (product, event) => {
+    event.stopPropagation();
+    event.preventDefault();
+    
+    // For now, notify me also saves to wishlist (can be changed to a separate notification system later)
+    handleSaveForLater(product, event);
   };
 
   return (
@@ -113,6 +174,7 @@ const ProductsCollectionBelow = ({ color }) => {
               const price = firstAgeGroup.price;
               const cutPrice = firstAgeGroup.cutPrice;
               const discount = firstAgeGroup.discount;
+              const stockStatus = getProductStockStatus(product);
 
               return (
                 <SwiperSlide key={product._id}>
@@ -123,7 +185,7 @@ const ProductsCollectionBelow = ({ color }) => {
                     onMouseLeave={() => setHoveredId(null)}
                   >
                     <div className="flex relative">
-                      {product.status === "Out of Stock" && (
+                      {stockStatus === "Out of Stock" && (
                         <p className="absolute top-0 -left-3 bg-red-400 ribbon pl-2 pr-5 text-white z-[3]">
                           Sold Out
                         </p>
@@ -219,17 +281,41 @@ const ProductsCollectionBelow = ({ color }) => {
                       </div>
                       <div className="flex items-center gap-4 mt-2">
                         <button
-                          onClick={(event) => addProductToCart(product, event)}
-                          className="text-[14] leading-[24px] px-2 w-1/2 font-semibold cursor-pointer py-2 rounded-md hover:bg-[#00bbae] bg-[#e9ecef] hover:text-white transition duration-300"
+                          onClick={(event) =>
+                            stockStatus === "Out of Stock"
+                              ? handleSaveForLater(product, event)
+                              : addProductToCart(product, event)
+                          }
+                          className="text-[14px] leading-[24px] px-2 w-1/2 font-semibold cursor-pointer py-2 rounded-md hover:bg-[#00bbae] bg-[#e9ecef] hover:text-white transition duration-300 flex items-center justify-center gap-1"
                         >
-                          {product.status === "Out of Stock"
-                            ? "Save for later"
-                            : "Add To Cart"}
+                          {stockStatus === "Out of Stock" ? (
+                            <>
+                              <Save className="w-4 h-4" />
+                              Save for later
+                            </>
+                          ) : (
+                            <>
+                              <ShoppingBag className="w-4 h-4" />
+                              Add To Cart
+                            </>
+                          )}
                         </button>
-                        <button className="leading-[24px] px-2 w-1/2 font-semibold cursor-pointer py-2 rounded-md bg-[#00bbae] text-white hover:text-black hover:bg-[#e9ecef] transition duration-300">
-                          {product.status === "Out of Stock"
-                            ? "Notify Me"
-                            : "Buy Now"}
+                        <button
+                          onClick={(event) =>
+                            stockStatus === "Out of Stock"
+                              ? handleNotifyMe(product, event)
+                              : null
+                          }
+                          className="text-[14px] leading-[24px] px-2 w-1/2 font-semibold cursor-pointer py-2 rounded-md bg-[#00bbae] text-white hover:text-black hover:bg-[#e9ecef] transition duration-300 flex items-center justify-center gap-1"
+                        >
+                          {stockStatus === "Out of Stock" ? (
+                            <>
+                              <Bell className="w-4 h-4" />
+                              Notify Me
+                            </>
+                          ) : (
+                            "Buy Now"
+                          )}
                         </button>
                       </div>
                     </div>

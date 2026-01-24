@@ -21,11 +21,12 @@ import {
   faWhatsapp,
 } from "@fortawesome/free-brands-svg-icons";
 import { CartContext } from "../Context/CartContext";
+import { AuthContext } from "../Context/AuthContext";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import RelatedItems from "../Components/RelatedItems";
 import SizeChart from "../Components/SizeChart.jsx";
 import ProductReviews from "../Components/ProductReviews.jsx";
@@ -146,7 +147,9 @@ const ProductDetails = () => {
     },
   ];
   const [pinSelected, setPinSelected] = useState(false);
-  const { addingProductToCart, addFavouriteItems } = useContext(CartContext);
+  const { addingProductToCart, addFavouriteItems, saveForLater } = useContext(CartContext);
+  const { isAuthenticated } = useContext(AuthContext);
+  const navigate = useNavigate();
   const [currentMenu, setCurrentMenu] = useState("Product Description");
   const [quantity, setQuantity] = useState(1);
   const [copiedCode, setCopiedCode] = useState(null);
@@ -163,6 +166,12 @@ const ProductDetails = () => {
   };
 
   const addProductToCart = () => {
+    // Check if product is out of stock
+    if (selectedAgeGroup.stock === 0) {
+      handleSaveForLater();
+      return;
+    }
+
     const cartProduct = {
       _id: productData._id,
       name: productData.name,
@@ -173,6 +182,40 @@ const ProductDetails = () => {
     };
     if (productData && variant && selectedAgeGroup) {
       addingProductToCart(cartProduct, quantity, variant, selectedAgeGroup);
+    }
+  };
+
+  const handleSaveForLater = () => {
+    // Check if user is authenticated
+    if (!isAuthenticated) {
+      // Store the product info in localStorage to save after login
+      localStorage.setItem("pendingSaveForLater", JSON.stringify({
+        productId: productData._id,
+        name: productData.name,
+        price: selectedAgeGroup.price,
+        images: variant.images,
+        colorId: variant.color._id,
+        ageGroupId: selectedAgeGroup.ageGroup._id,
+        quantity: quantity,
+      }));
+      // Redirect to login page
+      navigate("/sign-in", { state: { from: "saveForLater" } });
+      return;
+    }
+
+    // User is authenticated, save to wishlist
+    const wishProduct = {
+      _id: productData._id,
+      name: productData.name,
+      price: selectedAgeGroup.price,
+      images: variant.images,
+      colorId: variant.color._id,
+      ageGroupId: selectedAgeGroup.ageGroup._id,
+    };
+    if (productData && variant && selectedAgeGroup) {
+      addFavouriteItems(wishProduct, quantity, variant, selectedAgeGroup);
+      // Show success message or notification
+      alert("Product saved for later!");
     }
   };
 
@@ -422,7 +465,7 @@ const ProductDetails = () => {
                 </div>
               </div>
               <div
-                onClick={addProductToCart}
+                onClick={selectedAgeGroup.stock === 0 ? handleSaveForLater : addProductToCart}
                 className="py-2 w-45 rounded-2xl transition-colors duration-300 hover:bg-[#f88e0f] cursor-pointer px-3 bg-[#00bbae] flex gap-3 items-center justify-center"
               >
                 {selectedAgeGroup.stock > 0 ? (

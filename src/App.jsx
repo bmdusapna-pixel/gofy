@@ -1,175 +1,116 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
-import { Link, Route, Routes, useNavigate } from "react-router-dom";
-import Home from "./Pages/Home";
-import Products from "./Pages/Products";
-import ProductDetails from "./Pages/ProductDetails";
-import SuperDealsProduct from "./Pages/SuperDealsProduct";
-import Faq from "./Pages/Faq";
-import Contact from "./Pages/Contact";
+import React, { Suspense, lazy, useContext, useEffect, useRef } from "react";
+import { Routes, Route, useNavigate } from "react-router-dom";
+import { CartContext } from "./Context/CartContext";
+
 import Header from "./Components/Header";
 import Footer from "./Components/Footer";
 import Cart from "./Components/Cart";
-import PrivacyPolicy from "./Pages/PrivacyPolicy";
-import { ArrowUp } from "lucide-react";
-import { FaWhatsappSquare, FaWhatsapp } from "react-icons/fa";
-import { CartContext } from "./Context/CartContext";
-import About from "./Pages/About";
-import TermsAndConditions from "./Pages/TermsAndConditions";
-import CartDetails from "./Pages/CartDetails";
-import { ScrollToTop } from "./Components/AnimatedDropdown";
-import RefundReturns from "./Pages/RefundReturns";
-import BulkOrder from "./Pages/BulkOrder";
-import NewArrivals from "./Pages/NewArrivals";
-import Checkout from "./Pages/Checkout";
-import Payment from "./Pages/Payment";
-import OrderConfirmation from "./Pages/OrderConfirmation";
-import Blog from "./Pages/Blog";
-import SignUp from "./Pages/SignUp";
-import SignIn from "./Pages/SignIn";
-import WishList from "./Pages/WishList";
-import Account from "./Pages/Account";
-import BlogDetails from "./Pages/BlogDetails";
-import Toys from "./Pages/Toys";
-import Clothes from "./Pages/Clothes";
-import ToysDetails from "./Pages/ToysDetails";
-import ClothesDetails from "./Pages/ClothesDetails";
-import SpecificToyProducts from "./Pages/SpecificToyProducts";
-import SpecificClotheProducts from "./Pages/SpecificClotheProducts";
-import WhatsAppContact from "./Components/WhatsAppContact";
-import Trending from "./Pages/Trending";
-import Offers from "./Pages/Offers";
-import BulkOrderModal from "./Components/BulkOrderModal"; // Import the new modal component
-import ShippingAndDelivery from "./Pages/ShippingAndDelivery";
+import BulkOrderModal from "./Components/BulkOrderModal";
+import {ScrollToTop} from "./Components/AnimatedDropdown";
+import PageLoader from "./Components/PageLoader";
+import FloatingProductCard from "./Components/FloatingProductCard";
+import WhatsAppButton from "./Components/WhatsAppButton";
+import BackToTopButton from "./Components/BackToTopButton";
 
-const product = {
-  name: "Outdoor Swing Set",
-  price: 1199,
-  rating: 4.0,
-  review: 54,
-  product_type: "Outdoor Toy",
-  images: [
-    "https://www.radiustheme.com/demo/wordpress/themes/toyup/wp-content/uploads/2024/01/product_17.png",
-    "https://www.radiustheme.com/demo/wordpress/themes/toyup/wp-content/uploads/2023/12/product_02-300x300.png",
-    "https://www.radiustheme.com/demo/wordpress/themes/toyup/wp-content/uploads/2023/12/product_10-300x300.png",
-    "https://www.radiustheme.com/demo/wordpress/themes/toyup/wp-content/uploads/2024/01/product_20-300x300.png",
-    "https://www.radiustheme.com/demo/wordpress/themes/toyup/wp-content/uploads/2023/12/product_07-300x300.png",
-  ],
-};
+// 🔹 Lazy loaded pages
+const Home = lazy(() => import("./Pages/Home"));
+const About = lazy(() => import("./Pages/About"));
+const Products = lazy(() => import("./Pages/Products"));
+const ProductDetails = lazy(() => import("./Pages/ProductDetails"));
+const SuperDealsProduct = lazy(() => import("./Pages/SuperDealsProduct"));
+const Trending = lazy(() => import("./Pages/Trending"));
+const Offers = lazy(() => import("./Pages/Offers"));
+const Faq = lazy(() => import("./Pages/Faq"));
+const Contact = lazy(() => import("./Pages/Contact"));
+const ShippingAndDelivery = lazy(() => import("./Pages/ShippingAndDelivery"));
+const CartDetails = lazy(() => import("./Pages/CartDetails"));
+const PrivacyPolicy = lazy(() => import("./Pages/PrivacyPolicy"));
+const RefundReturns = lazy(() => import("./Pages/RefundReturns"));
+const BulkOrder = lazy(() => import("./Pages/BulkOrder"));
+const NewArrivals = lazy(() => import("./Pages/NewArrivals"));
+const Checkout = lazy(() => import("./Pages/Checkout"));
+const Payment = lazy(() => import("./Pages/Payment"));
+const OrderConfirmation = lazy(() => import("./Pages/OrderConfirmation"));
+const Blog = lazy(() => import("./Pages/Blog"));
+const SignUp = lazy(() => import("./Pages/SignUp"));
+const SignIn = lazy(() => import("./Pages/SignIn"));
+const WishList = lazy(() => import("./Pages/WishList"));
+const Account = lazy(() => import("./Pages/Account"));
+const BlogDetails = lazy(() => import("./Pages/BlogDetails"));
+const TermsAndConditions = lazy(() => import("./Pages/TermsAndConditions"));
+const SpecificToyProducts = lazy(() => import("./Pages/SpecificToyProducts"));
+const SpecificClotheProducts = lazy(() => import("./Pages/SpecificClotheProducts"));
 
 const App = () => {
-  const [isShowTopButton, setIsShowTopButton] = useState(false);
-  const [flashCardOpen, setFlashCardOpen] = useState(false);
   const {
-    isMobileMenuOpen,
-    setIsMobileMenuOpen,
-    cartItems,
     openCart,
     setOpenCart,
-    totalItems,
-    isBulkOrderModalOpen, // New state from context
-    setIsBulkOrderModalOpen, // New setter from context
+    isMobileMenuOpen,
+    isBulkOrderModalOpen,
+    setIsBulkOrderModalOpen,
   } = useContext(CartContext);
-  const [isWhatsAppVisible, setIsWhatsAppVisible] = useState(false);
+
   const cartRef = useRef(null);
-  const navigate = useNavigate(); // Get the navigate function here
+  const navigate = useNavigate();
 
-  const [isBlinking, setIsBlinking] = useState(false);
-
+  // 🔹 Lock body scroll only when needed
   useEffect(() => {
-    const interval = setInterval(() => {
-      setIsBlinking((prev) => !prev);
-    }, 500);
+    document.body.classList.toggle(
+      "overflow-hidden",
+      openCart || isMobileMenuOpen || isBulkOrderModalOpen
+    );
+  }, [openCart, isMobileMenuOpen, isBulkOrderModalOpen]);
 
-    return () => clearInterval(interval);
-  }, []);
-  const blinkingClasses = isBlinking ? "scale-110" : "scale-100";
-
+  // 🔹 Close cart on outside click
   useEffect(() => {
-    const handleScroll = () => {
-      setIsShowTopButton(window.scrollY > 500);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
-  useEffect(() => {
-    if (openCart || isMobileMenuOpen || isBulkOrderModalOpen) {
-      document.body.classList.add("overflow-hidden");
-    } else {
-      document.body.classList.remove("overflow-hidden");
-    }
-    return () => {
-      document.body.classList.remove("overflow-hidden");
-    };
-  }, [openCart, isMobileMenuOpen, isBulkOrderModalOpen]); // Add new state to dependencies
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (cartRef.current && !cartRef.current.contains(event.target)) {
+    const handleClickOutside = (e) => {
+      if (cartRef.current && !cartRef.current.contains(e.target)) {
         setOpenCart(false);
       }
     };
+
     if (openCart) {
       document.addEventListener("mousedown", handleClickOutside);
-    } else {
-      document.removeEventListener("mousedown", handleClickOutside);
     }
+
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [openCart]);
+  }, [openCart, setOpenCart]);
 
-  // Handle the modal's confirm and close actions
   const handleBulkOrderConfirm = () => {
     setIsBulkOrderModalOpen(false);
     navigate("/bulk-order");
   };
 
-  const handleBulkOrderCancel = () => {
-    setIsBulkOrderModalOpen(false);
-  };
-
   return (
-    <div>
-      {/* Existing overlays */}
-      {isMobileMenuOpen && (
-        <div className="fixed inset-0 bg-black/20 z-10"></div>
-      )}
-      {openCart && <div className="fixed inset-0 bg-black/20 z-40"></div>}
+    <>
       <Header />
+
       <div ref={cartRef}>
         <Cart />
       </div>
+
       <ScrollToTop />
-      <div>
+
+      <Suspense fallback={<PageLoader />}>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
-          <Route
-            path="/terms-and-conditions"
-            element={<TermsAndConditions />}
-          />
+          <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
           <Route path="/products/:slug?/:category?" element={<Products />} />
           <Route path="/super-deals-product" element={<SuperDealsProduct />} />
           <Route path="/trending" element={<Trending />} />
           <Route path="/offer" element={<Offers />} />
           <Route path="/product-details/:url" element={<ProductDetails />} />
-          {/* <Route path="/products/toys" element={<Toys />} /> */}
           <Route
             path="/products/toys/item/:url"
             element={<SpecificToyProducts />}
           />
-          {/* <Route path="/products/toys/:url" element={<ToysDetails />} /> */}
-          {/* <Route path="/products/clothes" element={<Clothes />} /> */}
           <Route
             path="/products/clothes/item/:url"
             element={<SpecificClotheProducts />}
           />
-          {/* <Route path="/products/clothes/:url" element={<ClothesDetails />} /> */}
           <Route path="/faq" element={<Faq />} />
           <Route path="/contact" element={<Contact />} />
           <Route
@@ -191,69 +132,21 @@ const App = () => {
           <Route path="/account" element={<Account />} />
           <Route path="/blog-details" element={<BlogDetails />} />
         </Routes>
-      </div>
+      </Suspense>
 
-      {/* Render the new modal. Its visibility is now controlled by the context. */}
       <BulkOrderModal
         isOpen={isBulkOrderModalOpen}
-        onClose={handleBulkOrderCancel}
+        onClose={() => setIsBulkOrderModalOpen(false)}
         onConfirm={handleBulkOrderConfirm}
       />
-
-      {/* The existing code for the floating card, WhatsApp button, and footer */}
-      <div
-        className="w-72 transition-transform duration-500 ease-in-out rounded-md h-32 fixed left-10 z-40 bottom-5 bg-white"
-        style={{
-          boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
-          transform: flashCardOpen
-            ? "translateX(0)"
-            : "translateX(calc(-100% - 2.5rem))",
-        }}
-      >
-        <div className="flex w-full items-center">
-          <div className="w-44 h-32 flex items-center justify-center">
-            <img
-              src={product.images[0]}
-              className="w-full"
-              alt={product.name}
-            />
-          </div>
-          <div className="py-4 flex flex-col gap-2 w-full items-center">
-            <Link
-              to="/product-details"
-              className="text-[16px] leading-[20px] text-[#001430] font-semibold transition-colors duration-300 hover:text-[#00bbae]"
-            >
-              {product.name}
-            </Link>
-            <p className="text-[16px] leading-[20px] text-[#001430] font-semibold">
-              {product.price}
-            </p>
-          </div>
-        </div>
-      </div>
-      <WhatsAppContact
-        show={isWhatsAppVisible}
-        onClose={() => setIsWhatsAppVisible(false)}
-      />
-      <div className="fixed bottom-22 z-50 right-5 w-14 h-14 rounded-full flex items-center justify-center cursor-pointer transition-transform duration-300 hover:scale-110">
-        <button
-          onClick={() => setIsWhatsAppVisible(!isWhatsAppVisible)}
-          className={`w-full h-full flex items-center justify-center bg-green-500 rounded-md transition-shadow duration-300 ${blinkingClasses}`}
-        >
-          <FaWhatsapp className={`w-12 h-12 text-white duration-300`} />
-        </button>
-      </div>
-      {isShowTopButton && (
-        <div
-          onClick={scrollToTop}
-          className="fixed bottom-8 z-50 right-5 w-10 h-10 rounded-full bg-[#f88e0f] flex items-center justify-center cursor-pointer transition-transform duration-300 hover:scale-110"
-        >
-          <ArrowUp className="w-6 h-6 text-white" />
-        </div>
-      )}
+     {/* ✅ FLOATING FEATURES */}
+     {/* <FloatingProductCard open /> */}
+      <WhatsAppButton />
+      <BackToTopButton />
       <Footer />
-    </div>
+    </>
   );
 };
 
 export default App;
+

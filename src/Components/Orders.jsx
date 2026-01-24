@@ -21,6 +21,8 @@ const Orders = () => {
   const [loadingInvoice, setLoadingInvoice] = useState(false);
   const [orderDetailsError, setOrderDetailsError] = useState(null);
   const [invoiceError, setInvoiceError] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   // const orders = [
   //   {
@@ -146,6 +148,7 @@ const Orders = () => {
 
   const fetchMyOrders = async() => {
     try {
+      setLoading(true);
       const response = await api.get(`/order/myOrders`);
       if(response.data.success)
       {
@@ -153,7 +156,10 @@ const Orders = () => {
       }
     } 
     catch (error) {
+      setError(error);
       console.log(error)
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -713,8 +719,14 @@ useEffect(()=>{
               </th>
             </tr>
           </thead>
+          {loading ? (
+            <div className="flex justify-center items-center h-full m-auto">
+              <Loader2 className="animate-spin text-[#00bbae] flex justify-center items-center m-auto" size={24} />
+            </div>
+          ) : (
           <tbody>
-            {filteredOrders.map((order) => {
+            {!loading && filteredOrders.length > 0 ? (
+              filteredOrders.map( (order) => {
               let statusBgColor = "bg-orange-100";
               let statusTextColor = "text-orange-600";
               if (order.orderStatus === "Delivered") {
@@ -759,8 +771,16 @@ useEffect(()=>{
                   </td>
                 </tr>
               );
-            })}
+            })
+            ) : (
+              <tr>
+                <td colSpan="9" className="px-4 py-8 text-center text-sm text-gray-500">
+                  No orders found
+                </td>
+              </tr>
+            )}
           </tbody>
+          )}
         </table>
       </div>
     );

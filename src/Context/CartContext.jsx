@@ -473,8 +473,9 @@ const CartContextProvider = ({ children }) => {
     }
   };
 
-  // Save for later operations (local only)
-  const saveForLater = (product) => {
+  // Save for later operations - saves to wishlist if authenticated, otherwise to local storage
+  const saveForLater = async (product) => {
+    // Check if already saved locally
     const alreadySaved = savedForLaterItems.some(
       (item) =>
         item._id === product._id &&
@@ -484,7 +485,26 @@ const CartContextProvider = ({ children }) => {
 
     if (alreadySaved) return;
 
-    // removeProductFromCart(product);
+    // If user is authenticated, save to wishlist API
+    if (user?._id) {
+      try {
+        const wishProduct = {
+          _id: product._id,
+          name: product.name,
+          price: product.price,
+          images: product.images || [product.image],
+          colorId: product.colorId,
+          ageGroupId: product.ageGroupId,
+        };
+        await addFavouriteItems(wishProduct);
+        return; // Don't save to local storage if saved to API
+      } catch (error) {
+        console.error("Failed to save to wishlist:", error);
+        // Fall through to save locally if API fails
+      }
+    }
+
+    // Save to local storage for guest users or if API fails
     setSavedForLaterItems((prev) => [
       ...prev,
       {
@@ -492,7 +512,7 @@ const CartContextProvider = ({ children }) => {
         name: product.name,
         price: product.price,
         product_type: product.product_type,
-        image: product.image || "",
+        image: product.image || (product.images && product.images[0]) || "",
         colorId: product.colorId,
         ageGroupId: product.ageGroupId,
         quantity: product.quantity || 1,
