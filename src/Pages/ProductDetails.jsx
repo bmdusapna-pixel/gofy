@@ -120,10 +120,11 @@ const ProductDetails = () => {
   }, [baseUrl, url]);
 
   useEffect(() => {
-    console.log(variant);
-  }, [variant]);
-  useEffect(() => {
-    console.log(selectedAgeGroup);
+    // Reset quantity when variant or ageGroup changes
+    if (selectedAgeGroup) {
+      const availableStock = selectedAgeGroup.stock ?? 0;
+      setQuantity((prev) => Math.min(prev, Math.max(1, availableStock)));
+    }
   }, [selectedAgeGroup]);
   const FaIconsComp = {
     faFacebookF,
@@ -180,16 +181,29 @@ const ProductDetails = () => {
       return;
     }
 
+    // Ensure quantity doesn't exceed available stock
+    const availableStock = selectedAgeGroup.stock ?? 0;
+    const finalQuantity = Math.min(quantity, availableStock);
+
+    if (finalQuantity <= 0) {
+      alert(`Only ${availableStock} items available in stock.`);
+      return;
+    }
+
     const cartProduct = {
       _id: productData._id,
       name: productData.name,
       price: selectedAgeGroup.price,
-      images: variant.images,
-      colorId: variant.color._id,
-      ageGroupId: selectedAgeGroup.ageGroup._id,
+      cutPrice: selectedAgeGroup.cutPrice,
+      discount: selectedAgeGroup.discount,
+      stock: selectedAgeGroup.stock,
+      product_type: productData.brand || "",
+      images: variant.images || [],
+      colorId: variant.color?._id || variant.color,
+      ageGroupId: selectedAgeGroup.ageGroup?._id || selectedAgeGroup.ageGroup,
     };
     if (productData && variant && selectedAgeGroup) {
-      addingProductToCart(cartProduct, quantity, variant, selectedAgeGroup);
+      addingProductToCart(cartProduct, finalQuantity);
     }
   };
 
@@ -216,12 +230,16 @@ const ProductDetails = () => {
       _id: productData._id,
       name: productData.name,
       price: selectedAgeGroup.price,
-      images: variant.images,
-      colorId: variant.color._id,
-      ageGroupId: selectedAgeGroup.ageGroup._id,
+      cutPrice: selectedAgeGroup.cutPrice,
+      discount: selectedAgeGroup.discount,
+      product_type: productData.brand || "",
+      images: variant.images || [],
+      colorId: variant.color?._id || variant.color,
+      ageGroupId: selectedAgeGroup.ageGroup?._id || selectedAgeGroup.ageGroup,
+      stock: selectedAgeGroup.stock,
     };
     if (productData && variant && selectedAgeGroup) {
-      addFavouriteItems(wishProduct, quantity, variant, selectedAgeGroup);
+      addFavouriteItems(wishProduct);
       // Show success message or notification
       alert("Product saved for later!");
     }
@@ -232,17 +250,29 @@ const ProductDetails = () => {
       _id: productData._id,
       name: productData.name,
       price: selectedAgeGroup.price,
-      images: variant.images,
-      colorId: variant.color._id,
-      ageGroupId: selectedAgeGroup.ageGroup._id,
+      cutPrice: selectedAgeGroup.cutPrice,
+      discount: selectedAgeGroup.discount,
+      product_type: productData.brand || "",
+      images: variant.images || [],
+      colorId: variant.color?._id || variant.color,
+      ageGroupId: selectedAgeGroup.ageGroup?._id || selectedAgeGroup.ageGroup,
+      stock: selectedAgeGroup.stock,
     };
     if (productData && variant && selectedAgeGroup) {
-      addFavouriteItems(wishProduct, quantity, variant, selectedAgeGroup);
+      addFavouriteItems(wishProduct);
     }
   };
 
   const increaseQuantity = () => {
-    setQuantity((prev) => prev + 1);
+    const availableStock = selectedAgeGroup?.stock ?? 0;
+    setQuantity((prev) => {
+      const newQuantity = prev + 1;
+      if (newQuantity > availableStock) {
+        alert(`Only ${availableStock} items available in stock.`);
+        return prev;
+      }
+      return newQuantity;
+    });
   };
 
   const decreaseQuantity = () => {
@@ -450,16 +480,33 @@ const ProductDetails = () => {
             <div className="flex flex-wrap gap-5 items-center">
               <div className="flex w-28 h-12 rounded-2xl border border-gray-200 overflow-hidden">
                 <div className="flex flex-col items-center justify-between bg-white w-1/2 border-r border-gray-200">
-                  <div className="flex justify-center items-center cursor-pointer w-5 h-5">
+                  <div 
+                    onClick={increaseQuantity}
+                    className={`flex justify-center items-center w-5 h-5 ${
+                      quantity >= (selectedAgeGroup?.stock ?? 0)
+                        ? "cursor-not-allowed opacity-50"
+                        : "cursor-pointer"
+                    }`}
+                    title={
+                      quantity >= (selectedAgeGroup?.stock ?? 0)
+                        ? `Only ${selectedAgeGroup?.stock ?? 0} items available in stock`
+                        : "Increase quantity"
+                    }
+                  >
                     <Plus
-                      onClick={increaseQuantity}
-                      className="w-4 h-4 text-black cursor-pointer"
+                      className={`w-4 h-4 ${
+                        quantity >= (selectedAgeGroup?.stock ?? 0)
+                          ? "text-gray-400"
+                          : "text-black"
+                      }`}
                     />
                   </div>
                   <div className="w-full bg-gray-200 h-[0.5px]"></div>
-                  <div className="flex justify-center items-center cursor-pointer w-5 h-5">
+                  <div 
+                    onClick={decreaseQuantity}
+                    className="flex justify-center items-center cursor-pointer w-5 h-5"
+                  >
                     <Minus
-                      onClick={decreaseQuantity}
                       className="w-4 h-4 text-black cursor-pointer"
                     />
                   </div>

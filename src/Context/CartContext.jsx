@@ -52,8 +52,36 @@ const CartContextProvider = ({ children }) => {
     0
   );
 
-  // Final payable amount after all discounts
-  const payableAmount = Math.max(totalPrice - totalCouponDiscount, 0);
+  // Coupon States
+  const [applicableCoupons, setApplicableCoupons] = useState([]);
+  const [appliedCoupon, setAppliedCoupon] = useState(() => {
+    const stored = localStorage.getItem("appliedCoupon");
+    return stored ? JSON.parse(stored) : null;
+  });
+  const [couponDiscount, setCouponDiscount] = useState(0);
+
+  // Calculate coupon discount from applied coupon
+  useEffect(() => {
+    if (appliedCoupon && totalPrice > 0) {
+      let discount = 0;
+      if (appliedCoupon.discountType === "PERCENTAGE") {
+        discount = (appliedCoupon.discountValue / 100) * totalPrice;
+        if (appliedCoupon.maxDiscount && discount > appliedCoupon.maxDiscount) {
+          discount = appliedCoupon.maxDiscount;
+        }
+      } else if (appliedCoupon.discountType === "FLAT") {
+        discount = appliedCoupon.discountValue;
+      }
+      // Don't exceed total price
+      discount = Math.min(discount, totalPrice);
+      setCouponDiscount(discount);
+    } else {
+      setCouponDiscount(0);
+    }
+  }, [appliedCoupon, totalPrice]);
+
+  // Final payable amount after all discounts (including applied coupon)
+  const payableAmount = Math.max(totalPrice - totalCouponDiscount - couponDiscount, 0);
   const totalFavouriteItems = favouriteItems.length;
 
   // Fetch cart from server
@@ -84,7 +112,7 @@ const CartContextProvider = ({ children }) => {
         tax: item.tax,
         coupanDiscont:item.coupanDiscount
       }));
-      console.log("cart",cartItems)
+      console.log("cart",serverCart)
       setCartItems(serverCart);
       localStorage.setItem("cartItems", JSON.stringify(serverCart));
     } catch (err) {
@@ -158,6 +186,53 @@ const CartContextProvider = ({ children }) => {
   useEffect(() => {
     localStorage.setItem("savedForLaterItems", JSON.stringify(savedForLaterItems));
   }, [savedForLaterItems]);
+
+  useEffect(() => {
+    localStorage.setItem("appliedCoupon", JSON.stringify(appliedCoupon));
+  }, [appliedCoupon]);
+
+  // Fetch applicable coupons based on total price
+  const fetchApplicableCoupons = async () => {
+    if (totalPrice <= 0) {
+      setApplicableCoupons([]);
+      return;
+    }
+
+    try {
+      const response = await api.post("/user/coupons/applicable", {
+        totalPrice: totalPrice,
+      });
+      if (response.data.success) {
+        setApplicableCoupons(response.data.applicableCoupons || []);
+      }
+    } catch (error) {
+      console.error("Failed to fetch applicable coupons:", error);
+      setApplicableCoupons([]);
+    }
+  };
+
+  // Apply coupon
+  const applyCoupon = (coupon) => {
+    // Validate minimum order value
+    if (totalPrice < coupon.minOrderValue) {
+      alert(`Minimum order value of ₹${coupon.minOrderValue} required for this coupon`);
+      return;
+    }
+    setAppliedCoupon(coupon);
+  };
+
+  // Remove applied coupon
+  const removeCoupon = () => {
+    setAppliedCoupon(null);
+    setCouponDiscount(0);
+  };
+
+  // Fetch applicable coupons when totalPrice changes
+  useEffect(() => {
+    if (totalPrice > 0) {
+      fetchApplicableCoupons();
+    }
+  }, [totalPrice]);
 
   const handleBulkOrderAlert = () => {
     setIsBulkOrderModalOpen(true);
@@ -234,9 +309,16 @@ const CartContextProvider = ({ children }) => {
           item.colorId === product.colorId &&
           item.ageGroupId === product.ageGroupId
       );
-
       if (existingItemIndex !== -1) {
         const existingItem = cartItems[existingItemIndex];
+        const availableStock = existingItem.stock ?? 0;
+        
+        // Check stock limit before increasing
+        if (existingItem.quantity >= availableStock) {
+          // Stock limit reached, don't add more
+          return;
+        }
+
         const newQuantity = existingItem.quantity + 1;
 
         if (newQuantity > 5) handleBulkOrderAlert();
@@ -249,6 +331,13 @@ const CartContextProvider = ({ children }) => {
         // Send +1 as delta
         await syncAddToCart(product._id, product.colorId, product.ageGroupId, 1);
       } else {
+        // Check stock before adding new item
+        const availableStock = product.stock ?? 0;
+        if (availableStock <= 0) {
+          // No stock available
+          return;
+        }
+
         const newCartItem = {
           _id: product._id,
           name: product.name,
@@ -289,16 +378,36 @@ const CartContextProvider = ({ children }) => {
 
       if (existingItemIndex !== -1) {
         const existingItem = cartItems[existingItemIndex];
-        const quantityDelta = quantity - existingItem.quantity;
+        const availableStock = existingItem.stock ?? 0;
+        
+        // Ensure quantity doesn't exceed stock
+        const finalQuantity = Math.min(quantity, availableStock);
+        
+        if (finalQuantity <= existingItem.quantity) {
+          // Can't increase beyond stock, or trying to decrease
+          return;
+        }
+
+        const quantityDelta = finalQuantity - existingItem.quantity;
 
         const updatedCart = cartItems.map((item, index) =>
-          index === existingItemIndex ? { ...item, quantity } : item
+          index === existingItemIndex ? { ...item, quantity: finalQuantity } : item
         );
         setCartItems(updatedCart);
         
         // Send the delta, not absolute quantity
         await syncAddToCart(product._id, product.colorId, product.ageGroupId, quantityDelta);
       } else {
+        // Check stock before adding new item
+        const availableStock = product.stock ?? 0;
+        if (availableStock <= 0) {
+          // No stock available
+          return;
+        }
+
+        // Ensure quantity doesn't exceed stock
+        const finalQuantity = Math.min(quantity, availableStock);
+
         const newCartItem = {
           _id: product._id,
           name: product.name,
@@ -309,13 +418,13 @@ const CartContextProvider = ({ children }) => {
           image: product.images[0],
           colorId: product.colorId,
           ageGroupId: product.ageGroupId,
-          quantity,
+          quantity: finalQuantity,
           stock: product.stock,
         };
         setCartItems([...cartItems, newCartItem]);
         
         // Send initial quantity
-        await syncAddToCart(product._id, product.colorId, product.ageGroupId, quantity);
+        await syncAddToCart(product._id, product.colorId, product.ageGroupId, finalQuantity);
       }
 
       setOpenCart(true);
@@ -349,6 +458,23 @@ const CartContextProvider = ({ children }) => {
 
   const increaseQuantityFromCart = async (product) => {
     try {
+      // Find the item to check stock
+      const existingItem = cartItems.find(
+        (item) =>
+          item._id === product._id &&
+          item.colorId === product.colorId &&
+          item.ageGroupId === product.ageGroupId
+      );
+
+      if (!existingItem) return;
+
+      // Check stock limit
+      const availableStock = existingItem.stock ?? 0;
+      if (existingItem.quantity >= availableStock) {
+        // Stock limit reached, don't increase
+        return;
+      }
+
       const updatedCart = cartItems.map((item) => {
         if (
           item._id === product._id &&
@@ -599,6 +725,14 @@ const CartContextProvider = ({ children }) => {
     saveForLater,
     moveToCartFromSaved,
     removeSavedForLaterItem,
+
+    // Coupons
+    applicableCoupons,
+    appliedCoupon,
+    couponDiscount,
+    fetchApplicableCoupons,
+    applyCoupon,
+    removeCoupon,
   };
 
   return <CartContext.Provider value={contextValues}>{children}</CartContext.Provider>;

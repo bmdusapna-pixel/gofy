@@ -26,8 +26,14 @@ const Cart = () => {
     totalProductDiscount,
     totalCouponDiscount,
     payableAmount,
+    applicableCoupons,
+    appliedCoupon,
+    couponDiscount,
+    applyCoupon,
+    removeCoupon,
   } = useContext(CartContext);
   const [copiedCode, setCopiedCode] = useState(null);
+  const [couponInput, setCouponInput] = useState("");
 
   const handleCopy = async (code) => {
     try {
@@ -51,6 +57,27 @@ const Cart = () => {
     setOpenCart(false);
     window.scrollTo({ top: 0, behavior: "smooth" });
     navigate("/checkout");
+  };
+
+  const handleApplyCoupon = () => {
+    if (!couponInput.trim()) {
+      alert("Please enter a coupon code");
+      return;
+    }
+    // Find coupon by code
+    const coupon = applicableCoupons.find(
+      (c) => c.code.toLowerCase() === couponInput.trim().toLowerCase()
+    );
+    if (coupon) {
+      applyCoupon(coupon);
+      setCouponInput("");
+    } else {
+      alert("Invalid coupon code. Please check and try again.");
+    }
+  };
+
+  const handleRemoveCoupon = () => {
+    removeCoupon();
   };
 
   return (
@@ -123,8 +150,22 @@ const Cart = () => {
                           {item.quantity}
                         </p>
                         <div
-                          onClick={() => increaseQuantityFromCart(item)}
-                          className="w-6 h-6 cursor-pointer text-black transition-colors duration-300 hover:text-white hover:bg-[#00bbae] rounded-full border border-gray-400 bg-white flex items-center justify-center"
+                          onClick={() => {
+                            const availableStock = item.stock ?? 0;
+                            if (item.quantity < availableStock) {
+                              increaseQuantityFromCart(item);
+                            }
+                          }}
+                          className={`w-6 h-6 rounded-full border border-gray-400 flex items-center justify-center transition-colors duration-300 ${
+                            (item.stock ?? 0) > item.quantity
+                              ? "cursor-pointer text-black hover:text-white hover:bg-[#00bbae] bg-white"
+                              : "cursor-not-allowed text-gray-400 bg-gray-100 opacity-50"
+                          }`}
+                          title={
+                            (item.stock ?? 0) <= item.quantity
+                              ? `Only ${item.stock ?? 0} items available in stock`
+                              : "Increase quantity"
+                          }
                         >
                           <Plus className="w-3 h-3" />
                         </div>
@@ -149,76 +190,84 @@ const Cart = () => {
         <div className="absolute bottom-0 left-0 w-full z-10 bg-white">
           <hr className="w-full h-[1px] bg-gray-300 border-none" />
           <div className="flex flex-col gap-3 w-full p-6">
-            <div className="flex gap-2 w-full items-center">
-              <input
-                type="text"
-                className="w-full border border-gray-200 outline-none rounded-xl px-3 py-2 text-black"
-                placeholder="Enter coupon code"
-              />
-              <button className="rounded-xl w-28 text-[16px] leading-[24px] font-semibold text-white transition-colors duration-300 hover:bg-[#f88e0f] cursor-pointer px-3 py-2 bg-[#00bbae] flex gap-3 items-center justify-center">
-                Apply
-              </button>
-            </div>
-            <div className="flex flex-col gap-0 md:max-w-[500px]">
-              {" "}
-              {coupon_data.map((coupon) => (
-                <div
-                  className="flex flex-col sm:flex-row items-start sm:items-center justify-between
-                                   px-3 pb-2 rounded-lg transition-all duration-200 ease-in-out
-                                   hover:bg-gray-50 border-b border-gray-100 last:border-b-0"
-                  key={coupon._id}
-                >
-                  <div className="flex items-center gap-3 mb-2 sm:mb-0">
-                    {" "}
-                    <div className="w-5 h-5 flex-shrink-0 text-green-600">
-                      {" "}
-                      <Tag className="w-full h-full" strokeWidth={2} />{" "}
-                    </div>
-                    <p className="text-base leading-relaxed text-gray-700 font-medium">
-                      {" "}
-                      {coupon.description}
+            {appliedCoupon ? (
+              <div className="flex items-center justify-between p-3 bg-green-50 border border-green-200 rounded-xl">
+                <div className="flex items-center gap-2">
+                  <Tag className="w-5 h-5 text-green-600" />
+                  <div>
+                    <p className="text-sm font-semibold text-green-800">
+                      {appliedCoupon.code} Applied
+                    </p>
+                    <p className="text-xs text-green-600">
+                      {appliedCoupon.discountType === "PERCENTAGE"
+                        ? `${appliedCoupon.discountValue}% off`
+                        : `₹${appliedCoupon.discountValue} off`}
                     </p>
                   </div>
-
+                </div>
+                <button
+                  onClick={handleRemoveCoupon}
+                  className="text-red-600 hover:text-red-800 text-sm font-semibold"
+                >
+                  Remove
+                </button>
+              </div>
+            ) : (
+              <>
+                <div className="flex gap-2 w-full items-center">
+                  <input
+                    type="text"
+                    value={couponInput}
+                    onChange={(e) => setCouponInput(e.target.value)}
+                    onKeyPress={(e) => e.key === "Enter" && handleApplyCoupon()}
+                    className="w-full border border-gray-200 outline-none rounded-xl px-3 py-2 text-black"
+                    placeholder="Enter coupon code"
+                  />
                   <button
-                    onClick={() => handleCopy(coupon.code)}
-                    className="group relative flex items-center justify-center gap-2
-                                     px-4 py-2 bg-blue-50 text-blue-700 text-sm font-semibold
-                                     rounded-full transition-all duration-200 ease-in-out
-                                     hover:bg-blue-100 hover:shadow-md active:scale-95
-                                     focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50
-                                     min-w-[120px] h-9" // Ensures consistent width/height
+                    onClick={handleApplyCoupon}
+                    className="rounded-xl w-28 text-[16px] leading-[24px] font-semibold text-white transition-colors duration-300 hover:bg-[#f88e0f] cursor-pointer px-3 py-2 bg-[#00bbae] flex gap-3 items-center justify-center"
                   >
-                    <span
-                      className={`transition-opacity duration-200 ${
-                        copiedCode === coupon.code
-                          ? "opacity-0 absolute"
-                          : "opacity-100"
-                      }`}
-                    >
-                      {coupon.code}
-                    </span>
-                    <span
-                      className={`absolute transition-opacity duration-200 flex items-center gap-1
-                                            ${
-                                              copiedCode === coupon.code
-                                                ? "opacity-100"
-                                                : "opacity-0"
-                                            }`}
-                    >
-                      Copied!{" "}
-                      <Copy className="w-4 h-4 text-blue-700" strokeWidth={2} />
-                    </span>
-                    {!copiedCode && (
-                      <Copy
-                        className="w-4 h-4 text-blue-700 opacity-80 group-hover:opacity-100 transition-opacity duration-200"
-                        strokeWidth={2}
-                      />
-                    )}
+                    Apply
                   </button>
                 </div>
-              ))}
-            </div>
+                {applicableCoupons.length > 0 && (
+                  <div className="flex flex-col gap-2">
+                    <p className="text-sm font-semibold text-gray-700">
+                      Available Coupons:
+                    </p>
+                    <div className="flex flex-col gap-2 max-h-32 overflow-y-auto">
+                      {applicableCoupons.map((coupon) => (
+                        <div
+                          key={coupon._id}
+                          className="flex items-center justify-between p-2 bg-gray-50 border border-gray-200 rounded-lg hover:bg-gray-100 transition-colors"
+                        >
+                          <div className="flex items-center gap-2">
+                            <Tag className="w-4 h-4 text-green-600" />
+                            <div>
+                              <p className="text-sm font-semibold text-gray-800">
+                                {coupon.code}
+                              </p>
+                              <p className="text-xs text-gray-600">
+                                {coupon.title}
+                              </p>
+                            </div>
+                          </div>
+                          <button
+                            onClick={() => {
+                              applyCoupon(coupon);
+                              setCouponInput("");
+                            }}
+                            className="text-sm font-semibold text-[#00bbae] hover:text-[#f88e0f]"
+                          >
+                            Apply
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </>
+            )}
             <div className="w-full flex-col gap-3 flex overflow-y-auto max-h-[100px]">
               {/* Total MRP */}
               <div className="flex justify-between items-center w-full">
@@ -244,7 +293,7 @@ const Cart = () => {
                   Coupon Discount
                 </p>
                 <p className="text-[16px] leading-[24px] text-[#d9534f]">
-                  - ₹ {totalCouponDiscount}
+                  - ₹ {totalCouponDiscount + couponDiscount}
                 </p>
               </div>
 

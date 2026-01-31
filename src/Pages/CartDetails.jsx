@@ -42,6 +42,11 @@ const CartDetails = () => {
     totalProductDiscount,
     totalCouponDiscount,
     payableAmount,
+    applicableCoupons,
+    appliedCoupon,
+    couponDiscount,
+    applyCoupon,
+    removeCoupon,
   } = useContext(CartContext);
   const [couponCode, setCouponCode] = useState("");
   const [copiedCode, setCopiedCode] = useState(null);
@@ -59,6 +64,25 @@ const CartDetails = () => {
 
   const submitFormCoupon = (event) => {
     event.preventDefault();
+    if (!couponCode.trim()) {
+      alert("Please enter a coupon code");
+      return;
+    }
+    // Find coupon by code
+    const coupon = applicableCoupons.find(
+      (c) => c.code.toLowerCase() === couponCode.trim().toLowerCase()
+    );
+    if (coupon) {
+      applyCoupon(coupon);
+      setCouponCode("");
+    } else {
+      alert("Invalid coupon code. Please check and try again.");
+    }
+  };
+
+  const handleRemoveCoupon = () => {
+    removeCoupon();
+    setCouponCode("");
   };
 
   const isCartEmpty = cartItems.length === 0;
@@ -149,9 +173,21 @@ const CartDetails = () => {
                               {item.quantity}
                             </span>
                             <button
-                              onClick={() => increaseQuantityFromCart(item)}
-                              className="p-2 bg-gray-200 rounded-full text-gray-600 hover:bg-gray-300 transition"
+                              onClick={() => {
+                                const availableStock = item.stock ?? 0;
+                                if (item.quantity < availableStock) {
+                                  increaseQuantityFromCart(item);
+                                } else {
+                                  alert(`Only ${availableStock} items available in stock.`);
+                                }
+                              }}
+                              className={`p-2 rounded-full transition ${
+                                (item.stock ?? 0) > item.quantity
+                                  ? "bg-gray-200 text-gray-600 hover:bg-gray-300"
+                                  : "bg-gray-100 text-gray-400 cursor-not-allowed opacity-50"
+                              }`}
                               aria-label="Increase quantity"
+                              disabled={(item.stock ?? 0) <= item.quantity}
                             >
                               <Plus className="w-4 h-4" />
                             </button>
@@ -285,26 +321,90 @@ const CartDetails = () => {
                   <h3 className="text-lg font-semibold text-gray-800 mb-4">
                     Have a coupon?
                   </h3>
-                  <form onSubmit={submitFormCoupon} className="flex gap-2 mb-4">
-                    <input
-                      type="text"
-                      name="couponCode"
-                      onChange={(e) => setCouponCode(e.target.value)}
-                      className="flex-1 p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#00bbae] transition"
-                      placeholder="Enter coupon code"
-                    />
-                    <button
-                      type="submit"
-                      className="w-auto px-6 py-3 bg-[#00bbae] text-white font-semibold rounded-xl transition-colors duration-300 hover:bg-[#f88e0f]"
-                    >
-                      {formSubmit ? (
-                        <Loader className="w-6 h-6 text-white animate-spin" />
-                      ) : (
-                        "Apply"
-                      )}
-                    </button>
-                  </form>
-                  <div className="flex flex-col gap-0 md:max-w-[500px]">
+                  {appliedCoupon ? (
+                    <div className="flex items-center justify-between p-3 bg-green-50 border border-green-200 rounded-xl mb-4">
+                      <div className="flex items-center gap-2">
+                        <Tag className="w-5 h-5 text-green-600" />
+                        <div>
+                          <p className="text-sm font-semibold text-green-800">
+                            {appliedCoupon.code} Applied
+                          </p>
+                          <p className="text-xs text-green-600">
+                            {appliedCoupon.discountType === "PERCENTAGE"
+                              ? `${appliedCoupon.discountValue}% off (Max ₹${appliedCoupon.maxDiscount || "No limit"})`
+                              : `₹${appliedCoupon.discountValue} off`}
+                          </p>
+                        </div>
+                      </div>
+                      <button
+                        onClick={handleRemoveCoupon}
+                        className="text-red-600 hover:text-red-800 text-sm font-semibold"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  ) : (
+                    <form onSubmit={submitFormCoupon} className="flex gap-2 mb-4">
+                      <input
+                        type="text"
+                        name="couponCode"
+                        value={couponCode}
+                        onChange={(e) => setCouponCode(e.target.value)}
+                        className="flex-1 p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#00bbae] transition"
+                        placeholder="Enter coupon code"
+                      />
+                      <button
+                        type="submit"
+                        className="w-auto px-6 py-3 bg-[#00bbae] text-white font-semibold rounded-xl transition-colors duration-300 hover:bg-[#f88e0f]"
+                      >
+                        {formSubmit ? (
+                          <Loader className="w-6 h-6 text-white animate-spin" />
+                        ) : (
+                          "Apply"
+                        )}
+                      </button>
+                    </form>
+                  )}
+                  {applicableCoupons.length > 0 && !appliedCoupon && (
+                    <div className="mb-4">
+                      <p className="text-sm font-semibold text-gray-700 mb-2">
+                        Available Coupons:
+                      </p>
+                      <div className="flex flex-col gap-2 max-h-40 overflow-y-auto">
+                        {applicableCoupons.map((coupon) => (
+                          <div
+                            key={coupon._id}
+                            className="flex items-center justify-between p-2 bg-gray-50 border border-gray-200 rounded-lg hover:bg-gray-100 transition-colors"
+                          >
+                            <div className="flex items-center gap-2 flex-1">
+                              <Tag className="w-4 h-4 text-green-600 flex-shrink-0" />
+                              <div className="flex-1">
+                                <p className="text-sm font-semibold text-gray-800">
+                                  {coupon.code}
+                                </p>
+                                <p className="text-xs text-gray-600">
+                                  {coupon.title}
+                                </p>
+                                <p className="text-xs text-gray-500">
+                                  Min. order: ₹{coupon.minOrderValue} | Save up to ₹{coupon.effectiveDiscount}
+                                </p>
+                              </div>
+                            </div>
+                            <button
+                              onClick={() => {
+                                applyCoupon(coupon);
+                                setCouponCode("");
+                              }}
+                              className="text-sm font-semibold text-[#00bbae] hover:text-[#f88e0f] ml-2"
+                            >
+                              Apply
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  {/* <div className="flex flex-col gap-0 md:max-w-[500px]">
                     {coupon_data.map((coupon) => (
                       <div
                         className="flex flex-col sm:flex-row items-start sm:items-center justify-between
@@ -361,7 +461,7 @@ const CartDetails = () => {
                         </button>
                       </div>
                     ))}
-                  </div>
+                  </div> */}
                 </div>
                 {/* Price Details */}
                 <div className="flex flex-col gap-3 text-gray-600">
@@ -382,7 +482,7 @@ const CartDetails = () => {
                   <div className="flex justify-between items-center">
                     <span className="text-base">Coupon Discount</span>
                     <span className="text-base font-medium text-red-500">
-                      {totalCouponDiscount}
+                      ₹ {totalCouponDiscount + couponDiscount}
                     </span>
                   </div>
                   <div className="flex justify-between items-center">

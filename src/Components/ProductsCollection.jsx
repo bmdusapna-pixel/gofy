@@ -44,13 +44,19 @@ const ProductsCollection = ({ color }) => {
   const addProductToCart = (product, event) => {
     event.stopPropagation();
     event.preventDefault();
+    const firstVariant = product?.variants?.[0];
+    const firstAgeGroup = firstVariant?.ageGroups?.[0];
     const cartProduct = {
       _id: product._id,
       name: product.name,
-      price: product?.variants?.[0]?.ageGroups?.[0]?.price,
-      images: product?.variants?.[0]?.images,
-      colorId: product?.variants?.[0].color._id,
-      ageGroupId: product?.variants[0]?.ageGroups[0]?.ageGroup._id,
+      price: firstAgeGroup?.price,
+      cutPrice: firstAgeGroup?.cutPrice,
+      discount: firstAgeGroup?.discount,
+      stock: firstAgeGroup?.stock,
+      product_type: product.brand || "",
+      images: firstVariant?.images || [],
+      colorId: firstVariant?.color?._id || firstVariant?.color,
+      ageGroupId: firstAgeGroup?.ageGroup?._id || firstAgeGroup?.ageGroup,
     };
     addToCart(cartProduct);
   };

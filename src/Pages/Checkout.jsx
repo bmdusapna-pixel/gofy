@@ -14,7 +14,7 @@ const Checkout = () => {
   const navigate = useNavigate();
   const { user, updateUser } = useContext(AuthContext);
   const [openCoupon, setOpenCoupon] = useState(false);
-  const { formSubmit, emptyCart } = useContext(CartContext);
+  const { formSubmit, emptyCart, appliedCoupon } = useContext(CartContext);
 
   const [couponCode, setCouponCode] = useState("");
   const [useGofyPoints, setUseGofyPoints] = useState(false);
@@ -112,6 +112,15 @@ const Checkout = () => {
       setLoading(false);
     }
   };
+
+  // Sync couponCode with appliedCoupon from context
+  useEffect(() => {
+    if (appliedCoupon) {
+      setCouponCode(appliedCoupon.code);
+    } else {
+      setCouponCode("");
+    }
+  }, [appliedCoupon]);
 
   // Fetch checkout details on mount and when relevant fields change
   useEffect(() => {
