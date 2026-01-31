@@ -37,23 +37,23 @@ import TrustIndicators from "../Components/TrustIndicators.jsx";
 import ColorFilter from "../Components/ColorFilter.jsx";
 import ImageGallery from "../Components/ImageGallery.jsx";
 
-const coupon_data = [
-  {
-    _id: 1,
-    description: "Flat 10% Off on Orders Above ₹1999/-",
-    code: "FLAT10",
-  },
-  {
-    _id: 2,
-    description: "Flat 15% Off on Orders Above ₹2999/-",
-    code: "FLAT15",
-  },
-  {
-    _id: 3,
-    description: "Flat 20% Off on Orders Above ₹4599/-",
-    code: "FLAT20",
-  },
-];
+// const coupon_data = [
+//   {
+//     _id: 1,
+//     description: "Flat 10% Off on Orders Above ₹1999/-",
+//     code: "FLAT10",
+//   },
+//   {
+//     _id: 2,
+//     description: "Flat 15% Off on Orders Above ₹2999/-",
+//     code: "FLAT15",
+//   },
+//   {
+//     _id: 3,
+//     description: "Flat 20% Off on Orders Above ₹4599/-",
+//     code: "FLAT20",
+//   },
+// ];
 
 const product_details = [
   {
@@ -83,13 +83,15 @@ const ProductDetails = () => {
   const [variant, setVariant] = useState(null);
   const [ages, setAges] = useState([]);
   const [selectedAgeGroup, setSelectedAgeGroup] = useState(null);
-  const [sizechart,setsizechart] = useState(null);
+  const [sizechart, setsizechart] = useState(null);
+  const [couponData, setCouponData] = useState([]);
 
   useEffect(() => {
     const fetchProduct = async () => {
       try {
         const response = await fetch(`${baseUrl}/products/${url}`);
         const result = await response.json();
+        console.log(result.data);
         setProductData(result.data);
         if (result.data.variants && result.data.variants.length > 0) {
           const firstVariant = result.data.variants[0];
@@ -117,6 +119,12 @@ const ProductDetails = () => {
     fetchProduct();
   }, [baseUrl, url]);
 
+  useEffect(() => {
+    console.log(variant);
+  }, [variant]);
+  useEffect(() => {
+    console.log(selectedAgeGroup);
+  }, [selectedAgeGroup]);
   const FaIconsComp = {
     faFacebookF,
     faInstagram,
@@ -271,7 +279,7 @@ const ProductDetails = () => {
               {selectedAgeGroup.stock > 0 && selectedAgeGroup.stock < 5 && (
                 <p
                   className="text-[14px] text-red-600 font-semibold"
-                  style={{ 
+                  style={{
                     animation: "blink 1s step-end infinite",
                   }}
                 >
@@ -282,11 +290,10 @@ const ProductDetails = () => {
                 {Array.from({ length: 5 }).map((_, index) => (
                   <Star
                     key={index}
-                    className={`w-4 h-4 ${
-                      index < productData.rating
-                        ? "text-yellow-500"
-                        : "text-gray-300"
-                    }`}
+                    className={`w-4 h-4 ${index < productData.rating
+                      ? "text-yellow-500"
+                      : "text-gray-300"
+                      }`}
                     fill={
                       index < productData.rating ? "#f88e0f" : "transparent"
                     }
@@ -350,15 +357,15 @@ const ProductDetails = () => {
                   <p className="text-[16px] leading-[24px] text-black font-semibold">
                     Size
                   </p>
-                  {productData.sizeChart && 
-                  (<p
-                    onClick={() => {setOpenSizeChart(true);setsizechart(productData.sizeChart)}}
-                    className="text-[14px] leading-[21px] text-[#dc3545] transition-colors duration-300 hover:text-[#00bbae] hover:font-semibold cursor-pointer font-medium"
-                  >
-                    SIZE CHART
-                  </p>)
+                  {productData.sizeChart &&
+                    (<p
+                      onClick={() => { setOpenSizeChart(true); setsizechart(productData.sizeChart) }}
+                      className="text-[14px] leading-[21px] text-[#dc3545] transition-colors duration-300 hover:text-[#00bbae] hover:font-semibold cursor-pointer font-medium"
+                    >
+                      SIZE CHART
+                    </p>)
                   }
-                  
+
                 </div>
                 <div className="w-full grid grid-cols-4 sm:grid-cols-5 gap-2">
                   {variant.ageGroups.map((age) => {
@@ -380,20 +387,19 @@ const ProductDetails = () => {
                               setSelectedAgeGroup(age);
                             }
                           }}
-                          className={`relative py-2.5 px-3 rounded-md text-sm font-medium transition-all duration-200 ${
-                            isOutOfStock
-                              ? "bg-gray-100 text-gray-400 cursor-not-allowed border border-gray-300 opacity-60"
-                              : isSelected
+                          className={`relative py-2.5 px-3 rounded-md text-sm font-medium transition-all duration-200 ${isOutOfStock
+                            ? "bg-gray-100 text-gray-400 cursor-not-allowed border border-gray-300 opacity-60"
+                            : isSelected
                               ? "bg-black text-white border-2 border-black"
                               : "bg-white text-black border border-gray-300 hover:border-black hover:bg-gray-50"
-                          }`}
+                            }`}
                           style={
                             isOutOfStock
                               ? {
-                                  backgroundImage:
-                                    "linear-gradient(to bottom right, transparent calc(50% - 1px), #9ca3af calc(50% - 1px), #9ca3af calc(50% + 1px), transparent calc(50% + 1px))",
-                                  backgroundSize: "100% 100%",
-                                }
+                                backgroundImage:
+                                  "linear-gradient(to bottom right, transparent calc(50% - 1px), #9ca3af calc(50% - 1px), #9ca3af calc(50% + 1px), transparent calc(50% + 1px))",
+                                backgroundSize: "100% 100%",
+                              }
                               : {}
                           }
                         >
@@ -500,74 +506,73 @@ const ProductDetails = () => {
               <p className="text-xl leading-8 font-bold text-gray-800 border-b pb-3 mb-1">
                 Offers Available
               </p>
+
               <div className="flex flex-col gap-0 md:max-w-[500px]">
-                {coupon_data.map((coupon) => (
-                  <div
-                    className="flex flex-col sm:flex-row items-start sm:items-center justify-between
+                {productData.offersEnabled ? (
+                  productData.offers?.length > 0 ? (
+                    productData.offers.map((coupon) => (
+                      <div
+                        key={coupon._id}
+                        className="flex flex-col sm:flex-row items-start sm:items-center justify-between
                        px-3 pb-2 rounded-lg transition-all duration-200 ease-in-out
                        hover:bg-gray-50 border-b border-gray-100 last:border-b-0"
-                    key={coupon._id}
-                  >
-                    <div className="flex items-center gap-3 mb-2 sm:mb-0">
-                      <div className="w-5 h-5 flex-shrink-0 text-green-600">
-                        <Tag className="w-full h-full" strokeWidth={2} />
-                      </div>
-                      <p className="text-base leading-relaxed text-gray-700 font-medium">
-                        {coupon.description}
-                      </p>
-                    </div>
+                      >
+                        <div className="flex items-center gap-3 mb-2 sm:mb-0">
+                          <div className="w-5 h-5 text-green-600">
+                            <Tag className="w-full h-full" strokeWidth={2} />
+                          </div>
+                          <p className="text-base text-gray-700 font-medium">
+                            {coupon.title}
+                          </p>
+                        </div>
 
-                    <button
-                      onClick={() => handleCopy(coupon.code)}
-                      className="group relative flex items-center justify-center gap-2
+                        <button
+                          onClick={() => handleCopy(coupon.code)}
+                          className="group relative flex items-center gap-2
                          px-4 py-2 bg-blue-50 text-blue-700 text-sm font-semibold
-                         rounded-full transition-all duration-200 ease-in-out
-                         hover:bg-blue-100 hover:shadow-md active:scale-95
-                         focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50
-                         min-w-[120px] h-9"
-                    >
-                      <span
-                        className={`transition-opacity duration-200 ${
-                          copiedCode === coupon.code
-                            ? "opacity-0 absolute"
-                            : "opacity-100"
-                        }`}
-                      >
-                        {coupon.code}
-                      </span>
-                      <span
-                        className={`absolute transition-opacity duration-200 flex items-center gap-1
-                                ${
-                                  copiedCode === coupon.code
-                                    ? "opacity-100"
-                                    : "opacity-0"
-                                }`}
-                      >
-                        Copied!{" "}
-                        <Copy
-                          className="w-4 h-4 text-blue-700"
-                          strokeWidth={2}
-                        />
-                      </span>
-                      {!copiedCode && (
-                        <Copy
-                          className="w-4 h-4 text-blue-700 opacity-80 group-hover:opacity-100 transition-opacity duration-200"
-                          strokeWidth={2}
-                        />
-                      )}
-                    </button>
-                  </div>
-                ))}
+                         rounded-full hover:bg-blue-100 hover:shadow-md
+                         active:scale-95 transition-all min-w-[120px] h-9"
+                        >
+                          <span
+                            className={`transition-opacity duration-200 ${copiedCode === coupon.code ? "opacity-0 absolute" : "opacity-100"
+                              }`}
+                          >
+                            {coupon.code}
+                          </span>
+
+                          <span
+                            className={`absolute flex items-center gap-1 transition-opacity duration-200 ${copiedCode === coupon.code ? "opacity-100" : "opacity-0"
+                              }`}
+                          >
+                            Copied! <Copy className="w-4 h-4" />
+                          </span>
+
+                          {!copiedCode && (
+                            <Copy className="w-4 h-4 opacity-80 group-hover:opacity-100" />
+                          )}
+                        </button>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-sm text-gray-500 py-3">
+                      No offers available for this product.
+                    </p>
+                  )
+                ) : (
+                  <p className="text-sm text-gray-500 py-3">
+                    Offers are not applicable for this product.
+                  </p>
+                )}
               </div>
             </div>
+
             <div className="flex gap-10 items-center">
               <div className="flex flex-col gap-1 items-start">
                 <div className="flex gap-1 items-center">
                   <Clock className="w-4 h-4 text-black" />
                   <p
-                    className={`${
-                      pinSelected ? "text-[14px]" : "text-[18px]"
-                    } leading-[21px] font-medium`}
+                    className={`${pinSelected ? "text-[14px]" : "text-[18px]"
+                      } leading-[21px] font-medium`}
                   >
                     Expected delivery time :
                   </p>
@@ -606,11 +611,10 @@ const ProductDetails = () => {
               return (
                 <div
                   onClick={() => setCurrentMenu(item.title)}
-                  className={`cursor-pointer px-2 sm:px-4 py-2 transition-colors duration-300 ${
-                    currentMenu === item.title
-                      ? "bg-[#00bbae] text-white font-semibold"
-                      : "bg-gray-200 text-black hover:bg-[#00bbae] hover:text-white font-medium"
-                  }`}
+                  className={`cursor-pointer px-2 sm:px-4 py-2 transition-colors duration-300 ${currentMenu === item.title
+                    ? "bg-[#00bbae] text-white font-semibold"
+                    : "bg-gray-200 text-black hover:bg-[#00bbae] hover:text-white font-medium"
+                    }`}
                   key={item._id}
                 >
                   <p className="md:text-[18px] md:leading-[27px] text-[16px] leading-[24px]">
@@ -622,11 +626,10 @@ const ProductDetails = () => {
             {productData?.keyFeatures.map((item) => (
               <div
                 onClick={() => setCurrentMenu(item.key)}
-                className={`cursor-pointer px-2 sm:px-4 py-2 transition-colors duration-300 ${
-                  currentMenu === item.key
-                    ? "bg-[#00bbae] text-white font-semibold"
-                    : "bg-gray-200 text-black hover:bg-[#00bbae] hover:text-white font-medium"
-                }`}
+                className={`cursor-pointer px-2 sm:px-4 py-2 transition-colors duration-300 ${currentMenu === item.key
+                  ? "bg-[#00bbae] text-white font-semibold"
+                  : "bg-gray-200 text-black hover:bg-[#00bbae] hover:text-white font-medium"
+                  }`}
                 key={item._id}
               >
                 <p className="md:text-[18px] md:leading-[27px] text-[16px] leading-[24px]">
@@ -653,24 +656,26 @@ const ProductDetails = () => {
               />
             )}
             {currentMenu === "Product Specification" && (
-              <div className="space-y-2 lg:space-y-1 w-full">
-                {variant.specifications.map((spec, index) => {
+              <div className="space-y-3 w-full">
+                {variant?.specifications?.map((spec, index) => {
                   const [label, value] = Object.entries(spec)[0];
                   return (
-                    <ToyDetailRow key={index} label={label} value={value} />
+                    <div key={index} className="flex gap-4">
+                      <span className="font-semibold">{label}:</span>
+                      <span className="font-medium">{value}</span>
+                    </div>
                   );
                 })}
-                {productData.material && (
-                  <ToyDetailRow
-                    label="Material"
-                    value={productData.material.name}
-                  />
-                )}
-                {productData.gender && (
-                  <ToyDetailRow label="Gender" value={productData.gender} />
-                )}
+
+                {productData?.specifications?.map((spec) => (
+                  <div key={spec._id} className="flex gap-4">
+                    <span className="font-semibold">{spec.key}:</span>
+                    <span className="font-medium">{spec.value}</span>
+                  </div>
+                ))}
               </div>
             )}
+
             {currentMenu === "Shipping & Returns" && (
               <div className="flex flex-col gap-2">
                 <p className="flex gap-1 items-center">
@@ -719,7 +724,7 @@ const ProductDetails = () => {
       <SizeChart
         openSizeChart={openSizeChart}
         setOpenSizeChart={setOpenSizeChart}
-        sizechart = {sizechart}
+        sizechart={sizechart}
       />
     </div>
   );
