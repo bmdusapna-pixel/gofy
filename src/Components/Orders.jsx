@@ -729,13 +729,17 @@ useEffect(()=>{
               filteredOrders.map( (order) => {
               let statusBgColor = "bg-orange-100";
               let statusTextColor = "text-orange-600";
-              if (order.orderStatus === "Delivered") {
+              if (order.orderStatus === "CONFIRMED") {
+                statusBgColor = "bg-blue-100";
+                statusTextColor = "text-blue-600";
+              }
+              if (order.orderStatus === "DELIVERED") {
                 statusBgColor = "bg-teal-100";
                 statusTextColor = "text-teal-600";
-              } else if (order.orderStatus === "Cancelled") {
+              } else if (order.orderStatus === "CANCELLED") {
                 statusBgColor = "bg-red-100";
                 statusTextColor = "text-red-600";
-              } else if (order.orderStatus === "Refunded") {
+              } else if (order.orderStatus === "REFUNDED") {
                 statusBgColor = "bg-green-100";
                 statusTextColor = "text-green-600";
               }

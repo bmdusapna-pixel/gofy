@@ -594,7 +594,7 @@ const Checkout = () => {
                         </p>
                       </div>
                       <p className="text-[16px] leading-[24px] whitespace-nowrap text-[#001430]">
-                        ₹ {item.totalCutPrice}
+                        ₹ {item.totalPrice}
                       </p>
                     </div>
                   ))}
@@ -618,7 +618,7 @@ const Checkout = () => {
                   Subtotal
                 </p>
                 <p className="text-[18px] leading-[27px] text-[#001430] font-semibold ">
-                  ₹ {checkoutData?.pricing?.totalCutPrice || 0}
+                  ₹ {checkoutData?.pricing?.subtotal}
                 </p>
               </div>
 
