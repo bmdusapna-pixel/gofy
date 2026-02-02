@@ -335,6 +335,18 @@ const SecondHeader = ({
   );
 };
 
+const DropdownSkeleton = () => (
+  <div className="absolute top-full left-0 w-[260px] bg-white shadow-lg rounded-md p-4">
+    {Array.from({ length: 6 }).map((_, i) => (
+      <div
+        key={i}
+        className="h-4 bg-gray-200 rounded mb-3 animate-pulse"
+      />
+    ))}
+  </div>
+);
+
+
 const ThirdHeader = ({ isMobileMenuOpen, setIsMobileMenuOpen }) => {
   const [itemHovered, setItemHovered] = useState(null);
   const laptopMenuRef = useRef(null);
@@ -342,6 +354,9 @@ const ThirdHeader = ({ isMobileMenuOpen, setIsMobileMenuOpen }) => {
   const location = useLocation();
   const [shopCollection, setShopCollection] = useState([]);
   const [menu, setMenu] = useState([]);
+  const [isMenuLoading, setIsMenuLoading] = useState(true);
+  const [isCollectionLoading, setIsCollectionLoading] = useState(true);
+
 
   const slugify = (text) =>
     text.toString().toLowerCase().trim().replace(/\s+/g, "-");
@@ -382,6 +397,7 @@ const ThirdHeader = ({ isMobileMenuOpen, setIsMobileMenuOpen }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setIsCollectionLoading(true);
         const collectionRes = await fetch(`${baseUrl}/collections`);
         const collectionData = await collectionRes.json();
 
@@ -413,57 +429,60 @@ const ThirdHeader = ({ isMobileMenuOpen, setIsMobileMenuOpen }) => {
         setShopCollection(collectionsMap);
       } catch (error) {
         console.error("Error fetching collections and categories:", error);
+      } finally {
+        setIsCollectionLoading(false);
       }
     };
 
     fetchData();
     async function fetchMenu() {
-      const ageRes = await fetch(`${baseUrl}/ages`).then((res) => res.json());
-      const ages = ageRes;
-
-      const productsRes = await fetch(`${baseUrl}/products`).then((res) =>
-        res.json()
-      );
-      const products = productsRes.data;
-
-      const ageMap = new Map();
-
-      ages.forEach((age) => {
-        const ageSlug = slugify(age.ageRange);
-
-        ageMap.set(ageSlug, {
-          label: age.ageRange,
-          url: `/products/${ageSlug}`,
-          items: new Map(),
+      try {
+        setIsMenuLoading(true);
+    
+        const ageRes = await fetch(`${baseUrl}/ages`).then((res) => res.json());
+        const productsRes = await fetch(`${baseUrl}/products`).then((res) =>
+          res.json()
+        );
+    
+        const ageMap = new Map();
+    
+        ageRes.forEach((age) => {
+          const ageSlug = slugify(age.ageRange);
+          ageMap.set(ageSlug, {
+            label: age.ageRange,
+            url: `/products/${ageSlug}`,
+            items: new Map(),
+          });
         });
-      });
-
-      products.forEach((product) => {
-        product.variants.forEach((variant) => {
-          variant.ageGroups.forEach(({ ageGroup }) => {
-            const ageSlug = slugify(ageGroup.ageRange);
-
-            if (!ageMap.has(ageSlug)) return;
-
-            product.categories.forEach((category) => {
-              const catSlug = slugify(category.categoryName);
-              ageMap.get(ageSlug).items.set(catSlug, {
-                name: category.categoryName,
-                url: `/products/${ageSlug}/${catSlug}`,
+    
+        productsRes.data.forEach((product) => {
+          product.variants.forEach((variant) => {
+            variant.ageGroups.forEach(({ ageGroup }) => {
+              const ageSlug = slugify(ageGroup.ageRange);
+              if (!ageMap.has(ageSlug)) return;
+    
+              product.categories.forEach((category) => {
+                const catSlug = slugify(category.categoryName);
+                ageMap.get(ageSlug).items.set(catSlug, {
+                  name: category.categoryName,
+                  url: `/products/${ageSlug}/${catSlug}`,
+                });
               });
             });
           });
         });
-      });
-
-      const finalMenu = Array.from(ageMap.values()).map((age) => ({
-        ...age,
-        items: Array.from(age.items.values()),
-      }));
-
-      setMenu(finalMenu);
+    
+        setMenu(
+          Array.from(ageMap.values()).map((age) => ({
+            ...age,
+            items: Array.from(age.items.values()),
+          }))
+        );
+      } finally {
+        setIsMenuLoading(false);
+      }
     }
-
+    
     fetchMenu();
   }, []);
 
@@ -507,7 +526,9 @@ const ThirdHeader = ({ isMobileMenuOpen, setIsMobileMenuOpen }) => {
                   itemHovered === "shopByAge" ? "rotate-180" : "rotate-0"
                 }`}
               />
-              {itemHovered === "shopByAge" && <AnimatedDropdown items={menu} />}
+              {itemHovered === "shopByAge" && (
+                isMenuLoading ? <DropdownSkeleton /> : <AnimatedDropdown items={menu} />
+              )}
             </div>
             <div
               onMouseEnter={() => setItemHovered("shopByCollection")}
@@ -528,7 +549,7 @@ const ThirdHeader = ({ isMobileMenuOpen, setIsMobileMenuOpen }) => {
                 }`}
               />
               {itemHovered === "shopByCollection" && (
-                <AnimatedDropdown items={shopCollection} />
+                isCollectionLoading ? <DropdownSkeleton /> : <AnimatedDropdown items={shopCollection} />
               )}
             </div>
             <Link
