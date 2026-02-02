@@ -35,13 +35,16 @@ const CartContextProvider = ({ children }) => {
     (sum, item) => sum + (item.price || 0) * item.quantity,
     0
   );
+  console.log(cartItems)
+  console.log("totalPrice",totalPrice)
 
   // Total MRP (original price) – fall back to price if cutPrice is missing
   const totalMrp = cartItems.reduce(
     (sum, item) =>
-      sum + ((item.cutPrice != null ? item.cutPrice : item.price || 0) * item.quantity),
+      sum + ((item.cutPrice != null || item.cutPrice !== 0 ? item.cutPrice : item.price || 0) * item.quantity),
     0
   );
+  console.log("totalMrp",totalMrp)
 
   // Discount coming from product pricing (MRP - selling price)
   const totalProductDiscount = Math.max(totalMrp - totalPrice, 0);
