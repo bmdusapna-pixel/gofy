@@ -307,14 +307,8 @@ useEffect(()=>{
         )}
 
         {/* Action Buttons */}
-        {isDelivered && !loadingOrderDetails && (
+        {!loadingOrderDetails && (
           <div className="flex flex-col sm:flex-row gap-4">
-            <button
-              onClick={handleReorder}
-              className="bg-[#00bbae] hover:bg-[#02a499] text-white font-medium py-3 px-6 rounded-lg flex-1 transition-colors flex items-center justify-center gap-2 shadow-sm"
-            >
-              <ShoppingBag size={20} /> Order Again
-            </button>
             <button
               onClick={handleDownloadInvoice}
               className="border-2 border-[#00bbae] text-[#00bbae] hover:bg-[#00bbae] hover:text-white font-medium py-3 px-6 rounded-lg flex-1 transition-colors flex items-center justify-center gap-2 shadow-sm"
