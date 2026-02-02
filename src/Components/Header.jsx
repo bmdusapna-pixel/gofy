@@ -185,6 +185,15 @@ const SecondHeader = ({
     };
   }, []);
 
+  const handleSearchClick = () => {
+    const query = searchProduct.trim();
+    if (!query) return;
+
+    // Ensure debounced value is in sync and open the dropdown
+    setDebouncedSearch(query);
+    setShowSearch(true);
+  };
+
   return (
     <div
       className={`h-auto py-1 transition-all duration-300 w-full shadow-sm bg-white`}
@@ -247,7 +256,11 @@ const SecondHeader = ({
                   />
                 )}
               </div>
-              <button className="p-3 h-full hover:bg-gray-100 rounded-br-md rounded-tr-md bg-transparent duration-300 transition-colors cursor-pointer">
+              <button
+                type="button"
+                onClick={handleSearchClick}
+                className="p-3 h-full hover:bg-gray-100 rounded-br-md rounded-tr-md bg-transparent duration-300 transition-colors cursor-pointer"
+              >
                 <Search className="w-5 h-5 text-black" />
               </button>
             </div>

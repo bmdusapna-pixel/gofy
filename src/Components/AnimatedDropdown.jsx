@@ -379,19 +379,21 @@ const SearchProducts = ({ searchProduct, debouncedSearch, onSearch }) => {
           <p className="p-4 text-gray-500 text-base">Searching...</p>
         ) : filteredProducts.length > 0 ? (
           filteredProducts.map((product) => (
-            <div
+            <Link
               key={product._id}
+              to={`/product-details/${product.url}`}
+              onClick={() => onSearch && onSearch(product.name)}
               className="flex bg-white gap-5 w-full items-center cursor-pointer p-3"
             >
               <div className="w-18 h-18 bg-gray-100 p-1 rounded-md flex items-center justify-center">
-                <img src={product.images[0]} alt={product.name} />
+                <img src={product.images?.[0]} alt={product.name} />
               </div>
               <div className="flex flex-col gap-1">
                 <p className="text-black font-semibold transition-colors duration-300 text-[16px] leading-[24px] hover:text-[#00bbae]">
                   {product.name}
                 </p>
               </div>
-            </div>
+            </Link>
           ))
         ) : debouncedSearch === "" ? null : (
           <p className="p-4 text-gray-500 text-base">No products found</p>

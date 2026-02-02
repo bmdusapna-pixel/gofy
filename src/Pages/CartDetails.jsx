@@ -157,7 +157,9 @@ const CartDetails = () => {
                             <span className="text-sm text-gray-500 line-through">
                               ₹ {item.cutPrice}
                             </span>
-                            <span className="text-red-600">{item.discount}%</span>
+                            <span className="text-red-600">
+                              {(((item.cutPrice - item.price) / item.cutPrice) * 100).toFixed(2)}%
+                            </span>
                           </div>
 
                           {/* Quantity Control */}
@@ -181,11 +183,10 @@ const CartDetails = () => {
                                   alert(`Only ${availableStock} items available in stock.`);
                                 }
                               }}
-                              className={`p-2 rounded-full transition ${
-                                (item.stock ?? 0) > item.quantity
+                              className={`p-2 rounded-full transition ${(item.stock ?? 0) > item.quantity
                                   ? "bg-gray-200 text-gray-600 hover:bg-gray-300"
                                   : "bg-gray-100 text-gray-400 cursor-not-allowed opacity-50"
-                              }`}
+                                }`}
                               aria-label="Increase quantity"
                               disabled={(item.stock ?? 0) <= item.quantity}
                             >
