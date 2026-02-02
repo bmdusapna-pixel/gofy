@@ -141,7 +141,7 @@ const App = () => {
       />
      {/* ✅ FLOATING FEATURES */}
      {/* <FloatingProductCard open /> */}
-      <WhatsAppButton />
+      {/* <WhatsAppButton /> */}
       <BackToTopButton />
       <Footer />
     </>
