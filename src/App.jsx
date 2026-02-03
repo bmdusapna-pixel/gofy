@@ -11,6 +11,7 @@ import PageLoader from "./Components/PageLoader";
 import FloatingProductCard from "./Components/FloatingProductCard";
 import WhatsAppButton from "./Components/WhatsAppButton";
 import BackToTopButton from "./Components/BackToTopButton";
+import { ToastContainer } from "react-toastify";
 
 // 🔹 Lazy loaded pages
 const Home = lazy(() => import("./Pages/Home"));
@@ -85,6 +86,7 @@ const App = () => {
 
   return (
     <>
+    <ToastContainer/>
       <Header />
 
       <div ref={cartRef}>

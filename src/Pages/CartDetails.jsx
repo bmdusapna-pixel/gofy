@@ -486,19 +486,19 @@ const CartDetails = () => {
                       ₹ {totalCouponDiscount + couponDiscount}
                     </span>
                   </div>
-                  <div className="flex justify-between items-center">
+                  {/* <div className="flex justify-between items-center">
                     <span className="text-base">Delivery Charges</span>
                     <span className="text-base font-medium text-green-600">
                       {totalMrp >= 500 ? "Free" : "₹ 50"}
                     </span>
-                  </div>
+                  </div> */}
                 </div>
                 <div className="w-full h-px bg-gray-200 my-6"></div>
                 {/* Final Total and Checkout Button */}
                 <div className="flex justify-between items-center font-bold text-gray-900 mb-6">
                   <span className="text-xl">Total Amount</span>
                   <span className="text-xl">
-                    ₹ {payableAmount + (totalPrice >= 500 ? 0 : 50)}
+                    ₹ {payableAmount}
                   </span>
                 </div>
                 <div className="mt-6 w-full text-center bg-[#00bbae] text-white text-lg font-bold rounded-xl transition-colors duration-300 hover:bg-[#f88e0f]">

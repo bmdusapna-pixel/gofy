@@ -7,6 +7,8 @@ import { CartContext } from "../Context/CartContext";
 import RelatedItems from "../Components/RelatedItems";
 import { AuthContext } from "../Context/AuthContext";
 import api from "../api/axios.js";
+import { toast } from "react-toastify";
+
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
 
@@ -93,14 +95,22 @@ const Checkout = () => {
   const fetchCheckoutDetails = async () => {
     setLoading(true);
     try {
+      // Derive shipping state from selected shipping address (for GST breakup)
+      const shippingAddressObj = user?.addresses?.find(
+        (addr) => addr._id === shippingAddressId
+      );
+      const shippingState = shippingAddressObj?.state;
+
       const { data } = await api.post("/user/checkout/checkout-details", {
         couponCode: couponCode || undefined,
         deliveryType: deliveryOption || "NORMAL",
         points: useGofyPoints ? user?.gofyPoints || 0 : 0,
         giftPack: isGift,
+        shippingState,
       });
       
       if (data.success) {
+        console.log("data",data)
         setCheckoutData(data);
         console.log(data)
         setError(null);
@@ -125,7 +135,7 @@ const Checkout = () => {
   // Fetch checkout details on mount and when relevant fields change
   useEffect(() => {
     fetchCheckoutDetails();
-  }, [couponCode, deliveryOption, useGofyPoints, isGift]);
+  }, [couponCode, deliveryOption, useGofyPoints, isGift, shippingAddressId]);
 
   const handleSameAsBillingChange = () => {
     const newValue = !sameAsBilling;
@@ -206,8 +216,9 @@ const Checkout = () => {
           navigate(`/payment?orderId=${orderId}&amount=${amount}`);
         } else {
           // For COD, show success message and clear cart
-          alert("Order placed successfully!");
+          toast.success("Your Order placed successfully!");
           emptyCart();
+          navigate("/account")
           console.log("Order response:", data);
           // Optional: Redirect to order confirmation page
           // navigate('/order-confirmation');
@@ -618,7 +629,7 @@ const Checkout = () => {
                   Subtotal
                 </p>
                 <p className="text-[18px] leading-[27px] text-[#001430] font-semibold ">
-                  ₹ {checkoutData?.pricing?.subtotal}
+                  ₹ {checkoutData?.pricing?.subtotal || 0}
                 </p>
               </div>
 
@@ -654,6 +665,57 @@ const Checkout = () => {
                     - ₹ {checkoutData.pricing.pointsDiscount}
                   </p>
                 </div>
+              )}
+
+              {/* Taxable Amount (after discounts, before tax) */}
+              {typeof checkoutData?.pricing?.taxableSubtotal === "number" && (
+                <div className="flex gap-3 w-full p-3 justify-between items-center">
+                  <p className="text-[16px] leading-[24px] text-[#001430] font-medium">
+                    Taxable Amount
+                  </p>
+                  <p className="text-[16px] leading-[24px] text-[#001430] font-medium">
+                    ₹ {checkoutData.pricing.taxableSubtotal}
+                  </p>
+                </div>
+              )}
+
+              {/* GST Breakup */}
+              {checkoutData?.pricing?.taxTotal > 0 && (
+                <>
+                  {checkoutData.pricing.taxType === "IGST" ? (
+                    <div className="flex gap-3 w-full p-3 justify-between items-center">
+                      <p className="text-[16px] leading-[24px] text-[#001430] font-medium">
+                        IGST
+                      </p>
+                      <p className="text-[16px] leading-[24px] text-[#001430] font-medium">
+                        ₹ {checkoutData.pricing.taxTotal}
+                      </p>
+                    </div>
+                  ) : (
+                    <>
+                      {checkoutData.pricing.cgst > 0 && (
+                        <div className="flex gap-3 w-full p-3 justify-between items-center">
+                          <p className="text-[16px] leading-[24px] text-[#001430] font-medium">
+                            CGST
+                          </p>
+                          <p className="text-[16px] leading-[24px] text-[#001430] font-medium">
+                            ₹ {checkoutData.pricing.cgst}
+                          </p>
+                        </div>
+                      )}
+                      {checkoutData.pricing.sgst > 0 && (
+                        <div className="flex gap-3 w-full p-3 justify-between items-center">
+                          <p className="text-[16px] leading-[24px] text-[#001430] font-medium">
+                            SGST
+                          </p>
+                          <p className="text-[16px] leading-[24px] text-[#001430] font-medium">
+                            ₹ {checkoutData.pricing.sgst}
+                          </p>
+                        </div>
+                      )}
+                    </>
+                  )}
+                </>
               )}
 
               {checkoutData?.pricing?.deliveryCharges > 0 && (

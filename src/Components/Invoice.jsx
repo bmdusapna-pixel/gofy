@@ -51,6 +51,17 @@ const Invoice = ({ invoiceData, orderDetails }) => {
     (pricing.couponDiscount || 0) +
     (pricing.pointsDiscount || 0);
 
+  const taxableSubtotal =
+    typeof pricing.taxableSubtotal === "number"
+      ? pricing.taxableSubtotal
+      : Math.max(subtotal - totalDiscount, 0);
+
+  const taxTotal = pricing.taxTotal || 0;
+  const cgst = pricing.cgst || 0;
+  const sgst = pricing.sgst || 0;
+  const igst = pricing.igst || 0;
+  const taxType = pricing.taxType || null;
+
   const deliveryCharges = pricing.deliveryCharges || 0;
   const giftPackCharges = pricing.giftPackCharges || 0;
   const adjustment = pricing.adjustment || 0;
@@ -58,7 +69,11 @@ const Invoice = ({ invoiceData, orderDetails }) => {
   const total =
     typeof pricing.total === "number"
       ? pricing.total
-      : subtotal - totalDiscount + deliveryCharges + giftPackCharges + adjustment;
+      : taxableSubtotal +
+        taxTotal +
+        deliveryCharges +
+        giftPackCharges +
+        adjustment;
 
   const balance = typeof pricing.balance === "number" ? pricing.balance : 0;
   const paymentMade =
@@ -258,6 +273,45 @@ const Invoice = ({ invoiceData, orderDetails }) => {
                     - ₹{totalDiscount.toFixed(2)}
                   </td>
                 </tr>
+              )}
+              {/* Taxable Amount */}
+              <tr>
+                <td className="py-1 text-gray-700">Taxable Amount</td>
+                <td className="py-1 text-right font-semibold">
+                  ₹{taxableSubtotal.toFixed(2)}
+                </td>
+              </tr>
+              {/* GST Breakup */}
+              {taxTotal > 0 && (
+                <>
+                  {taxType === "IGST" ? (
+                    <tr>
+                      <td className="py-1 text-gray-700">IGST</td>
+                      <td className="py-1 text-right font-semibold">
+                        ₹{taxTotal.toFixed(2)}
+                      </td>
+                    </tr>
+                  ) : (
+                    <>
+                      {cgst > 0 && (
+                        <tr>
+                          <td className="py-1 text-gray-700">CGST</td>
+                          <td className="py-1 text-right font-semibold">
+                            ₹{cgst.toFixed(2)}
+                          </td>
+                        </tr>
+                      )}
+                      {sgst > 0 && (
+                        <tr>
+                          <td className="py-1 text-gray-700">SGST</td>
+                          <td className="py-1 text-right font-semibold">
+                            ₹{sgst.toFixed(2)}
+                          </td>
+                        </tr>
+                      )}
+                    </>
+                  )}
+                </>
               )}
               {deliveryCharges > 0 && (
                 <tr>
