@@ -34,7 +34,6 @@ const Cart = () => {
   } = useContext(CartContext);
   const [copiedCode, setCopiedCode] = useState(null);
   const [couponInput, setCouponInput] = useState("");
-  console.log("mrp",totalMrp)
 
   const handleCopy = async (code) => {
     try {

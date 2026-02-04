@@ -36,7 +36,7 @@ import ShareCopyButton from "../Components/ShareCopyButton.jsx";
 import TrustIndicators from "../Components/TrustIndicators.jsx";
 import ColorFilter from "../Components/ColorFilter.jsx";
 import ImageGallery from "../Components/ImageGallery.jsx";
-
+import api from "../api/axios.js";
 // const coupon_data = [
 //   {
 //     _id: 1,
@@ -91,8 +91,9 @@ const ProductDetails = () => {
       try {
         const response = await fetch(`${baseUrl}/products/${url}`);
         const result = await response.json();
-        console.log(result.data);
+        console.log("result", result.data);
         setProductData(result.data);
+
         if (result.data.variants && result.data.variants.length > 0) {
           const firstVariant = result.data.variants[0];
           setVariant(firstVariant);
@@ -118,6 +119,26 @@ const ProductDetails = () => {
     fetchAges();
     fetchProduct();
   }, [baseUrl, url]);
+
+  useEffect(() => {
+    if (!selectedAgeGroup?.price) return;
+
+    const fetchApplicableCoupons = async () => {
+      try {
+        const res = await api.post(
+          "user/coupons/applicable",
+          { totalPrice: selectedAgeGroup.price }
+        );
+        console.log(res.data.applicableCoupons)
+        setCouponData(res.data.applicableCoupons); // or res.data
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchApplicableCoupons();
+  }, [selectedAgeGroup]);
+
 
   useEffect(() => {
     // Reset quantity when variant or ageGroup changes
@@ -175,6 +196,7 @@ const ProductDetails = () => {
   };
 
   const addProductToCart = () => {
+    console.log("i am called")
     // Check if product is out of stock
     if (selectedAgeGroup.stock === 0) {
       handleSaveForLater();
@@ -202,7 +224,11 @@ const ProductDetails = () => {
       colorId: variant.color?._id || variant.color,
       ageGroupId: selectedAgeGroup.ageGroup?._id || selectedAgeGroup.ageGroup,
     };
+    console.log("cartproduct", cartProduct)
     if (productData && variant && selectedAgeGroup) {
+      console.log(productData);
+      console.log(variant);
+      console.log(selectedAgeGroup)
       addingProductToCart(cartProduct, finalQuantity);
     }
   };
@@ -278,6 +304,8 @@ const ProductDetails = () => {
   const decreaseQuantity = () => {
     setQuantity((prev) => (prev > 1 ? prev - 1 : prev));
   };
+
+
 
   const [openSizeChart, setOpenSizeChart] = useState(false);
 
@@ -480,13 +508,12 @@ const ProductDetails = () => {
             <div className="flex flex-wrap gap-5 items-center">
               <div className="flex w-28 h-12 rounded-2xl border border-gray-200 overflow-hidden">
                 <div className="flex flex-col items-center justify-between bg-white w-1/2 border-r border-gray-200">
-                  <div 
+                  <div
                     onClick={increaseQuantity}
-                    className={`flex justify-center items-center w-5 h-5 ${
-                      quantity >= (selectedAgeGroup?.stock ?? 0)
-                        ? "cursor-not-allowed opacity-50"
-                        : "cursor-pointer"
-                    }`}
+                    className={`flex justify-center items-center w-5 h-5 ${quantity >= (selectedAgeGroup?.stock ?? 0)
+                      ? "cursor-not-allowed opacity-50"
+                      : "cursor-pointer"
+                      }`}
                     title={
                       quantity >= (selectedAgeGroup?.stock ?? 0)
                         ? `Only ${selectedAgeGroup?.stock ?? 0} items available in stock`
@@ -494,15 +521,14 @@ const ProductDetails = () => {
                     }
                   >
                     <Plus
-                      className={`w-4 h-4 ${
-                        quantity >= (selectedAgeGroup?.stock ?? 0)
-                          ? "text-gray-400"
-                          : "text-black"
-                      }`}
+                      className={`w-4 h-4 ${quantity >= (selectedAgeGroup?.stock ?? 0)
+                        ? "text-gray-400"
+                        : "text-black"
+                        }`}
                     />
                   </div>
                   <div className="w-full bg-gray-200 h-[0.5px]"></div>
-                  <div 
+                  <div
                     onClick={decreaseQuantity}
                     className="flex justify-center items-center cursor-pointer w-5 h-5"
                   >
@@ -532,7 +558,9 @@ const ProductDetails = () => {
                     : "Add to cart"}
                 </p>
               </div>
-              <div className="py-2 w-40 rounded-2xl transition-colors duration-300 hover:bg-[#f88e0f] cursor-pointer px-3 bg-[#00bbae] flex gap-3 items-center justify-center">
+              <div
+                onClick={() => navigate("/checkout")}
+                className="py-2 w-40 rounded-2xl transition-colors duration-300 hover:bg-[#f88e0f] cursor-pointer px-3 bg-[#00bbae] flex gap-3 items-center justify-center">
                 {selectedAgeGroup.stock > 0 ? (
                   <IndianRupee className="w-6 h-6 text-white" />
                 ) : (
@@ -549,69 +577,81 @@ const ProductDetails = () => {
                 <Heart className="w-5 h-5" />
               </div>
             </div>
-            <div className="flex flex-col gap-4 px-4 py-3">
-              <p className="text-xl leading-8 font-bold text-gray-800 border-b pb-3 mb-1">
+            <div className="flex flex-col gap-4 px-4 py-3 ">
+              <p className="text-xl font-bold text-gray-800 border-b pb-3">
                 Offers Available
               </p>
 
-              <div className="flex flex-col gap-0 md:max-w-[500px]">
-                {productData.offersEnabled ? (
-                  productData.offers?.length > 0 ? (
-                    productData.offers.map((coupon) => (
-                      <div
-                        key={coupon._id}
-                        className="flex flex-col sm:flex-row items-start sm:items-center justify-between
-                       px-3 pb-2 rounded-lg transition-all duration-200 ease-in-out
-                       hover:bg-gray-50 border-b border-gray-100 last:border-b-0"
-                      >
-                        <div className="flex items-center gap-3 mb-2 sm:mb-0">
-                          <div className="w-5 h-5 text-green-600">
-                            <Tag className="w-full h-full" strokeWidth={2} />
-                          </div>
-                          <p className="text-base text-gray-700 font-medium">
+              <div className="flex flex-col gap-3 md:max-w-[500px]">
+                {couponData && couponData.length > 0 ? (
+                  couponData.map((coupon) => (
+                    <div
+                      key={coupon._id}
+                      className="flex flex-col sm:flex-row sm:items-center sm:justify-between
+          gap-3 px-4 py-3 rounded-xl border border-gray-100
+          bg-gray-50 hover:bg-white hover:shadow-sm transition-all"
+                    >
+                      {/* Left content */}
+                      <div className="flex flex-col gap-1">
+                        <div className="flex items-center gap-2">
+                          <Tag className="w-5 h-5 text-green-600" />
+                          <p className="text-sm font-semibold text-gray-800">
                             {coupon.title}
                           </p>
                         </div>
 
-                        <button
-                          onClick={() => handleCopy(coupon.code)}
-                          className="group relative flex items-center gap-2
-                         px-4 py-2 bg-blue-50 text-blue-700 text-sm font-semibold
-                         rounded-full hover:bg-blue-100 hover:shadow-md
-                         active:scale-95 transition-all min-w-[120px] h-9"
-                        >
-                          <span
-                            className={`transition-opacity duration-200 ${copiedCode === coupon.code ? "opacity-0 absolute" : "opacity-100"
-                              }`}
-                          >
-                            {coupon.code}
+                        <p className="text-sm text-gray-600">
+                          Save up to{" "}
+                          <span className="font-semibold text-green-700">
+                            ₹{coupon.effectiveDiscount}
+                          </span>{" "}
+                          on orders above{" "}
+                          <span className="font-semibold">
+                            ₹{coupon.minOrderValue}
                           </span>
-
-                          <span
-                            className={`absolute flex items-center gap-1 transition-opacity duration-200 ${copiedCode === coupon.code ? "opacity-100" : "opacity-0"
-                              }`}
-                          >
-                            Copied! <Copy className="w-4 h-4" />
-                          </span>
-
-                          {!copiedCode && (
-                            <Copy className="w-4 h-4 opacity-80 group-hover:opacity-100" />
-                          )}
-                        </button>
+                        </p>
                       </div>
-                    ))
-                  ) : (
-                    <p className="text-sm text-gray-500 py-3">
-                      No offers available for this product.
-                    </p>
-                  )
+
+                      {/* Coupon code */}
+                      <button
+                        onClick={() => handleCopy(coupon.code)}
+                        className="group relative flex items-center justify-center gap-2
+            px-4 py-2 bg-blue-50 text-blue-700 text-sm font-semibold
+            rounded-full hover:bg-blue-100 active:scale-95
+            transition-all min-w-[120px]"
+                      >
+                        <span
+                          className={`transition-opacity duration-200 ${copiedCode === coupon.code
+                              ? "opacity-0 absolute"
+                              : "opacity-100"
+                            }`}
+                        >
+                          {coupon.code}
+                        </span>
+
+                        <span
+                          className={`absolute flex items-center gap-1 transition-opacity duration-200 ${copiedCode === coupon.code
+                              ? "opacity-100"
+                              : "opacity-0"
+                            }`}
+                        >
+                          Copied <Copy className="w-4 h-4" />
+                        </span>
+
+                        {copiedCode !== coupon.code && (
+                          <Copy className="w-4 h-4 opacity-70 group-hover:opacity-100" />
+                        )}
+                      </button>
+                    </div>
+                  ))
                 ) : (
                   <p className="text-sm text-gray-500 py-3">
-                    Offers are not applicable for this product.
+                    No offers available for this product.
                   </p>
                 )}
               </div>
             </div>
+
 
             <div className="flex gap-10 items-center">
               <div className="flex flex-col gap-1 items-start">

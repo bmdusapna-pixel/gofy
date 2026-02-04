@@ -35,8 +35,6 @@ const CartContextProvider = ({ children }) => {
     (sum, item) => sum + (item.price || 0) * item.quantity,
     0
   );
-  console.log(cartItems)
-  console.log("totalPrice",totalPrice)
 
   // Total MRP (original price) – fall back to price if cutPrice is missing
   const totalMrp = cartItems.reduce(
@@ -44,7 +42,6 @@ const CartContextProvider = ({ children }) => {
       sum + ((item.cutPrice != null || item.cutPrice !== 0 ? item.cutPrice : item.price || 0) * item.quantity),
     0
   );
-  console.log("totalMrp",totalMrp)
 
   // Discount coming from product pricing (MRP - selling price)
   const totalProductDiscount = Math.max(totalMrp - totalPrice, 0);
@@ -102,6 +99,7 @@ const CartContextProvider = ({ children }) => {
       const serverCart = response.data.map((item) => ({
         _id: item.productId,
         name: item.productName,
+        url: item.url,
         price: item.price,
         cutPrice: item.cutPrice,
         discount: item.discount,
@@ -115,7 +113,6 @@ const CartContextProvider = ({ children }) => {
         tax: item.tax,
         coupanDiscont:item.coupanDiscount
       }));
-      console.log("cart",serverCart)
       setCartItems(serverCart);
       localStorage.setItem("cartItems", JSON.stringify(serverCart));
     } catch (err) {
@@ -245,12 +242,13 @@ const CartContextProvider = ({ children }) => {
   const syncAddToCart = async (productId, colorId, ageGroupId, quantityDelta) => {
     if (!user?._id) return;
     try {
-      await api.post("/user/cart/add", {
+      const res = await api.post("/user/cart/add", {
         productId,
         colorId,
         ageGroupId,
         quantity: quantityDelta, // This is the delta (+1, -1, etc.)
       });
+      console.log("res",res)
     } catch (err) {
       console.error("Cart add API failed:", err);
       throw err;
@@ -397,6 +395,7 @@ const CartContextProvider = ({ children }) => {
           index === existingItemIndex ? { ...item, quantity: finalQuantity } : item
         );
         setCartItems(updatedCart);
+        console.log("cart",updatedCart)
         
         // Send the delta, not absolute quantity
         await syncAddToCart(product._id, product.colorId, product.ageGroupId, quantityDelta);

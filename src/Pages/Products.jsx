@@ -413,7 +413,7 @@ const Products = () => {
                     onMouseEnter={() => setHoveredProductCategory(item._id)}
                   >
                     <MoveRight
-                      className={`w-5 h-5 ${
+                      className={`w-5 h-5 ${({checkoutData.item[0].tax}) %
                         hoveredProductCategory === item._id ? "block" : "hidden"
                       }`}
                     />

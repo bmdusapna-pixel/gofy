@@ -17,14 +17,6 @@ import { Link } from "react-router-dom";
 import EmptyCart from "../assets/emptyCart.png";
 import RelatedItems from "../Components/RelatedItems";
 
-const coupon_data = [
-  {
-    _id: 1,
-    description: "Flat 10% Off on Orders Above ₹1999/-",
-    code: "FLAT10",
-  },
-];
-
 const CartDetails = () => {
   const {
     cartItems,
@@ -124,7 +116,7 @@ const CartDetails = () => {
                     >
                       {/* Product Image */}
                       <Link
-                        to={`/product/${item._id}`}
+                        to={`/product-details/${item.url}`}
                         className="flex-shrink-0"
                       >
                         <img
@@ -137,7 +129,7 @@ const CartDetails = () => {
                       {/* Product Details */}
                       <div className="flex-1 flex flex-col gap-2 w-full sm:w-auto text-center sm:text-left">
                         <div>
-                          <Link to={`/product/${item._id}`}>
+                          <Link to={`/product-details/${item.url}`}>
                             <h3 className="text-lg md:text-xl font-semibold text-gray-800 line-clamp-2 leading-tight">
                               {item.name}
                             </h3>
@@ -369,7 +361,7 @@ const CartDetails = () => {
                   {applicableCoupons.length > 0 && !appliedCoupon && (
                     <div className="mb-4">
                       <p className="text-sm font-semibold text-gray-700 mb-2">
-                        Available Coupons:
+                        Aplicable Coupons:
                       </p>
                       <div className="flex flex-col gap-2 max-h-40 overflow-y-auto">
                         {applicableCoupons.map((coupon) => (
@@ -383,11 +375,11 @@ const CartDetails = () => {
                                 <p className="text-sm font-semibold text-gray-800">
                                   {coupon.code}
                                 </p>
-                                <p className="text-xs text-gray-600">
+                                {/* <p className="text-xs text-gray-600">
                                   {coupon.title}
-                                </p>
+                                </p> */}
                                 <p className="text-xs text-gray-500">
-                                  Min. order: ₹{coupon.minOrderValue} | Save up to ₹{coupon.effectiveDiscount}
+                                Save up to ₹{coupon.effectiveDiscount} on orders above ₹{coupon.minOrderValue}
                                 </p>
                               </div>
                             </div>
