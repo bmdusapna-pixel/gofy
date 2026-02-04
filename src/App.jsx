@@ -62,22 +62,22 @@ const App = () => {
     );
   }, [openCart, isMobileMenuOpen, isBulkOrderModalOpen]);
 
-  // 🔹 Close cart on outside click
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (cartRef.current && !cartRef.current.contains(e.target)) {
-        setOpenCart(false);
-      }
-    };
+  // // 🔹 Close cart on outside click
+  // useEffect(() => {
+  //   const handleClickOutside = (e) => {
+  //     if (cartRef.current && !cartRef.current.contains(e.target)) {
+  //       setOpenCart(false);
+  //     }
+  //   };
 
-    if (openCart) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
+  //   if (openCart) {
+  //     document.addEventListener("mousedown", handleClickOutside);
+  //   }
 
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [openCart, setOpenCart]);
+  //   return () => {
+  //     document.removeEventListener("mousedown", handleClickOutside);
+  //   };
+  // }, [openCart, setOpenCart]);
 
   const handleBulkOrderConfirm = () => {
     setIsBulkOrderModalOpen(false);

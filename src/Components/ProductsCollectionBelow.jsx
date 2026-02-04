@@ -30,7 +30,7 @@ const ProductsCollectionBelow = ({ color }) => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch(`${baseUrl}/products`);
+        const response = await fetch(`${baseUrl}/products/trending`);
         const result = await response.json();
         setProductList(result.data);
       } catch (error) {

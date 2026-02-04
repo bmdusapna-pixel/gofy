@@ -108,11 +108,10 @@ const HeroSection = () => {
       </div>
       <div className="flex lg:px-12 mx-auto px-5 flex-col gap-2 w-full items-center justify-center">
         <p className="text-[32px] md:text-[38px] leading-[48px] md:leading-[57px] text-[#212529] font-bold">
-          Shop By Categories
+          Shop By Collections
         </p>
         <p className="text-[16px] leading-[24px] font-normal text-gray-500 w-full sm:w-sm text-center">
-          Lorem ipsum dolor sit amet consectetur. Id fames there are many
-          vulputate eget dolor.
+        Browse our curated collections and find the perfect picks for every moment.
         </p>
         <div
           className="flex w-full max-w-[1200px] my-10 relative"
@@ -134,7 +133,7 @@ const HeroSection = () => {
                 return (
                   <SwiperSlide key={item._id}>
                     <Link
-                      to={`/products/${slugify(item.collectionName)}`}
+                      to={`/products/${slugify(item.collectionName)}` }
                       className="flex cursor-pointer flex-col items-center justify-center gap-3 transition-transform duration-300 py-5 hover:-translate-y-1"
                     >
                       <div className="w-20 md:w-35 h-20 md:h-35 border-8 flex items-center justify-center rounded-full border-white bg-[#e9f9fc] shadow-md">

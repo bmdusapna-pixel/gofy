@@ -38,16 +38,16 @@ const Products = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await fetch(`${baseUrl}/products`);
+        const res = await fetch(`${baseUrl}/products/arrival`);
         const data = await res.json();
 
-        if (data?.data) {
-          let items = data.data.filter((p) =>
-            p.promotions.includes("new_arrival")
-          );
+        // if (data?.data) {
+        //   let items = data.data.filter((p) =>
+        //     p.promotions.includes("new_arrival")
+        //   );
 
-          setProductItems(items);
-        }
+          setProductItems(data.data);
+        // }
       } catch (err) {
         console.error("Error fetching products:", err);
       }

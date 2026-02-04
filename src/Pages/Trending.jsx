@@ -77,10 +77,10 @@ const SuperDeals = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await fetch(`${baseUrl}/products`);
+        const res = await fetch(`${baseUrl}/products/trending`);
         const data = await res.json();
         setProductItems(
-          data.data.filter((p) => p.promotions.includes("trending")) || []
+          data.data
         );
 
         // Extract filter options from API response

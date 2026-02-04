@@ -30,7 +30,7 @@ const ProductsCollection = ({ color }) => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch(`${baseUrl}/products`);
+        const response = await fetch(`${baseUrl}/products/arrival`);
         const result = await response.json();
         console.log(result)
         setProductList(result.data);
