@@ -605,7 +605,7 @@ const Checkout = () => {
                         </p>
                       </div>
                       <p className="text-[16px] leading-[24px] whitespace-nowrap text-[#001430]">
-                        ₹ {item.totalPrice}
+                        ₹ {item.totalCutPrice}
                       </p>
                     </div>
                   ))}
@@ -629,7 +629,7 @@ const Checkout = () => {
                   Subtotal
                 </p>
                 <p className="text-[18px] leading-[27px] text-[#001430] font-semibold ">
-                  ₹ {checkoutData?.pricing?.subtotal || 0}
+                  ₹ {checkoutData?.pricing?.totalCutPrice || 0}
                 </p>
               </div>
 
@@ -685,7 +685,7 @@ const Checkout = () => {
                   {checkoutData.pricing.taxType === "IGST" ? (
                     <div className="flex gap-3 w-full p-3 justify-between items-center">
                       <p className="text-[16px] leading-[24px] text-[#001430] font-medium">
-                        IGST
+                        IGST ({checkoutData.items[0].tax}) %
                       </p>
                       <p className="text-[16px] leading-[24px] text-[#001430] font-medium">
                         ₹ {checkoutData.pricing.taxTotal}
@@ -696,7 +696,7 @@ const Checkout = () => {
                       {checkoutData.pricing.cgst > 0 && (
                         <div className="flex gap-3 w-full p-3 justify-between items-center">
                           <p className="text-[16px] leading-[24px] text-[#001430] font-medium">
-                            CGST
+                            CGST ({checkoutData.items[0].tax/2}) %
                           </p>
                           <p className="text-[16px] leading-[24px] text-[#001430] font-medium">
                             ₹ {checkoutData.pricing.cgst}
@@ -706,7 +706,7 @@ const Checkout = () => {
                       {checkoutData.pricing.sgst > 0 && (
                         <div className="flex gap-3 w-full p-3 justify-between items-center">
                           <p className="text-[16px] leading-[24px] text-[#001430] font-medium">
-                            SGST
+                            SGST ({checkoutData.items[0].tax/2}) %
                           </p>
                           <p className="text-[16px] leading-[24px] text-[#001430] font-medium">
                             ₹ {checkoutData.pricing.sgst}
@@ -729,6 +729,57 @@ const Checkout = () => {
                 </div>
               )}
 
+              {/* Gift Pack Charges */}
+              {checkoutData?.pricing?.giftPackCharges > 0 && (
+                <div className="flex gap-3 w-full p-3 justify-between items-center">
+                  <p className="text-[16px] leading-[24px] text-[#001430] font-medium">
+                    Gift Pack Charges
+                  </p>
+                  <p className="text-[16px] leading-[24px] text-[#001430] font-medium">
+                    ₹ {checkoutData.pricing.giftPackCharges}
+                  </p>
+                </div>
+              )}
+
+              {/* Gift Pack GST (18%) */}
+              {checkoutData?.pricing?.giftPackGst > 0 && (
+                <>
+                  {checkoutData.pricing.taxType === "IGST" ? (
+                    <div className="flex gap-3 w-full p-3 justify-between items-center">
+                      <p className="text-[16px] leading-[24px] text-[#001430] font-medium">
+                        Gift Pack IGST (18%)
+                      </p>
+                      <p className="text-[16px] leading-[24px] text-[#001430] font-medium">
+                        ₹ {checkoutData.pricing.giftPackIgst}
+                      </p>
+                    </div>
+                  ) : (
+                    <>
+                      {checkoutData.pricing.giftPackCgst > 0 && (
+                        <div className="flex gap-3 w-full p-3 justify-between items-center">
+                          <p className="text-[16px] leading-[24px] text-[#001430] font-medium">
+                            Gift Pack CGST (9%)
+                          </p>
+                          <p className="text-[16px] leading-[24px] text-[#001430] font-medium">
+                            ₹ {checkoutData.pricing.giftPackCgst}
+                          </p>
+                        </div>
+                      )}
+                      {checkoutData.pricing.giftPackSgst > 0 && (
+                        <div className="flex gap-3 w-full p-3 justify-between items-center">
+                          <p className="text-[16px] leading-[24px] text-[#001430] font-medium">
+                            Gift Pack SGST (9%)
+                          </p>
+                          <p className="text-[16px] leading-[24px] text-[#001430] font-medium">
+                            ₹ {checkoutData.pricing.giftPackSgst}
+                          </p>
+                        </div>
+                      )}
+                    </>
+                  )}
+                </>
+              )}
+
               <div className="w-full h-[1px] bg-gray-200 border-none"></div>
 
               {/* Total Savings */}
@@ -739,6 +790,19 @@ const Checkout = () => {
                   </p>
                   <p className="text-[18px] leading-[27px] text-green-700 font-semibold ">
                     ₹ {checkoutData.pricing.totalSavings}
+                  </p>
+                </div>
+              )}
+
+              {/* Rounding Adjustment */}
+              {checkoutData?.pricing?.roundingAdjustment !== 0 && (
+                <div className="flex gap-3 w-full p-3 justify-between items-center">
+                  <p className="text-[16px] leading-[24px] text-[#001430] font-medium">
+                    Rounding Off
+                  </p>
+                  <p className="text-[16px] leading-[24px] text-[#001430] font-medium">
+                    {checkoutData.pricing.roundingAdjustment > 0 ? "+" : ""}
+                    ₹ {checkoutData.pricing.roundingAdjustment}
                   </p>
                 </div>
               )}
