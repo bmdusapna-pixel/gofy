@@ -79,6 +79,8 @@ const CartDetails = () => {
 
   const isCartEmpty = cartItems.length === 0;
 
+  console.log("cart", cartItems)
+
   return (
     <div className="w-full min-h-screen py-10 bg-gray-50">
       <div className="container mx-auto">
