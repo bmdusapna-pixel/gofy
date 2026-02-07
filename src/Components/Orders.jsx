@@ -149,7 +149,7 @@ const Orders = () => {
   const fetchMyOrders = async() => {
     try {
       setLoading(true);
-      const response = await api.get(`/order/myOrders`);
+      const response = await api.get(`order/myOrders`);
       if(response.data.success)
       {
         setorders(response.data.data)
@@ -167,7 +167,7 @@ const Orders = () => {
     setLoadingOrderDetails(true);
     setOrderDetailsError(null);
     try {
-      const response = await api.get(`/order/${orderId}`);
+      const response = await api.get(`order/myOrder/${orderId}`);
       console.log("response",response.data)
       if (response.data.success) {
         setDetailedOrder(response.data.order);

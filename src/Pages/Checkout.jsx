@@ -744,7 +744,7 @@ const Checkout = () => {
               {/* Gift Pack GST (18%) */}
               {checkoutData?.pricing?.giftPackGst > 0 && (
                 <>
-                  {checkoutData.pricing.taxType === "IGST" ? (
+                  {checkoutData.pricing.giftPackIgst > 0 ? (
                     <div className="flex gap-3 w-full p-3 justify-between items-center">
                       <p className="text-[16px] leading-[24px] text-[#001430] font-medium">
                         Gift Pack IGST (18%)

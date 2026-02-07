@@ -411,11 +411,28 @@ const ThirdHeader = ({ isMobileMenuOpen, setIsMobileMenuOpen }) => {
     const fetchData = async () => {
       try {
         setIsCollectionLoading(true);
+        
+        // Fetch collections with status check
         const collectionRes = await fetch(`${baseUrl}/collections`);
+        if (!collectionRes.ok) {
+          throw new Error(`Collections API failed with status ${collectionRes.status}`);
+        }
         const collectionData = await collectionRes.json();
 
+        // Fetch categories with status check
         const categoryRes = await fetch(`${baseUrl}/categories`);
+        if (!categoryRes.ok) {
+          throw new Error(`Categories API failed with status ${categoryRes.status}`);
+        }
         const categoryData = await categoryRes.json();
+
+        // Ensure we have the expected data structure
+        if (!collectionData?.collections || !Array.isArray(collectionData.collections)) {
+          throw new Error("Invalid collections data structure");
+        }
+        if (!categoryData?.categories || !Array.isArray(categoryData.categories)) {
+          throw new Error("Invalid categories data structure");
+        }
 
         const collectionsMap = collectionData.collections.map((col) => ({
           _id: col._id,
@@ -425,7 +442,9 @@ const ThirdHeader = ({ isMobileMenuOpen, setIsMobileMenuOpen }) => {
         }));
 
         categoryData.categories.forEach((cat) => {
-          const collectionId = cat.collectionId._id;
+          const collectionId = cat.collectionId?._id;
+          if (!collectionId) return;
+          
           const collectionIndex = collectionsMap.findIndex(
             (c) => c._id === collectionId
           );
@@ -440,8 +459,11 @@ const ThirdHeader = ({ isMobileMenuOpen, setIsMobileMenuOpen }) => {
         });
 
         setShopCollection(collectionsMap);
+        console.log("Collections loaded successfully:", collectionsMap);
       } catch (error) {
         console.error("Error fetching collections and categories:", error);
+        // Set fallback empty state so loading indicator stops
+        setShopCollection([]);
       } finally {
         setIsCollectionLoading(false);
       }
@@ -452,10 +474,21 @@ const ThirdHeader = ({ isMobileMenuOpen, setIsMobileMenuOpen }) => {
       try {
         setIsMenuLoading(true);
     
-        const ageRes = await fetch(`${baseUrl}/ages`).then((res) => res.json());
-        const productsRes = await fetch(`${baseUrl}/products`).then((res) =>
-          res.json()
-        );
+        const ageRes = await fetch(`${baseUrl}/ages`).then((res) => {
+          if (!res.ok) throw new Error(`Ages API failed: ${res.status}`);
+          return res.json();
+        });
+        const productsRes = await fetch(`${baseUrl}/products`).then((res) => {
+          if (!res.ok) throw new Error(`Products API failed: ${res.status}`);
+          return res.json();
+        });
+    
+        if (!Array.isArray(ageRes)) {
+          throw new Error("Ages data is not an array");
+        }
+        if (!productsRes?.data || !Array.isArray(productsRes.data)) {
+          throw new Error("Products data structure is invalid");
+        }
     
         const ageMap = new Map();
     
@@ -469,12 +502,12 @@ const ThirdHeader = ({ isMobileMenuOpen, setIsMobileMenuOpen }) => {
         });
     
         productsRes.data.forEach((product) => {
-          product.variants.forEach((variant) => {
-            variant.ageGroups.forEach(({ ageGroup }) => {
+          product.variants?.forEach((variant) => {
+            variant.ageGroups?.forEach(({ ageGroup }) => {
               const ageSlug = slugify(ageGroup.ageRange);
               if (!ageMap.has(ageSlug)) return;
     
-              product.categories.forEach((category) => {
+              product.categories?.forEach((category) => {
                 const catSlug = slugify(category.categoryName);
                 ageMap.get(ageSlug).items.set(catSlug, {
                   name: category.categoryName,
@@ -491,6 +524,10 @@ const ThirdHeader = ({ isMobileMenuOpen, setIsMobileMenuOpen }) => {
             items: Array.from(age.items.values()),
           }))
         );
+        console.log("Menu loaded successfully");
+      } catch (error) {
+        console.error("Error fetching menu data:", error);
+        setMenu([]);
       } finally {
         setIsMenuLoading(false);
       }
