@@ -51,36 +51,14 @@ const Invoice = ({ invoiceData, orderDetails }) => {
     (pricing.couponDiscount || 0) +
     (pricing.pointsDiscount || 0);
 
-  const taxableSubtotal =
-    typeof pricing.taxableSubtotal === "number"
-      ? pricing.taxableSubtotal
-      : Math.max(subtotal - totalDiscount, 0);
-
-  const taxTotal = pricing.taxTotal || 0;
-  const cgst = pricing.cgst || 0;
-  const sgst = pricing.sgst || 0;
-  const igst = pricing.igst || 0;
-  const taxType = pricing.taxType || null;
-
-  // Gift pack GST (18% on gift pack charges)
-  const giftPackGst = pricing.giftPackGst || 0;
-  const giftPackCgst = pricing.giftPackCgst || 0;
-  const giftPackSgst = pricing.giftPackSgst || 0;
-  const giftPackIgst = pricing.giftPackIgst || 0;
-
   const deliveryCharges = pricing.deliveryCharges || 0;
   const giftPackCharges = pricing.giftPackCharges || 0;
   const adjustment = pricing.adjustment || 0;
-  const roundingAdjustment = pricing.roundingAdjustment || 0;
 
   const total =
     typeof pricing.total === "number"
       ? pricing.total
-      : taxableSubtotal +
-        taxTotal +
-        deliveryCharges +
-        giftPackCharges +
-        adjustment;
+      : subtotal - totalDiscount + deliveryCharges + giftPackCharges + adjustment;
 
   const balance = typeof pricing.balance === "number" ? pricing.balance : 0;
   const paymentMade =
@@ -281,45 +259,6 @@ const Invoice = ({ invoiceData, orderDetails }) => {
                   </td>
                 </tr>
               )}
-              {/* Taxable Amount */}
-              <tr>
-                <td className="py-1 text-gray-700">Taxable Amount</td>
-                <td className="py-1 text-right font-semibold">
-                  ₹{taxableSubtotal.toFixed(2)}
-                </td>
-              </tr>
-              {/* GST Breakup */}
-              {taxTotal > 0 && (
-                <>
-                  {taxType === "IGST" ? (
-                    <tr>
-                      <td className="py-1 text-gray-700">IGST</td>
-                      <td className="py-1 text-right font-semibold">
-                        ₹{taxTotal.toFixed(2)}
-                      </td>
-                    </tr>
-                  ) : (
-                    <>
-                      {cgst > 0 && (
-                        <tr>
-                          <td className="py-1 text-gray-700">CGST</td>
-                          <td className="py-1 text-right font-semibold">
-                            ₹{cgst.toFixed(2)}
-                          </td>
-                        </tr>
-                      )}
-                      {sgst > 0 && (
-                        <tr>
-                          <td className="py-1 text-gray-700">SGST</td>
-                          <td className="py-1 text-right font-semibold">
-                            ₹{sgst.toFixed(2)}
-                          </td>
-                        </tr>
-                      )}
-                    </>
-                  )}
-                </>
-              )}
               {deliveryCharges > 0 && (
                 <tr>
                   <td className="py-1 text-gray-700">Delivery Charges</td>
@@ -336,53 +275,12 @@ const Invoice = ({ invoiceData, orderDetails }) => {
                   </td>
                 </tr>
               )}
-              {/* Gift Pack GST (18%) */}
-              {giftPackGst > 0 && (
-                <>
-                  {taxType === "IGST" ? (
-                    <tr>
-                      <td className="py-1 text-gray-700">Gift Pack IGST (18%)</td>
-                      <td className="py-1 text-right font-semibold">
-                        + ₹{giftPackIgst.toFixed(2)}
-                      </td>
-                    </tr>
-                  ) : (
-                    <>
-                      {giftPackCgst > 0 && (
-                        <tr>
-                          <td className="py-1 text-gray-700">Gift Pack CGST (9%)</td>
-                          <td className="py-1 text-right font-semibold">
-                            + ₹{giftPackCgst.toFixed(2)}
-                          </td>
-                        </tr>
-                      )}
-                      {giftPackSgst > 0 && (
-                        <tr>
-                          <td className="py-1 text-gray-700">Gift Pack SGST (9%)</td>
-                          <td className="py-1 text-right font-semibold">
-                            + ₹{giftPackSgst.toFixed(2)}
-                          </td>
-                        </tr>
-                      )}
-                    </>
-                  )}
-                </>
-              )}
               {adjustment !== 0 && (
                 <tr>
                   <td className="py-1 text-gray-700">Adjustment</td>
                   <td className="py-1 text-right font-semibold">
                     {adjustment > 0 ? "+" : "-"}
                     ₹{Math.abs(adjustment).toFixed(2)}
-                  </td>
-                </tr>
-              )}
-              {roundingAdjustment !== 0 && (
-                <tr>
-                  <td className="py-1 text-gray-700">Rounding Off</td>
-                  <td className="py-1 text-right font-semibold">
-                    {roundingAdjustment > 0 ? "+" : ""}
-                    ₹{roundingAdjustment.toFixed(2)}
                   </td>
                 </tr>
               )}
