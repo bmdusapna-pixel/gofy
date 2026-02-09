@@ -37,6 +37,8 @@ const Checkout = () => {
   const [checkoutData, setCheckoutData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [is30MinAvailable, setIs30MinAvailable] = useState(false);
+  const [checking30Min, setChecking30Min] = useState(false);
 
   const [addresses, setAddresses] = useState([]);
   const [showForm, setShowForm] = useState(false);
@@ -136,6 +138,39 @@ const Checkout = () => {
   useEffect(() => {
     fetchCheckoutDetails();
   }, [couponCode, deliveryOption, useGofyPoints, isGift, shippingAddressId]);
+
+  // Check 30-min availability when shipping address changes
+  useEffect(() => {
+    const checkAvailability = async () => {
+      const shippingAddressObj = user?.addresses?.find(
+        (addr) => addr._id === shippingAddressId
+      );
+
+      if (!shippingAddressObj) {
+        setIs30MinAvailable(false);
+        return;
+      }
+
+      try {
+        setChecking30Min(true);
+        const { data } = await api.post("/location/check-30min", {
+          address: shippingAddressObj,
+        });
+        setIs30MinAvailable(!!data?.available);
+        // If previously selected UNDER_30_MIN but now unavailable, fallback
+        if (!data?.available && deliveryOption === "UNDER_30_MIN") {
+          setDeliveryOption("NORMAL");
+        }
+      } catch (err) {
+        console.error("Error checking 30-min availability:", err);
+        setIs30MinAvailable(false);
+      } finally {
+        setChecking30Min(false);
+      }
+    };
+
+    checkAvailability();
+  }, [shippingAddressId]);
 
   const handleSameAsBillingChange = () => {
     const newValue = !sameAsBilling;
@@ -848,7 +883,7 @@ const Checkout = () => {
               </label>
 
               {/* 30 Min Delivery */}
-              <label className="flex items-center gap-2 cursor-pointer">
+              <label className={`flex items-center gap-2 ${!is30MinAvailable ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer'}`}>
                 <input
                   type="radio"
                   name="delivery"
@@ -856,11 +891,18 @@ const Checkout = () => {
                   checked={deliveryOption === "UNDER_30_MIN"}
                   onChange={(e) => setDeliveryOption(e.target.value)}
                   className="h-5 w-5 text-blue-500 border-gray-400 focus:ring-blue-500"
+                  disabled={!is30MinAvailable}
                 />
                 <span className="flex items-center text-gray-700">
                   Get under 30 minutes
                   <Truck className="w-5 h-5 text-blue-500 ml-1" />
                 </span>
+                {!checking30Min && !is30MinAvailable && (
+                  <span className="ml-2 text-sm text-red-500">Not available for selected address</span>
+                )}
+                {checking30Min && (
+                  <span className="ml-2 text-sm text-gray-500">Checking availability...</span>
+                )}
               </label>
 
               {/* Normal Delivery */}
