@@ -29,6 +29,7 @@ import {
   SearchProducts,
 } from "./AnimatedDropdown";
 import { CartContext } from "../Context/CartContext";
+import { LocationContext } from "../Context/LocationContext";
 import Notifications from "./Notifications.jsx";
 import { groupedCombined } from "../assets/helper.js";
 import { AuthContext } from "../Context/AuthContext.jsx";
@@ -148,6 +149,7 @@ const SecondHeader = ({
   const [showNotification, setShowNotification] = useState(false);
   const { user, token } = useContext(AuthContext);
   const [showSearch, setShowSearch] = useState(false);
+  const { location, loading, detectLocation } = useContext(LocationContext);
 
   const chechkingOut = () => {
     if (cartItems.length === 0) {
@@ -203,13 +205,25 @@ const SecondHeader = ({
           <Link to="/" className="w-32 hidden md:block">
             <img src={logo} alt="" className="w-full" />
           </Link>
-          <div className="w-40">
+          <div 
+            className="w-40 cursor-pointer hover:opacity-75 transition-opacity"
+            onClick={detectLocation}
+            title="Click to detect current location"
+          >
             <h3 className="font-bold text-[16px] blink-text">
               Delivery in 8 minutes
             </h3>
             <div className="flex gap-1 items-center">
               <MapPin className="w-5 h-5" />
-              <p className="text-base font-medium">Delhi, India</p>
+              <p className="text-base font-medium">
+                {loading ? (
+                  <span className="animate-pulse">Detecting...</span>
+                ) : location ? (
+                  `${location.city || "Unknown"}, ${location.pincode || ""}`
+                ) : (
+                  "Set Location"
+                )}
+              </p>
             </div>
           </div>
           <div className="lg:flex flex-1 hidden max-w-3xl border-[1px] border-gray-400 focus-within:border-[#00bbae] outline-none rounded-md">

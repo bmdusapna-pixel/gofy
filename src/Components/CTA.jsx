@@ -67,6 +67,49 @@ const age_category_array = [
   },
 ];
 
+const AGE_BUCKETS = [
+  {
+    label: "Newborn",
+    ages: ["NB", "0-1 M"],
+    image: I1,
+  },
+  {
+    label: "Infants (0–12 Months)",
+    ages: ["0-3 M", "3-6 M", "6-9 M", "9-12 M"],
+    image: I2,
+  },
+  {
+    label: "Toddlers (1–3 Years)",
+    ages: ["1-2 Y", "2-3 Y"],
+    image: I3,
+  },
+  {
+    label: "Preschool (3–5 Years)",
+    ages: ["3-4 Y", "4-5 Y"],
+    image: I4,
+  },
+  {
+    label: "Kids (5–8 Years)",
+    ages: ["5-6 Y", "6-7 Y", "7-8 Y"],
+    image: I5,
+  },
+  {
+    label: "Big Kids (8–12 Years)",
+    ages: ["8-9 Y", "9-10 Y", "10-11 Y", "11-12 Y"],
+    image: I6,
+  },
+  {
+    label: "Teens (12–16 Years)",
+    ages: ["12-13 Y", "13-14 Y", "14-15 Y", "15-16 Y"],
+    image: I7,
+  },
+  {
+    label: "Free Size",
+    ages: ["Free Size"],
+    image: I8,
+  },
+];
+
 const CTA = () => {
   const [buttonHovered, setButtonHovered] = useState(false);
   const [ageCategories, setAgeCategories] = useState([]);
@@ -86,6 +129,19 @@ const CTA = () => {
     };
     fetchBanner();
   }, []);
+
+  const visibleAgeBuckets = AGE_BUCKETS.map((bucket) => {
+    const matchedAges = ageCategories.filter((age) =>
+      bucket.ages.includes(age.ageRange),
+    );
+
+    if (matchedAges.length === 0) return null;
+
+    return {
+      ...bucket,
+      matchedAges,
+    };
+  }).filter(Boolean);
 
   return (
     <div className="flex flex-col gap-5 w-full">
@@ -144,21 +200,24 @@ const CTA = () => {
           vulputate eget dolor.
         </p>
         <div className="grid xl:grid-cols-8 lg:grid-cols-4 md:grid-cols-3 grid-cols-2 gap-0 sm:gap-5 w-full my-5 sm:my-10 items-center">
-          {ageCategories?.map((item) => (
+          {visibleAgeBuckets.map((bucket) => (
             <Link
-              to={`/products/${slugify(item.ageRange)}`}
-              key={item._id}
+              key={bucket.label}
+              to={`/products?ages=${bucket.matchedAges
+                .map((a) => a.ageRange)
+                .join(",")}`}
               className="flex flex-col gap-3 w-full items-center group"
             >
               <div className="flex items-center justify-center sm:w-40 w-36 sm:h-40 h-36 rounded-full">
                 <img
-                  src={item.image}
+                  src={bucket.image}
                   alt=""
-                  className="w-full z-10 h-full group-hover:scale-110 transition-transform duration-300"
+                  className="w-full h-full group-hover:scale-110 transition-transform duration-300"
                 />
               </div>
-              <p className="bottom-8 text-[18px] leading-[27px] text-[#000000] font-semibold">
-                {item.ageRange}
+
+              <p className="text-[18px] leading-[27px] text-[#000000] font-semibold text-center">
+                {bucket.label}
               </p>
             </Link>
           ))}

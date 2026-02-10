@@ -12,6 +12,7 @@ import FloatingProductCard from "./Components/FloatingProductCard";
 import WhatsAppButton from "./Components/WhatsAppButton";
 import BackToTopButton from "./Components/BackToTopButton";
 import { ToastContainer } from "react-toastify";
+import CurrentLocation from "./Components/CurrentLocation";
 
 // 🔹 Lazy loaded pages
 const Home = lazy(() => import("./Pages/Home"));
@@ -133,6 +134,7 @@ const App = () => {
           <Route path="/wishList" element={<WishList />} />
           <Route path="/account" element={<Account />} />
           <Route path="/blog-details" element={<BlogDetails />} />
+          <Route path = "/location" element = {<CurrentLocation/>} />
         </Routes>
       </Suspense>
 

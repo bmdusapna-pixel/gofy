@@ -21,7 +21,7 @@ const FilterActiveComponent = ({
       setActiveCategories(
         category.filter(
           (cat) =>
-            cat.collectionId.collectionName
+            cat.collectionId?.collectionName
               .toLowerCase()
               .trim()
               .replace(/\s+/g, "-")

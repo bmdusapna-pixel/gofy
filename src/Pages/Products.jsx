@@ -98,7 +98,7 @@ const Products = () => {
         (a) => slugify(a.collectionName) === selectedCollection
       );
       const relatedCategories = categories.filter(
-        (c) => c.collectionId._id === relatedCollection._id
+        (c) => c.collectionId?._id === relatedCollection?._id
       );
       setFilterCategory(relatedCategories);
     }

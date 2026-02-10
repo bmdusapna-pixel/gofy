@@ -17,10 +17,10 @@ const SuperDeals = () => {
     setCategoryBtCollection(
       collection.map((collection) => {
         return {
-          _id: collection._id,
-          collectionName: collection.collectionName,
+          _id: collection?._id,
+          collectionName: collection?.collectionName,
           categories: categoryList.filter(
-            (cat) => cat.collectionId._id === collection._id
+            (cat) => cat.collectionId?._id === collection?._id
           ),
         };
       })
