@@ -2,10 +2,21 @@ import React, { useEffect, useState } from "react";
 import SubmitReview from "./SubmitReview.jsx";
 import Invoice from "./Invoice.jsx";
 import IssueForm from "./IssueForm.jsx";
-import { ShoppingBag, Download, LogOut, Eye, ArrowLeft, Package, MapPin, CreditCard, Receipt, FileText, Loader2 } from "lucide-react";
+import {
+  ShoppingBag,
+  Download,
+  LogOut,
+  Eye,
+  ArrowLeft,
+  Package,
+  MapPin,
+  CreditCard,
+  Receipt,
+  FileText,
+  Loader2,
+} from "lucide-react";
 import api from "../api/axios.js";
 import { VITE_BASE_URL } from "../config.js";
-
 
 const Orders = () => {
   const [selectedOrder, setSelectedOrder] = useState(null);
@@ -16,7 +27,7 @@ const Orders = () => {
   const [isIssue, setIsissue] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState("All");
   const [selectedTime, setSelectedTime] = useState("all");
-  const [orders,setorders] = useState([]);
+  const [orders, setorders] = useState([]);
   const [loadingOrderDetails, setLoadingOrderDetails] = useState(false);
   const [loadingInvoice, setLoadingInvoice] = useState(false);
   const [orderDetailsError, setOrderDetailsError] = useState(null);
@@ -146,37 +157,39 @@ const Orders = () => {
 
   const usertoken = localStorage.getItem("token");
 
-  const fetchMyOrders = async() => {
+  const fetchMyOrders = async () => {
     try {
       setLoading(true);
       const response = await api.get(`order/myOrders`);
-      if(response.data.success)
-      {
-        setorders(response.data.data)
+      if (response.data.success) {
+        setorders(response.data.data);
       }
-    } 
-    catch (error) {
+    } catch (error) {
       setError(error);
-      console.log(error)
+      console.log(error);
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   const fetchDetailedOrder = async (orderId) => {
     setLoadingOrderDetails(true);
     setOrderDetailsError(null);
     try {
       const response = await api.get(`order/myOrder/${orderId}`);
-      console.log("response",response.data)
+      console.log("response", response.data);
       if (response.data.success) {
         setDetailedOrder(response.data.order);
       } else {
-        setOrderDetailsError(response.data.message || "Failed to load order details");
+        setOrderDetailsError(
+          response.data.message || "Failed to load order details",
+        );
       }
     } catch (error) {
       console.error("Error fetching order details:", error);
-      setOrderDetailsError(error.response?.data?.message || "Failed to load order details");
+      setOrderDetailsError(
+        error.response?.data?.message || "Failed to load order details",
+      );
     } finally {
       setLoadingOrderDetails(false);
     }
@@ -199,11 +212,10 @@ const Orders = () => {
       setLoadingInvoice(false);
     }
   };
-  
-useEffect(()=>{
-  fetchMyOrders();
-},[])
 
+  useEffect(() => {
+    fetchMyOrders();
+  }, []);
 
   const handleOrderView = (order) => {
     setSelectedOrder(order);
@@ -226,6 +238,8 @@ useEffect(()=>{
         return 25;
       case "SHIPPED":
         return 50;
+      case "IN_TRANSIT":
+        return 75;
       case "DELIVERED":
       case "REFUNDED":
       case "CANCELLED":
@@ -236,8 +250,9 @@ useEffect(()=>{
   };
 
   const statusSteps = {
-    CONFIRMED: "Order Placed",
+    PLACED: "Order Placed",
     SHIPPED: "Shipped",
+    IN_TRANSIT: "In Transit",
     DELIVERED: "Delivered",
   };
 
@@ -265,13 +280,30 @@ useEffect(()=>{
     const displayOrder = detailedOrder || selectedOrder;
     const isDetailed = !!detailedOrder;
 
-    const progressValue = getStatusProgress(displayOrder.orderStatus || selectedOrder.orderStatus);
-    const isCancelled = (displayOrder.orderStatus || selectedOrder.orderStatus) === "Cancelled";
-    const isRefunded = (displayOrder.orderStatus || selectedOrder.orderStatus) === "Refunded";
-    const isDelivered = (displayOrder.orderStatus || selectedOrder.orderStatus) === "Delivered";
+    const progressValue = getStatusProgress(
+      displayOrder.orderStatus || selectedOrder.orderStatus,
+    );
+    const isConfirmed =
+      (displayOrder.orderStatus || selectedOrder.orderStatus) === "CONFIRMED";
+    const isShipped =
+      (displayOrder.orderStatus || selectedOrder.orderStatus) === "SHIPPED";
+    const isInTransit =
+      (displayOrder.orderStatus || selectedOrder.orderStatus) === "IN_TRANSIT";
+    const isCancelled =
+      (displayOrder.orderStatus || selectedOrder.orderStatus) === "CANCELLED";
+    const isRefunded =
+      (displayOrder.orderStatus || selectedOrder.orderStatus) === "REFUNDED";
+    const isDelivered =
+      (displayOrder.orderStatus || selectedOrder.orderStatus) === "DELIVERED";
 
-    let statusColor = "orange";
-    if (isDelivered) {
+    let statusColor = null;
+    if (isConfirmed) {
+      statusColor = "green";
+    } else if (isShipped) {
+      statusColor = "blue";
+    } else if (isInTransit) {
+      statusColor = "purple";
+    } else if (isDelivered) {
       statusColor = "teal";
     } else if (isCancelled) {
       statusColor = "red";
@@ -284,7 +316,8 @@ useEffect(()=>{
     const orderStatus = displayOrder.orderStatus || selectedOrder.orderStatus;
     const pricing = displayOrder.pricing || selectedOrder.pricing;
     const items = displayOrder.items || selectedOrder.items;
-    const paymentMethod = displayOrder.paymentMethod || selectedOrder.paymentMethod;
+    const paymentMethod =
+      displayOrder.paymentMethod || selectedOrder.paymentMethod;
     const shippingAddress = displayOrder.shippingAddress || null;
     const billingAddress = displayOrder.billingAddress || null;
     const deliveryType = displayOrder.deliveryType || null;
@@ -313,7 +346,8 @@ useEffect(()=>{
               onClick={handleDownloadInvoice}
               className="border-2 border-[#00bbae] text-[#00bbae] hover:bg-[#00bbae] hover:text-white font-medium py-3 px-6 rounded-lg flex-1 transition-colors flex items-center justify-center gap-2 shadow-sm"
             >
-              <Download size={20} /> {invoiceData ? "View Invoice" : "Download Invoice"}
+              <Download size={20} />{" "}
+              {invoiceData ? "View Invoice" : "Download Invoice"}
             </button>
           </div>
         )}
@@ -325,7 +359,8 @@ useEffect(()=>{
               <div>
                 <h2 className="text-2xl font-bold mb-2">Order #{orderId}</h2>
                 <p className="text-white/90 text-sm">
-                  Placed on {new Date(createdAt).toLocaleString("en-IN", {
+                  Placed on{" "}
+                  {new Date(createdAt).toLocaleString("en-IN", {
                     day: "2-digit",
                     month: "short",
                     year: "numeric",
@@ -336,7 +371,9 @@ useEffect(()=>{
                 </p>
               </div>
               <div className="flex items-center gap-3">
-                <span className={`bg-white/20 backdrop-blur-sm px-4 py-2 rounded-lg font-semibold text-sm`}>
+                <span
+                  className={`bg-white/20 backdrop-blur-sm px-4 py-2 rounded-lg font-semibold text-sm`}
+                >
                   {orderStatus}
                 </span>
               </div>
@@ -404,11 +441,16 @@ useEffect(()=>{
                     Shipping Address
                   </h4>
                   <div className="text-sm text-gray-600 space-y-1">
-                    <p className="font-medium text-gray-800">{shippingAddress.nickname}</p>
+                    <p className="font-medium text-gray-800">
+                      {shippingAddress.nickname}
+                    </p>
                     <p>{shippingAddress.houseStreet}</p>
-                    {shippingAddress.apartment && <p>{shippingAddress.apartment}</p>}
+                    {shippingAddress.apartment && (
+                      <p>{shippingAddress.apartment}</p>
+                    )}
                     <p>
-                      {shippingAddress.city}, {shippingAddress.district}, {shippingAddress.state} - {shippingAddress.zipCode}
+                      {shippingAddress.city}, {shippingAddress.district},{" "}
+                      {shippingAddress.state} - {shippingAddress.zipCode}
                     </p>
                   </div>
                 </div>
@@ -419,11 +461,16 @@ useEffect(()=>{
                       Billing Address
                     </h4>
                     <div className="text-sm text-gray-600 space-y-1">
-                      <p className="font-medium text-gray-800">{billingAddress.nickname}</p>
+                      <p className="font-medium text-gray-800">
+                        {billingAddress.nickname}
+                      </p>
                       <p>{billingAddress.houseStreet}</p>
-                      {billingAddress.apartment && <p>{billingAddress.apartment}</p>}
+                      {billingAddress.apartment && (
+                        <p>{billingAddress.apartment}</p>
+                      )}
                       <p>
-                        {billingAddress.city}, {billingAddress.district}, {billingAddress.state} - {billingAddress.zipCode}
+                        {billingAddress.city}, {billingAddress.district},{" "}
+                        {billingAddress.state} - {billingAddress.zipCode}
                       </p>
                     </div>
                   </div>
@@ -433,7 +480,9 @@ useEffect(()=>{
                       <MapPin size={16} className="text-[#00bbae]" />
                       Billing Address
                     </h4>
-                    <p className="text-sm text-gray-500 italic">Same as shipping address</p>
+                    <p className="text-sm text-gray-500 italic">
+                      Same as shipping address
+                    </p>
                   </div>
                 )}
               </div>
@@ -448,34 +497,55 @@ useEffect(()=>{
             </h3>
             <div className="space-y-4">
               {items.map((item, index) => (
-                <div key={item.productId || index} className="flex items-start gap-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                <div
+                  key={item.productId || index}
+                  className="flex items-start gap-4 p-4 bg-gray-50 rounded-lg border border-gray-200"
+                >
                   {item.image && (
-                    <img 
-                      src={item.image} 
+                    <img
+                      src={item.image}
                       alt={item.productName}
                       className="w-20 h-20 object-cover rounded-lg"
                     />
                   )}
                   <div className="flex-1">
-                    <p className="font-semibold text-gray-800 mb-1">{item.productName}</p>
+                    <p className="font-semibold text-gray-800 mb-1">
+                      {item.productName}
+                    </p>
                     <div className="flex flex-wrap gap-3 text-sm text-gray-600">
-                      <span>Color: <span className="font-medium">{item.colorName}</span></span>
+                      <span>
+                        Color:{" "}
+                        <span className="font-medium">{item.colorName}</span>
+                      </span>
                       <span>•</span>
-                      <span>Age Group: <span className="font-medium">{item.ageGroupName || "N/A"}</span></span>
+                      <span>
+                        Age Group:{" "}
+                        <span className="font-medium">
+                          {item.ageGroupName || "N/A"}
+                        </span>
+                      </span>
                       <span>•</span>
-                      <span>Quantity: <span className="font-medium">{item.quantity}</span></span>
+                      <span>
+                        Quantity:{" "}
+                        <span className="font-medium">{item.quantity}</span>
+                      </span>
                     </div>
                     {item.brand && (
-                      <p className="text-xs text-gray-500 mt-1">Brand: {item.brand}</p>
+                      <p className="text-xs text-gray-500 mt-1">
+                        Brand: {item.brand}
+                      </p>
                     )}
                   </div>
                   <div className="text-right">
-                    <p className="font-bold text-gray-800">₹{item.totalPrice?.toFixed(2) || item.totalPrice}</p>
-                    {item.cutPricePerUnit && item.pricePerUnit < item.cutPricePerUnit && (
-                      <p className="text-xs text-gray-500 line-through">
-                        ₹{(item.cutPricePerUnit * item.quantity).toFixed(2)}
-                      </p>
-                    )}
+                    <p className="font-bold text-gray-800">
+                      ₹{item.totalPrice?.toFixed(2) || item.totalPrice}
+                    </p>
+                    {item.cutPricePerUnit &&
+                      item.pricePerUnit < item.cutPricePerUnit && (
+                        <p className="text-xs text-gray-500 line-through">
+                          ₹{(item.cutPricePerUnit * item.quantity).toFixed(2)}
+                        </p>
+                      )}
                   </div>
                 </div>
               ))}
@@ -491,48 +561,73 @@ useEffect(()=>{
             <div className="space-y-3 bg-white p-5 rounded-lg border border-gray-200">
               <div className="flex justify-between text-gray-700">
                 <span>Subtotal</span>
-                <span className="font-semibold">₹{pricing.subtotal?.toFixed(2) || pricing.subtotal}</span>
+                <span className="font-semibold">
+                  ₹{pricing.subtotal?.toFixed(2) || pricing.subtotal}
+                </span>
               </div>
-              
+
               {pricing.totalDiscount > 0 && (
                 <div className="flex justify-between text-green-600">
                   <span>Discount</span>
-                  <span className="font-semibold">- ₹{pricing.totalDiscount?.toFixed(2) || pricing.totalDiscount}</span>
+                  <span className="font-semibold">
+                    - ₹
+                    {pricing.totalDiscount?.toFixed(2) || pricing.totalDiscount}
+                  </span>
                 </div>
               )}
 
               {pricing.couponDiscount > 0 && (
                 <div className="flex justify-between text-green-600">
                   <span>Coupon Discount</span>
-                  <span className="font-semibold">- ₹{pricing.couponDiscount?.toFixed(2) || pricing.couponDiscount}</span>
+                  <span className="font-semibold">
+                    - ₹
+                    {pricing.couponDiscount?.toFixed(2) ||
+                      pricing.couponDiscount}
+                  </span>
                 </div>
               )}
 
               {pricing.pointsDiscount > 0 && (
                 <div className="flex justify-between text-green-600">
                   <span>Points Used</span>
-                  <span className="font-semibold">- ₹{pricing.pointsDiscount?.toFixed(2) || pricing.pointsDiscount}</span>
+                  <span className="font-semibold">
+                    - ₹
+                    {pricing.pointsDiscount?.toFixed(2) ||
+                      pricing.pointsDiscount}
+                  </span>
                 </div>
               )}
 
               {pricing.deliveryCharges > 0 && (
                 <div className="flex justify-between text-gray-700">
                   <span>Delivery Charges</span>
-                  <span className="font-semibold">+ ₹{pricing.deliveryCharges?.toFixed(2) || pricing.deliveryCharges}</span>
+                  <span className="font-semibold">
+                    + ₹
+                    {pricing.deliveryCharges?.toFixed(2) ||
+                      pricing.deliveryCharges}
+                  </span>
                 </div>
               )}
 
               {pricing.giftPackCharges > 0 && (
                 <div className="flex justify-between text-gray-700">
                   <span>Gift Pack Charges</span>
-                  <span className="font-semibold">+ ₹{pricing.giftPackCharges?.toFixed(2) || pricing.giftPackCharges}</span>
+                  <span className="font-semibold">
+                    + ₹
+                    {pricing.giftPackCharges?.toFixed(2) ||
+                      pricing.giftPackCharges}
+                  </span>
                 </div>
               )}
 
               <div className="border-t border-gray-300 pt-3 mt-3">
                 <div className="flex justify-between items-center">
-                  <span className="text-lg font-bold text-gray-800">Total Amount</span>
-                  <span className="text-2xl font-bold text-[#00bbae]">₹{pricing.total?.toFixed(2) || pricing.total}</span>
+                  <span className="text-lg font-bold text-gray-800">
+                    Total Amount
+                  </span>
+                  <span className="text-2xl font-bold text-[#00bbae]">
+                    ₹{pricing.total?.toFixed(2) || pricing.total}
+                  </span>
                 </div>
               </div>
 
@@ -541,13 +636,19 @@ useEffect(()=>{
                   <CreditCard size={16} className="text-[#00bbae]" />
                   Payment Method
                 </span>
-                <span className="text-sm font-medium text-gray-800">{paymentMethod || "N/A"}</span>
+                <span className="text-sm font-medium text-gray-800">
+                  {paymentMethod || "N/A"}
+                </span>
               </div>
 
               {deliveryType && (
                 <div className="flex justify-between items-center pt-2">
-                  <span className="text-sm font-semibold text-gray-700">Delivery Type</span>
-                  <span className="text-sm font-medium text-gray-800">{deliveryType}</span>
+                  <span className="text-sm font-semibold text-gray-700">
+                    Delivery Type
+                  </span>
+                  <span className="text-sm font-medium text-gray-800">
+                    {deliveryType}
+                  </span>
                 </div>
               )}
             </div>
@@ -593,27 +694,36 @@ useEffect(()=>{
             <div className="p-6 space-y-4">
               {invoiceData.invoiceDate && (
                 <div className="flex justify-between py-2 border-b border-gray-200">
-                  <span className="text-gray-600 font-medium">Invoice Date</span>
+                  <span className="text-gray-600 font-medium">
+                    Invoice Date
+                  </span>
                   <span className="text-gray-800 font-semibold">
-                    {new Date(invoiceData.invoiceDate).toLocaleDateString("en-IN", {
-                      day: "2-digit",
-                      month: "long",
-                      year: "numeric",
-                    })}
+                    {new Date(invoiceData.invoiceDate).toLocaleDateString(
+                      "en-IN",
+                      {
+                        day: "2-digit",
+                        month: "long",
+                        year: "numeric",
+                      },
+                    )}
                   </span>
                 </div>
               )}
 
               {invoiceData.status && (
                 <div className="flex justify-between py-2 border-b border-gray-200">
-                  <span className="text-gray-600 font-medium">Invoice Status</span>
-                  <span className={`px-3 py-1 rounded-full text-sm font-semibold ${
-                    invoiceData.status === "PAID" 
-                      ? "bg-green-100 text-green-700" 
-                      : invoiceData.status === "PENDING"
-                      ? "bg-yellow-100 text-yellow-700"
-                      : "bg-gray-100 text-gray-700"
-                  }`}>
+                  <span className="text-gray-600 font-medium">
+                    Invoice Status
+                  </span>
+                  <span
+                    className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                      invoiceData.status === "PAID"
+                        ? "bg-green-100 text-green-700"
+                        : invoiceData.status === "PENDING"
+                          ? "bg-yellow-100 text-yellow-700"
+                          : "bg-gray-100 text-gray-700"
+                    }`}
+                  >
                     {invoiceData.status}
                   </span>
                 </div>
@@ -621,14 +731,18 @@ useEffect(()=>{
 
               {invoiceData.paymentStatus && (
                 <div className="flex justify-between py-2 border-b border-gray-200">
-                  <span className="text-gray-600 font-medium">Payment Status</span>
-                  <span className={`px-3 py-1 rounded-full text-sm font-semibold ${
-                    invoiceData.paymentStatus === "PAID" 
-                      ? "bg-green-100 text-green-700" 
-                      : invoiceData.paymentStatus === "PENDING"
-                      ? "bg-yellow-100 text-yellow-700"
-                      : "bg-gray-100 text-gray-700"
-                  }`}>
+                  <span className="text-gray-600 font-medium">
+                    Payment Status
+                  </span>
+                  <span
+                    className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                      invoiceData.paymentStatus === "PAID"
+                        ? "bg-green-100 text-green-700"
+                        : invoiceData.paymentStatus === "PENDING"
+                          ? "bg-yellow-100 text-yellow-700"
+                          : "bg-gray-100 text-gray-700"
+                    }`}
+                  >
                     {invoiceData.paymentStatus}
                   </span>
                 </div>
@@ -636,8 +750,12 @@ useEffect(()=>{
 
               {invoiceData.posInvoiceId && (
                 <div className="flex justify-between py-2">
-                  <span className="text-gray-600 font-medium">POS Invoice ID</span>
-                  <span className="text-gray-800 font-semibold">{invoiceData.posInvoiceId}</span>
+                  <span className="text-gray-600 font-medium">
+                    POS Invoice ID
+                  </span>
+                  <span className="text-gray-800 font-semibold">
+                    {invoiceData.posInvoiceId}
+                  </span>
                 </div>
               )}
             </div>
@@ -655,7 +773,8 @@ useEffect(()=>{
                 }}
                 className="border-2 border-gray-300 text-gray-700 hover:bg-gray-50 font-medium py-3 px-6 rounded-lg flex-1 transition-colors flex items-center justify-center gap-2 shadow-sm"
               >
-                <LogOut size={20} className="transform rotate-180" /> Raise an Issue
+                <LogOut size={20} className="transform rotate-180" /> Raise an
+                Issue
               </button>
               <button
                 onClick={() => {
@@ -664,7 +783,8 @@ useEffect(()=>{
                 }}
                 className="border-2 border-gray-300 text-gray-700 hover:bg-gray-50 font-medium py-3 px-6 rounded-lg flex-1 transition-colors flex items-center justify-center gap-2 shadow-sm"
               >
-                <ArrowLeft size={20} className="transform rotate-180" /> Return Order
+                <ArrowLeft size={20} className="transform rotate-180" /> Return
+                Order
               </button>
             </div>
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
@@ -678,7 +798,8 @@ useEffect(()=>{
 
   const renderOrdersList = () => {
     const filteredOrders = orders.filter(
-      (order) => selectedStatus === "All" || order.orderStatus === selectedStatus
+      (order) =>
+        selectedStatus === "All" || order.orderStatus === selectedStatus,
     );
 
     return (
@@ -715,69 +836,78 @@ useEffect(()=>{
           </thead>
           {loading ? (
             <div className="flex justify-center items-center h-full m-auto">
-              <Loader2 className="animate-spin text-[#00bbae] flex justify-center items-center m-auto" size={24} />
+              <Loader2
+                className="animate-spin text-[#00bbae] flex justify-center items-center m-auto"
+                size={24}
+              />
             </div>
           ) : (
-          <tbody>
-            {!loading && filteredOrders.length > 0 ? (
-              filteredOrders.map( (order) => {
-              let statusBgColor = "bg-orange-100";
-              let statusTextColor = "text-orange-600";
-              if (order.orderStatus === "CONFIRMED") {
-                statusBgColor = "bg-blue-100";
-                statusTextColor = "text-blue-600";
-              }
-              if (order.orderStatus === "DELIVERED") {
-                statusBgColor = "bg-teal-100";
-                statusTextColor = "text-teal-600";
-              } else if (order.orderStatus === "CANCELLED") {
-                statusBgColor = "bg-red-100";
-                statusTextColor = "text-red-600";
-              } else if (order.orderStatus === "REFUNDED") {
-                statusBgColor = "bg-green-100";
-                statusTextColor = "text-green-600";
-              }
-              return (
-                <tr key={order._id} className="border-b border-gray-200 hover:bg-gray-50 transition-colors">
-                  <td className="px-6 py-4 text-sm font-medium text-gray-900">
-                    #{order.orderId}
-                  </td>
-                  <td className="px-6 py-4 text-sm font-medium text-gray-900 max-w-[75px] whitespace-nowrap overflow-hidden text-ellipsis">
-                    {order.items[0]?.productName || "N/A"}
-                  </td>
-                  <td className="px-6 py-4 text-sm text-gray-600">
-                  {new Date(order.createdAt).toLocaleString("en-IN")}
-                  </td>
-                  <td className="px-6 py-4">
-                    <span
-                      className={`${statusBgColor} ${statusTextColor} px-3 py-1 rounded-full text-xs font-semibold`}
+            <tbody>
+              {!loading && filteredOrders.length > 0 ? (
+                filteredOrders.map((order) => {
+                  let statusBgColor = "bg-orange-100";
+                  let statusTextColor = "text-orange-600";
+                  if (order.orderStatus === "CONFIRMED") {
+                    statusBgColor = "bg-blue-100";
+                    statusTextColor = "text-blue-600";
+                  }
+                  if (order.orderStatus === "DELIVERED") {
+                    statusBgColor = "bg-teal-100";
+                    statusTextColor = "text-teal-600";
+                  } else if (order.orderStatus === "CANCELLED") {
+                    statusBgColor = "bg-red-100";
+                    statusTextColor = "text-red-600";
+                  } else if (order.orderStatus === "REFUNDED") {
+                    statusBgColor = "bg-green-100";
+                    statusTextColor = "text-green-600";
+                  }
+                  return (
+                    <tr
+                      key={order._id}
+                      className="border-b border-gray-200 hover:bg-gray-50 transition-colors"
                     >
-                      {order.orderStatus}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 text-sm text-gray-900 font-semibold">
-                    ₹{order.pricing?.total?.toFixed(2) || "0.00"}
-                  </td>
-                  <td className="px-6 py-4">
-                    <button
-                      onClick={() => handleOrderView(order)}
-                      className="bg-[#00bbae] hover:bg-[#02a499] text-white p-2 rounded-full transition-colors shadow-sm"
-                      title="View Order Details"
-                    >
-                      <Eye size={16} />
-                    </button>
+                      <td className="px-6 py-4 text-sm font-medium text-gray-900">
+                        #{order.orderId}
+                      </td>
+                      <td className="px-6 py-4 text-sm font-medium text-gray-900 max-w-[75px] whitespace-nowrap overflow-hidden text-ellipsis">
+                        {order.items[0]?.productName || "N/A"}
+                      </td>
+                      <td className="px-6 py-4 text-sm text-gray-600">
+                        {new Date(order.createdAt).toLocaleString("en-IN")}
+                      </td>
+                      <td className="px-6 py-4">
+                        <span
+                          className={`${statusBgColor} ${statusTextColor} px-3 py-1 rounded-full text-xs font-semibold`}
+                        >
+                          {order.orderStatus}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 text-sm text-gray-900 font-semibold">
+                        ₹{order.pricing?.total?.toFixed(2) || "0.00"}
+                      </td>
+                      <td className="px-6 py-4">
+                        <button
+                          onClick={() => handleOrderView(order)}
+                          className="bg-[#00bbae] hover:bg-[#02a499] text-white p-2 rounded-full transition-colors shadow-sm"
+                          title="View Order Details"
+                        >
+                          <Eye size={16} />
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })
+              ) : (
+                <tr>
+                  <td
+                    colSpan="9"
+                    className="px-4 py-8 text-center text-sm text-gray-500"
+                  >
+                    No orders found
                   </td>
                 </tr>
-              );
-            })
-            ) : (
-              <tr>
-                <td colSpan="9" className="px-4 py-8 text-center text-sm text-gray-500">
-                  No orders found
-                </td>
-              </tr>
-            )}
-          </tbody>
+              )}
+            </tbody>
           )}
         </table>
       </div>
@@ -859,7 +989,10 @@ useEffect(()=>{
               >
                 &times;
               </button>
-              <Invoice orderDetails={detailedOrder || selectedOrder} invoiceData={invoiceData} />
+              <Invoice
+                orderDetails={detailedOrder || selectedOrder}
+                invoiceData={invoiceData}
+              />
             </div>
           </div>
         )}
